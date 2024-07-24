@@ -9,6 +9,7 @@ import Start from './components/Start.tsx'
 import Order from './components/Order.js'
 import MobileOrder from './components/MobileOrder.js'
 import EkvarOrder from './components/EkvarOrder.js'
+import Status from './components/Status.js'
 
 import Form from './components/Form.js'
 import SimpleForm from './components/SimpleForm.js'
@@ -80,6 +81,10 @@ const App = () => {
 
       <Routes>
         <Route path='/transfer' element= {<Transfer/>}></Route>
+      </Routes>
+
+      <Routes>
+        <Route path='/status' element= {<Status/>}></Route>
       </Routes>
 
       {/* Footer */}

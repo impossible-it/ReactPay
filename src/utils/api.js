@@ -21,3 +21,18 @@ export const createOrderSPB = async (amount) => {
     throw error;
   }
 };
+
+export const checkTradeStatus = async (order) => {
+  try {
+    const response = await axios.get(`/api/check_trade/trade/${order}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching trade status:', error);
+    throw error;
+  }
+};
