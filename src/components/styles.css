@@ -1,0 +1,75 @@
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 49px;
+    height: 27px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(238, 239, 244, 1);
+    transition: .4s;
+    border-radius: 34px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 21px;
+    width: 21px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: rgba(6, 155, 231, 1);
+
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+  .text-blueth {
+    color: rgba(6, 155, 231, 1);
+  }
+  .text-purpleth {
+    color:  rgba(48, 12, 96, 1);
+
+  }
+  /*button*/
+  .text-grayth {
+    color: rgba(175, 168, 198, 1);
+
+  }
+  .bg-grayth {
+    background-color:  rgba(175, 168, 198, 1);
+    ;
+  }
+  .bg-gray-fon {
+    background-color: rgba(250, 249, 255, 1);
+      
+  }
+  .bg-gray-form {
+    background-color: rgba(238, 239, 244, 1);
+
+  }
+  .text-grayth input::placeholder,
+.text-grayth textarea::placeholder {
+  color: rgba(175, 168, 198, 1);
+  ; /* Замените на нужный вам цвет */
+  opacity: 1; /* Убедитесь, что непрозрачность установлена в 1 для полного цвета */
+}
