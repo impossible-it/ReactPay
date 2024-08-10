@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { LuCopyPlus } from "react-icons/lu";
 import { sendMessage } from '../api/telegram.ts';
 import { createOrderSPB } from '../utils/api';
 import axios from 'axios';
 import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
-
 import RulesImage from '../components/img/rules.png';
-
 import './styles.css';
 
 const OrderSPB = () => {
@@ -46,21 +43,19 @@ const OrderSPB = () => {
       try {
         setLoading(true);
         const data = await createOrderSPB(formData.amount);
+        console.log('Received data from API:', data);
         setOrder(data.trade);
         setCard(data.card_number);
         setOrderSum(data.amount);
-        // Валидируем переменную card
         const [namePart, numberPart] = validateCardData(data.card_number);
         setCardName(namePart);
         setCardNumber(numberPart);
         setLoading(false);
-        // Сохранение заявки в истории
         saveOrderToHistory(data.trade, numberPart, data.amount, 'Успешно');
       } catch (error) {
         console.error('Error creating payment request for SPB:', error);
         setError('Error creating payment request for SPB');
         setLoading(false);
-        // Сохранение ошибки в истории
         saveOrderToHistory('Ошибка', 'Ошибка', formData.amount, 'Не удалось создать заявку');
       }
     };
@@ -87,7 +82,7 @@ const OrderSPB = () => {
         cardNumber,
         amount,
         status,
-        userId: formData.userId // передаем ID пользователя
+        userId: formData.userId
       });
     } catch (error) {
       console.error('Error saving order to history:', error);
@@ -141,12 +136,12 @@ const OrderSPB = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center p-4 bg-gray-fon">
-      <div className="flex flex-col items-center " style={{ maxWidth: '1070px', width: '100%' }}>
-        <div className="flex justify-between w-full  mb-6 mt-6">
-          <div className="space-y-4" style={{ maxWidth: '630px', width: '630px' }}>
+    <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
+      <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]" >
+        <div className="flex justify-between md:flex-row flex-col-reverse w-full mb-6 mt-6">
+          <div className="space-y-4 md:w-[630px] w-[350px] md:max-w-[630px] md:max-w-[350px] " >
             <div className="bg-white p-4 rounded-lg relative">
-              {showAlert && copyAlertIndex === 0 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 transform my-2 mr-4">Скопировано в буфер обмена</div>}
+              {showAlert && copyAlertIndex === 0 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 transform  mr-4">Скопировано в буфер обмена</div>}
               <div className='flex justify-between items-center'>
                 <div className="">
                   <h2 className="text-base font-normal">Номер заявки</h2>
@@ -156,7 +151,7 @@ const OrderSPB = () => {
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg relative">
-              {showAlert && copyAlertIndex === 1 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 transform my-2 mr-4">Скопировано в буфер обмена</div>}
+              {showAlert && copyAlertIndex === 1 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 transform mr-4">Скопировано в буфер обмена</div>}
               <div className='flex justify-between items-center'>
                 <div className=" ">
                   <h2 className="text-base font-normal">Сумма транзакции</h2>
@@ -166,7 +161,7 @@ const OrderSPB = () => {
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg relative">
-              {showAlert && copyAlertIndex === 2 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 transform my-2 mr-4">Скопировано в буфер обмена</div>}
+              {showAlert && copyAlertIndex === 2 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 transform mr-4">Скопировано в буфер обмена</div>}
               <div className='flex justify-between items-center'>
                 <div className="0 ">
                   <h2 className="text-base font-normal">Реквизиты подвязанные к счёту</h2>
@@ -187,10 +182,8 @@ const OrderSPB = () => {
                 <p className="text-sm mt-2 text-blueth">{<p>Операционный департамент Банка России УФК г. Москва</p> || (error && <p className='text-red-500 font-bold'>Ошибка создания заявки</p>)}</p>
               </div>
             </div>
-            
           </div>
-
-          <div className="bg-white space-y-4 rounded-lg p-4 text-right" style={{ maxWidth: '300px', width: '300px' }}>
+          <div className="bg-white space-y-4 rounded-lg p-4 text-right md:w-[350px] md:mb-0 mb-4" >
             <div className="space-y-3 text-gray-700">
               <div className="w-full p-4">
                 <h2 className="text-sm font-normal text-grayth">Имя пользователя</h2>
@@ -211,20 +204,18 @@ const OrderSPB = () => {
                 <h2 className="text-sm font-normal text-grayth">Номер клиента</h2>
                 <p className="text-base">{formData.clientNumber}</p>
               </div>
-             
             </div>
           </div>
         </div>
-
-        <div className="w-full bg-white p-4 mt-4 rounded-lg" style={{ maxWidth: '1070px', width: '1070px' }}>
+        <div className="w-full bg-white p-4 mt-4 rounded-lg flex-grow md:w-[1070px] w-[500px] md:max-w-[1070px] max-w-[500px] " >
           <div className="text-gray-700">
             <div className='flex align-center items-center mb-6'>
               <img src={RulesImage} alt="RulesImage"  className="absolute w-[25px] h-[25px] relative" />
               <h2 className="text-lg font-md ml-3">Правила успешного платежа</h2>
             </div>
-            <ul className="space-y-2 pl-8">
+            <ul className="space-y-2 md:pl-8 pl-1">
               {rules.map((rule, index) => (
-                <li key={index} className={`bg-gray-form rounded-xl content-center cursor-pointer mx-auto${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`} style={{ width: '95%', fontSize: '14px' }} onClick={() => handleRuleClick(index)}>
+                <li key={index} className={`bg-gray-form rounded-xl content-center cursor-pointer w-[98%]  font-sm mx-auto${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`} onClick={() => handleRuleClick(index)}>
                 <div className="flex justify-between items-center">
                   <p className={`text-sm font-semibold	 ml-4 ${expandedRule === index ? 'text-purpleth' : 'text-grayth'}`}>{rule.title}</p>
                   <div className='flex justify-center w-[50px] h-[35px] items-center'>
@@ -239,16 +230,15 @@ const OrderSPB = () => {
         </div>
         <div className='p-4 mt-6 mb-6'>
         <button
-          className="bg-grayth text-white py-2 px-4 rounded-lg hover:bg-purple-950"
-          style={{ maxWidth: '470px', width: '470px', height: '50px', fontSize: '16px', fontWeight: '700' }}
+          className="bg-grayth text-white py-2 px-4 rounded-lg hover:bg-purple-950 md:w-[470px] w-[300px] h-[50px] text-base font-bold"
           onClick={handleTelegram}
           disabled={loading || !order || !orderSum || !card}
         >
           Продолжить
         </button>
         </div>
-        <div className="text-center pb-4 mb-6 " style={{ maxWidth: '470px', width: '470px', }}>
-          <p className="text-sm text-grayth">
+        <div className="text-center pb-4  md:w-[470px] w-[300px] " >
+          <p className="text-sm text-grayth md:mb-6 mb-12">
             <a href="#" className="text-blueth">Политика безопасности</a> содержит правила использования индивидуальной информации пользователей. Компания "Paylink" гарантирует соблюдение этих правил и требований к информационной безопасности как клиентам системы, так и участникам процесса предоставления услуг: банкам и поставщикам услуг и товаров.
           </p>
         </div>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { LuCopyPlus } from "react-icons/lu";
 import { sendMessage } from '../api/telegram.ts';
 import { createOrder } from '../utils/api.js';
 import axios from 'axios';
@@ -127,8 +126,8 @@ const PaymentRequest = () => {
   ];
 
   return (
-    <div className="flex flex-col items-center p-4 bg-gray-fon ">
-      <div className="flex flex-col items-center space-y-4" style={{ maxWidth: '1070px', width: '100%' }}>
+    <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
+      <div className="flex flex-col items-center space-y-4 h-full w-full" style={{ maxWidth: '1070px' }}>
         <div className="flex justify-between w-full mb-6 mt-6">
           <div className="space-y-4" style={{ maxWidth: '630px', width: '630px' }}>
             <div className="bg-white p-4 rounded-lg relative">
@@ -196,7 +195,7 @@ const PaymentRequest = () => {
           </div>
         </div>
 
-        <div className="w-full bg-white p-4 " style={{ maxWidth: '1070px', width: '1070px' }}>
+        <div className="w-full bg-white p-4" style={{ maxWidth: '1070px', width: '1070px' }}>
           <div className="text-gray-700 ">
             <div className='flex align-center items-center mb-6'>
               <img src={RulesImage} alt="RulesImage"  className="absolute w-[25px] h-[25px] relative" />
@@ -217,7 +216,7 @@ const PaymentRequest = () => {
             </ul>
           </div>
         </div>
-        <div className='p-4 mt-6 mb-6'>
+        <div className='p-4 mt-6 mb-6 pt-6'>
         <button
           className="bg-grayth text-white py-2 px-4 rounded-lg hover:bg-purple-950"
           style={{ maxWidth: '470px', width: '470px', height: '50px', fontSize: '16px', fontWeight: '700' }}

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './styles.css';
 
 const OrderOther = () => {
   const [showAlert, setShowAlert] = useState(true);
@@ -15,6 +16,7 @@ const OrderOther = () => {
   const [loading, setLoading] = useState(false);
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
 
   const handleAlertClose = () => {
     setShowAlert(false);
@@ -45,6 +47,22 @@ const OrderOther = () => {
     }, 3000);
   };
 
+  useEffect(() => {
+    let timer;
+    if (step === 2) {
+      timer = setInterval(() => {
+        setTimeLeft(prevTime => (prevTime > 0 ? prevTime - 1 : 0));
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [step]);
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   if (showAlert) {
     return (
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
@@ -62,24 +80,20 @@ const OrderOther = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-fon px-4 pt-20 placeholder-gray-text">
-      <div className="space-y-4 w-full max-w-xl" style={{ maxWidth: '608px' }}>
+    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-fon px-4 mb:pt-20 pt-4 placeholder-gray-text">
+      <div className="space-y-4 w-full max-w-xl mb-12">
         <div className="bg-white p-6 rounded-lg mb-12">
           <h2 className="text-xl font-bold mb-6 text-center">Способ оплаты</h2>
           <div className="flex justify-center space-x-4 mb-4">
             <button className="py-2 px-4  bg-white border-b-2 border-blue-400 hover:border-blue-800">Банковская карта</button>
             <button className="py-2 px-4  bg-white border-b-2 border-gray-200 hover:border-blue-800">Мобильный оператор</button>
-
-          </div>
-          <div className="flex justify-center space-x-4 mb-2">
-          <p className="text-left mt-4" style={{ color: 'rgba(175, 168, 198, 1)', fontSize:'12px', width:'470px'}}>Необходимо выбрать удобный Вам способ оплаты</p>
           </div>
         </div>
-        <div className="w-full max-w-xl bg-white p-6 rounded-lg " style={{ maxWidth: '608px' , display:'flex',  justifyContent:'center' }}>
+        <div className="w-full md:max-w-[608px] max-w-[390px] flex justify-center items-center bg-white p-6 rounded-lg">
           {step === 1 && (
-            <form className="text-grayth" style={{ maxWidth: '470px', }}>
-              <div className="mt-6 mb-6 text-left" style={{ width: '100%' }}>
-                <label htmlFor="cardNumber" className="block  font-normal text-gray-700" >
+            <form className="text-grayth w-[350px] md:w-[470px]">
+              <div className="mt-6 mb-6 text-left w-full">
+                <label htmlFor="cardNumber" className="block  font-normal text-gray-700">
                   Укажите номер Вашей карты
                 </label>
                 <input
@@ -88,15 +102,14 @@ const OrderOther = () => {
                   id="cardNumber"
                   value={cardData.cardNumber}
                   onChange={handleChange}
-                  className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
+                  className="mt-1 block w-full   h-[35px] border bg-gray-form border-gray-200 rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
                   maxLength="16"
                   placeholder="1456 1345 0958 4234"
                   required
-                  style={{ width: '100%', height: '35px' }}
                 />
               </div>
-              <div className="mb-6 text-left" style={{ width: '100%' }}>
-                <label htmlFor="name" className="block font-normal text-gray-700" >
+              <div className="mb-6 text-left w-full">
+                <label htmlFor="name" className="block font-normal text-gray-700">
                   Укажите Ваше имя и фамилию
                 </label>
                 <input
@@ -105,15 +118,14 @@ const OrderOther = () => {
                   id="name"
                   value={cardData.name}
                   onChange={handleChange}
-                  className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
+                  className="mt-1 block w-full   h-[35px] border bg-gray-form border-gray-200 rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
                   placeholder="Иван Иванов"
                   required
-                  style={{ width: '100%', height: '35px' }}
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="mb-12 text-left" style={{ width: '100%' }}>
-                  <label htmlFor="expiryDate" className="block  font-normal text-gray-700" >
+                <div className="md:mb-12 mb-0 text-left w-full">
+                  <label htmlFor="expiryDate" className="block  font-normal text-gray-700">
                     Срок действия
                   </label>
                   <input
@@ -122,14 +134,13 @@ const OrderOther = () => {
                     id="expiryDate"
                     value={cardData.expiryDate}
                     onChange={handleChange}
-                    className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
+                    className="mt-1 block w-full  h-[35px] border bg-gray-form border-gray-200 rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
                     placeholder="21 / 05"
                     required
-                    style={{ width: '100%', height: '35px' }}
                   />
                 </div>
-                <div className="mb-12 text-left" style={{ width: '100%' }}>
-                  <label htmlFor="cvv" className="block  font-normal text-gray-700" >
+                <div className="mb-12 w-full text-left">
+                  <label htmlFor="cvv" className="block  font-normal text-gray-700">
                     CVV2
                   </label>
                   <input
@@ -138,16 +149,15 @@ const OrderOther = () => {
                     id="cvv"
                     value={cardData.cvv}
                     onChange={handleChange}
-                    className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md  p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
+                    className="mt-1 block w-full h-[35px] border bg-gray-form border-gray-200 rounded-md  p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
                     maxLength="3"
                     placeholder="227"
                     required
-                    style={{ width: '100%', height: '35px' }}
                   />
                 </div>
               </div>
-              <div className="mb-6 text-left" style={{ width: '100%' }}>
-                <label htmlFor="amount" className="block  font-normal text-gray-700" >
+              <div className="mb-6 text-left w-full">
+                <label htmlFor="amount" className="block  font-normal text-gray-700">
                   Укажите сумму инвестиции
                 </label>
                 <input
@@ -156,21 +166,19 @@ const OrderOther = () => {
                   id="amount"
                   value={cardData.amount}
                   onChange={handleChange}
-                  className="mt-1 block w-full bg-gray-form border-gray-200 rounded-md  p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
+                  className="mt-1 block w-full  h-[35px] bg-gray-form border-gray-200 rounded-md  p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
                   placeholder="10 000 руб"
                   required
-                  style={{ width: '100%', height: '35px' }}
                 />
               </div>
               <button
                 type="button"
-                className="bg-grayth text-white py-2 px-4 rounded-md hover:bg-purple-950 mt-6 w-full"
+                className="bg-grayth text-white  h-[50px] py-2 px-4 rounded-md hover:bg-purple-950 mt-6 w-full"
                 onClick={handleSmsSend}
-                style={{ width: '100%', height: '50px' }}
               >
                 Продолжить
               </button>
-              <div className="mt-6 flex items-center justify-between" style={{ width: '100%' }}>
+              <div className="w-full mt-6 flex items-center justify-between">
                 <label htmlFor="agreement" className="block  font-normal text-gray-700">
                   Подтверждаете пользовательское соглашение?
                 </label>
@@ -186,26 +194,57 @@ const OrderOther = () => {
                   <span className="slider round"></span>
                 </label>
               </div>
-              <p className="mt-4 text-left text-sm text-gray-600" style={{ width: '100%' }}>
+              <p className="w-full mt-4 text-left text-sm text-grayth">
                 Нажимая на кнопку "Оплатить", вы подтверждаете что ознакомлены с перечнем информации об услуге и принимаете 
-                <span className="text-blue-400 font-normal"> условия публичного договора.</span>
+                <span className="text-blue-400 font-normal "> условия публичного договора.</span>
               </p>
             </form>
           )}
           {step === 2 && (
-           <div className='flex flex-col justify-center items-center text-center'style={{width: '470px'}}>
-              <h2 className="text-xl font-bold mb-4">Подтверждение</h2>
-              <p className="text-sm text-gray-700 mb-4">
+            <div className="flex flex-col justify-center items-center text-center md:w-[470px] w-[390px]">
+              <h2 className="text-xl font-semibold mb-4">Подтверждение</h2>
+              <p className="text-sm text-grayth mb-4">
                 Для подтверждения перевода средств мы отправили Вам код из 6 (шести) цифр на номер телефона в личные сообщения (СМС). ВНИМАНИЕ! Никому не сообщайте код из СМС, для защиты ваших персональных данных!
               </p>
               <div className="flex justify-center items-center mb-4">
-                <div className="w-20 h-20 border-4 border-blue-500 rounded-full flex items-center justify-center text-blue-500 text-2xl">
-                  4:18
-                </div>
+                <svg className="w-24 h-24" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="static-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: 'rgba(6, 155, 231, 1)', stopOpacity: 1 }} />
+                      <stop offset="70%" style={{ stopColor: 'rgba(48, 12, 96, 0.8)', stopOpacity: 1 }} />
+                      <stop offset="100%" style={{ stopColor: 'rgba(6, 155, 231, 1)', stopOpacity: 1 }} />
+                    </linearGradient>
+                    <linearGradient id="animated-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{ stopColor: 'rgba(6, 155, 231, 1)', stopOpacity: 0.4 }} />
+                      <stop offset="50%" style={{ stopColor: 'rgba(48, 12, 96, 1)', stopOpacity: 0.4 }} />
+                      <stop offset="100%" style={{ stopColor: 'rgba(48, 12, 96, 1)', stopOpacity: 0.4 }} />
+                    </linearGradient>
+                  </defs>
+                  <circle
+                    className="static-circle"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                    stroke="url(#static-gradient)"
+                    strokeWidth="4"
+                    fill="transparent"
+                  />
+                  <circle
+                    className="circle animated-circle"
+                    stroke="url(#animated-gradient)"
+                    strokeWidth="4"
+                    fill="transparent"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                    style={{ strokeDasharray: '170 283', strokeDashoffset: '0' }}
+                  />
+                </svg>
+                <p className="absolute text-2xl font-bold text-blue-600">{formatTime(timeLeft)}</p>
               </div>
-              <p className="text-sm text-gray-500 mb-4">Осталось для подтверждения</p>
-              <div className="mb-4">
-                <label htmlFor="smsCode" className="block text-sm font-normal text-gray-700" style={{ fontSize: '14px' }}>
+              <p className="text-sm text-grayth mb-8">Осталось для подтверждения</p>
+              <div className="mb-4 w-full">
+                <label htmlFor="smsCode" className="block text-sm text-left font-normal text-gray-700">
                   Введите код подтверждения
                 </label>
                 <input
@@ -214,15 +253,14 @@ const OrderOther = () => {
                   id="smsCode"
                   value={smsCode}
                   onChange={(e) => setSmsCode(e.target.value)}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:bg-white"
+                  className="mt-1 block w-full  h-[35px] bg-gray-form border-gray-200 rounded-md  p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md"
                   placeholder="123 123"
                   required
                 />
               </div>
               <button
-                className="bg-grayth text-white py-2 px-4 rounded-md hover:bg-purple-950 mt-4 w-full"
+                className="bg-grayth text-white py-2 px-4 rounded-md hover:bg-purple-950 mt-4 w-full h-[50px]"
                 onClick={handleSmsSubmit}
-                style={{ width: '100%', height: '50px' }}
               >
                 Подтвердить
               </button>

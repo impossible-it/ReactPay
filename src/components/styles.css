@@ -10,6 +10,32 @@
     width: 0;
     height: 0;
   }
+  .circle {
+    transform-origin: center;
+  }
+  
+  @keyframes dash-animation {
+    from {
+      stroke-dashoffset: 1111;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+  .circle {
+    transition: stroke-dashoffset 2s linear;
+  }
+  
+  .animated-circle {
+    animation: dash-animation 20s linear infinite;
+  }
+  
+  .static-circle {
+    stroke: url(#static-gradient) ;
+    stroke-width: 4;
+    fill: transparent;
+  }
   
   .slider {
     position: absolute;
@@ -73,3 +99,26 @@
   ; /* Замените на нужный вам цвет */
   opacity: 1; /* Убедитесь, что непрозрачность установлена в 1 для полного цвета */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
