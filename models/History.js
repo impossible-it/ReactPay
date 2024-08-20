@@ -1,31 +1,27 @@
-// models/History.js
 const mongoose = require('mongoose');
 
 const HistorySchema = new mongoose.Schema({
-  trade: {
-    type: String,
-    required: true
-  },
-  cardNumber: {
-    type: String,
-    required: true
-  },
-  amount: {
-    type: Number,
-    required: true
-  },
-  status: {
-    type: String,
-    required: true
-  },
-  userId: {
-    type: String,
-    required: true
-  },
-  date: {
-    type: Date,
-    default: Date.now
-  }
+    trade: {
+        type: Number,
+        required: true
+    },
+    cardNumber: {
+        type: String,
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    rate: {
+        type: String,
+        required: true
+    },
+    userId: {  // Добавляем поле userId
+        type: mongoose.Schema.Types.ObjectId, // предполагается, что это ссылка на пользователя
+        ref: 'User',
+        required: false
+    }
 });
 
 module.exports = mongoose.model('History', HistorySchema);

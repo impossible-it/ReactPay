@@ -28,7 +28,7 @@ const History = ({ userId }) => {
       <div className="bg-gradient-to-r from-purple-900 to-blue-400 p-6 rounded-lg shadow-md mb-6 flex flex-col md:flex-row justify-between items-center text-white">
         <div className="mb-4 md:mb-0 text-center md:text-left">
           <h2 className="text-3xl font-bold">Баланс</h2>
-          <p className="text-4xl font-semibold mt-2">5000 UAH</p>
+          <p className="text-4xl font-semibold mt-2">{} UAH</p>
         </div>
         <div className="flex flex-col md:flex-row items-center">
           <input

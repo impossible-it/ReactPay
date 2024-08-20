@@ -9,7 +9,7 @@ import contactImage from '../components/img/contact.png';
 import aboutusImage from '../components/img/aboutus.png';
 import defenseImage from '../components/img/defens.png';
 
-const Header = ({ isAuthenticated, setIsAuthenticated }) => {
+const HeaderEng = ({ isAuthenticated, setIsAuthenticated }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const menuRef = useRef(null);
@@ -125,16 +125,16 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
             {isAuthenticated ? (
               <>
                 <button
-                  onClick={NavigateHistory}
+                  // onClick={NavigateHistory}
                   className="text-gray-600 hover:text-gray-900 px-3 py-2"
                 >
-                  История
+                  History
                 </button>
                 <button
                   onClick={handleLogout}
                   className="text-gray-600 hover:text-gray-900 px-3 py-2"
                 >
-                  Выйти
+                  Logout
                 </button>
               </>
             ) : (
@@ -143,13 +143,13 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   onClick={NavigateRegister}
                   className="text-gray-600 hover:text-gray-900 px-3 py-2"
                 >
-                  Зарегистрироваться
+                  Register
                 </button>
                 <button
                   onClick={NavigateLogin}
                   className="text-gray-600 hover:text-gray-900 px-3 py-2"
                 >
-                  Войти
+                  Login
                 </button>
               </>
             )}
@@ -172,26 +172,26 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
             {
               img: transferImage,
               alt: 'Translation',
-              text: 'Переводы',
-              path: '/transfer',
+              text: 'Transfers',
+              path: '/transfereng',
             },
             {
               img: aboutusImage,
               alt: 'About Us',
-              text: 'О нас',
-              path: '/abouts',
+              text: 'About Us',
+              path: '/abouteng',
             },
             {
               img: defenseImage,
-              alt: 'Protection',
-              text: 'Защита данных',
-              path: '/securityinfo',
+              alt: 'Data Protection',
+              text: 'Data Protection',
+              path: '/securityinfoeng',
             },
             {
               img: contactImage,
               alt: 'Contacts',
-              text: 'Контакты',
-              path: '/contacts',
+              text: 'Contacts',
+              path: '/contactseng',
             },
           ].map((block, index) => (
             <div
@@ -214,4 +214,4 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
   );
 };
 
-export default Header;
+export default HeaderEng;

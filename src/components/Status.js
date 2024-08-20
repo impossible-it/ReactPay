@@ -1,28 +1,78 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 import { checkTradeStatus } from '../utils/api';
 import logo from './img/logo.jpg';
-import envelopeIcon from './img/envelope.svg';
 import successIcon from './img/succes.png';
 import failIcon from './img/fail.png';
 import stillIcon from './img/still.png';
 import telegram from './img/telegram.png';
 import print from './img/print.png';
-import dowload from './img/download.png';
+import download from './img/download.png';
 import './styles.css';
 
-const Status = ({ order }) => {
-  const [loadingProp, setLoadingProp] = useState(0);
+const Status = () => {
+  const location = useLocation();
+  const { order, userId } = location.state || {};
+  
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [historyData, setHistoryData] = useState({});
+  const [operationId, setOperationId] = useState(() => {
+    const savedOperationId = localStorage.getItem('operationId');
+    return savedOperationId || generateRandomId();
+  });
   const [timeLeft, setTimeLeft] = useState(() => {
     const savedTime = localStorage.getItem('timeLeft');
-    return savedTime ? parseInt(savedTime, 10) : 30 * 60; // 30 минут в секундах
+    return savedTime ? parseInt(savedTime, 10) : 30 * 60;
   });
+
+  const generateRandomId = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < 3; i++) {
+      result += `${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}`;
+      if (i < 2) result += '-';
+    }
+    return result;
+  };
+
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/form/${location.state.id}`);
+        setFormData(response.data);
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+        setError('Error fetching form data');
+      }
+    };
+
+    if (location.state && location.state.id) {
+      fetchFormData();
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    const fetchHistoryData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/history/${userId}`);
+        setHistoryData(response.data);
+      } catch (error) {
+        setError('Error fetching history data');
+      }
+    };
+
+    if (userId) {
+      fetchHistoryData();
+    }
+  }, [userId]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoadingProp(1);
         const data = await checkTradeStatus(order);
         if (data && data.length > 0) {
           const obj = data[0];
@@ -33,7 +83,6 @@ const Status = ({ order }) => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        setLoadingProp(0);
       }
     };
 
@@ -45,6 +94,16 @@ const Status = ({ order }) => {
 
     return () => clearInterval(intervalId);
   }, [order]);
+
+  useEffect(() => {
+    console.log('location.state:', location.state); // Вывод в консоль для проверки
+  }, [location.state]);
+
+  useEffect(() => {
+    if (!localStorage.getItem('operationId')) {
+      localStorage.setItem('operationId', operationId);
+    }
+  }, [operationId]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -62,7 +121,7 @@ const Status = ({ order }) => {
       const circle = document.querySelector('.circle');
       if (circle) {
         circle.classList.remove('animate-gradient');
-        void circle.offsetWidth; // Triggers reflow
+        void circle.offsetWidth; 
         circle.classList.add('animate-gradient');
       }
     }, 2000);
@@ -75,14 +134,14 @@ const Status = ({ order }) => {
     return `${minutes}:${seconds}`;
   };
 
-  const generateRandomId = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let result = '';
-    for (let i = 0; i < 3; i++) {
-      result += `${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}`;
-      if (i < 2) result += '-';
+  const renderStatusText = () => {
+    if (message === 'still processing') {
+      return <p className="text-sm font-bold ml-4 text-blueth">...</p>;
+    } else if (message === 'fully paid') {
+      return  <p className="text-sm font-bold ml-4 text-blueth">Успешно</p>;    
+    } else {
+        return  <p className="text-sm font-bold ml-4 text-red-400">Не подтвержден</p>;    
     }
-    return result;
   };
 
   const renderStatusIcon = () => {
@@ -98,19 +157,18 @@ const Status = ({ order }) => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">
-        <div className="w-full bg-white p-8 rounded-lg mb-16 mt-8">
+        <div className="w-full bg-white p-8 rounded-lg md:mb-16 mb-0 mt-8">
           <div className="text-center mb-8">
             <p className="text-sm text-gray-600 mb-4">Ожидание подтверждения</p>
             <div className="relative flex justify-center items-center">
               <svg className="w-24 h-24" viewBox="0 0 100 100">
                 <defs>
-                  <linearGradient id="static-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <linearGradient id="static-gradient" x1="0%" y1="0%" x2="100%">
                     <stop offset="0%" style={{ stopColor: 'rgba(6, 155, 231, 1)', stopOpacity: 1 }} />
-                    
                     <stop offset="70%" style={{ stopColor: 'rgba(48, 12, 96, 0.8)', stopOpacity: 1 }} />
                     <stop offset="100%" style={{ stopColor: 'rgba(6, 155, 231, 1)', stopOpacity: 1 }} />
                   </linearGradient>
-                  <linearGradient id="animated-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <linearGradient id="animated-gradient" x1="0%" y1="0%" x2="100%">
                     <stop offset="0%" style={{ stopColor: 'rgba(6, 155, 231, 1)', stopOpacity: 0.4 }} />
                     <stop offset="50%" style={{ stopColor: 'rgba(48, 12, 96, 1)', stopOpacity: 0.4 }} />
                     <stop offset="100%" style={{ stopColor: 'rgba(48, 12, 96, 1)', stopOpacity: 0.4 }} />
@@ -149,7 +207,7 @@ const Status = ({ order }) => {
                 <p className="text-sm text-grayth mr-4">Заявка №</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{order || 'Ошибка'}</p>
+                <p className="text-sm font-bold ml-4">{ order || 'Ошибка'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -157,7 +215,7 @@ const Status = ({ order }) => {
                 <p className="text-sm text-grayth mr-4">Сумма транзакции</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">10 000</p>
+                <p className="text-sm font-bold ml-4">{historyData.amount || 'Ошибка'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -165,7 +223,7 @@ const Status = ({ order }) => {
                 <p className="text-sm text-grayth mr-4">Имя Фамилия отправителя</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">Иван Иванов</p>
+                <p className="text-sm font-bold ml-4">{formData.name }</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -173,7 +231,7 @@ const Status = ({ order }) => {
                 <p className="text-sm text-grayth mr-4">Номер телефона отправителя</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">+7 234 56758 0</p>
+                <p className="text-sm font-bold ml-4">{formData.phoneNumber }</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -181,7 +239,7 @@ const Status = ({ order }) => {
                 <p className="text-sm text-grayth mr-4">Банк-исполнитель</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">ПАО "Альфа Банк"</p>
+                <p className="text-sm font-bold ml-4">{historyData.cardNumber || 'Ошибка'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -189,7 +247,7 @@ const Status = ({ order }) => {
                 <p className="text-sm text-grayth mr-4">Идентификатор операции</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{generateRandomId()}</p>
+                <p className="text-sm font-bold ml-4">{operationId}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -197,39 +255,39 @@ const Status = ({ order }) => {
                 <p className="text-sm text-grayth mr-4">Статус</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{message === 'still processing' ? 'Ожидание подтверждения' : 'Ошибка'}</p>
+                {renderStatusText()}
               </div>
             </div>
             <div className="flex justify-between items-center">
-              <div className="w-1/2 text-right">
-              </div>
+              <div className="w-1/2 text-right"></div>
               <div className="w-1/2 text-left ml-8">
                 {renderStatusIcon()}
               </div>
             </div>
           </div>
         </div>
-        <div className="flex space-x-4 pb-8">
-          <button className="bg-purple-950 text-white py-2 px-4 rounded-lg flex justify-between  items-center hover:bg-purple-700" style={{ width: '186px', height: '50px' }}>
+        <div className="flex md:flex-row flex-col space-y-8 md:space-x-4 pb-8">
+          <button className="bg-purple-950 text-white py-2 md:mt-8 mt-0 md:px-4 px-6 rounded-lg flex justify-between items-center hover:bg-purple-700 md:w-[186px] w-[230px] h-[50px]">
             <span className="m-2">Отправить</span>
             <img src={telegram} alt="Отправить" className="w-5 h-5" />
           </button>
-          <button className="bg-purple-950 text-white py-2 px-4 rounded-lg flex  justify-between items-center hover:bg-purple-700" style={{ width: '186px', height: '50px' }}>
+          <button className="bg-purple-950 text-white py-2 md:px-4 px-6 rounded-lg flex justify-between items-center hover:bg-purple-700 md:w-[186px] w-[230px] h-[50px]">
             <span className="m-2">Распечатать</span>
             <img src={print} alt="Распечатать" className="w-5 h-5" />
           </button>
-          <button className="bg-purple-950 text-white py-2 px-4 rounded-lg flex  justify-between items-center hover:bg-purple-700" style={{ width: '186px', height: '50px' }}>
+          <button className="bg-purple-950 text-white py-2 md:px-4 px-6 rounded-lg flex justify-between items-center hover:bg-purple-700 md:w-[186px] w-[230px] h-[50px]">
             <span className="m-2">Скачать PDF</span>
-            <img src={dowload} alt="Скачать PDF" className="w-5 h-5" />
+            <img src={download} alt="Скачать PDF" className="w-5 h-5" />
           </button>
         </div>
-        <div className="text-center mt-4" style={{ maxWidth: '470px', width: '470px' }}>
+        <div className="text-center mt-4 md:w-[470px] w-[300px]">
           <p className="text-sm text-gray-500">
-            В случае ошибки или неправильного ввода информации, а так же при статусе 'Закрыта' в случае если Вы осуществили перевод <a href="#" className="text-blueth">обратитесь в службу поддержки</a>
+            В случае ошибки или неправильного ввода информации, а так же при статусе 'Закрыта' в случае если Вы осуществили перевод{' '}
+            <a href="#" className="text-blueth">
+              обратитесь в службу поддержки
+            </a>
           </p>
-           <p className="text-sm text-gray-500 mt-4">
-           Все данные защищены
-          </p>
+          <p className="text-sm text-gray-500 mt-4">Все данные защищены</p>
         </div>
       </div>
     </div>
