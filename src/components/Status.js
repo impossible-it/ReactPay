@@ -15,14 +15,12 @@ const Status = () => {
   const location = useLocation();
   const { order, userId } = location.state || {};
   
-  const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({});
   const [historyData, setHistoryData] = useState({});
   const [operationId, setOperationId] = useState(() => {
     const savedOperationId = localStorage.getItem('operationId') || generateRandomId() ;
-    return  generateRandomId();
+    return  savedOperationId;
   });
   const [timeLeft, setTimeLeft] = useState(() => {
     const savedTime = localStorage.getItem('timeLeft');

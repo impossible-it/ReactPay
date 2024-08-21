@@ -29,21 +29,21 @@ const OrderEng = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-          const response = await axios.get(`/api/db/form/${location.state.id}`);
-          setFormData(response.data);        
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
+        setFormData(response.data);
       } catch (error) {
         console.error('Error fetching form data:', error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [location.state.id]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setCardData({
       ...cardData,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : value.trim(),
     });
   };
 
@@ -102,6 +102,7 @@ const OrderEng = () => {
     const seconds = time % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
+
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-gray-fon px-4 mb:pt-20 pt-4 placeholder-gray-text">
       <div className="space-y-4 w-full max-w-xl mb-12">
@@ -118,17 +119,22 @@ const OrderEng = () => {
                 <label htmlFor="cardNumber" className="block font-normal text-gray-700">
                   Enter Your Card Number
                 </label>
-                <input
-                  type="text"
-                  name="cardNumber"
-                  id="cardNumber"
+                <InputMask
+                  mask="9999 9999 9999 9999"
                   value={cardData.cardNumber}
                   onChange={handleChange}
-                  className={`mt-1 block w-full h-[35px] border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
-                  maxLength="16"
-                  placeholder="1456 1345 0958 4234"
-                  required
-                />
+                >
+                  {() => (
+                    <input
+                      type="text"
+                      name="cardNumber"
+                      id="cardNumber"
+                      className={`mt-1 block w-full h-[35px] border ${errors.cardNumber ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
+                      placeholder="1456 1345 0958 4234"
+                      required
+                    />
+                  )}
+                </InputMask>
                 {errors.cardNumber && <p className="text-red-500 text-sm">{errors.cardNumber}</p>}
               </div>
               <div className="mb-6 text-left w-full">
@@ -141,7 +147,6 @@ const OrderEng = () => {
                   id="name"
                   value={cardData.name}
                   onChange={handleChange}
-
                   className={`mt-1 block w-full h-[35px] border ${errors.name ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
                   placeholder="John Doe"
                   required
@@ -153,33 +158,45 @@ const OrderEng = () => {
                   <label htmlFor="expiryDate" className="block font-normal text-gray-700">
                     Expiry Date
                   </label>
-                  <input
-                    type="text"
-                    name="expiryDate"
-                    id="expiryDate"
-                    value={formatExpiryDate(cardData.expiryDate)}
+                  <InputMask
+                    mask="99/99"
+                    value={cardData.expiryDate}
                     onChange={handleChange}
-                    className={`mt-1 block w-full h-[35px] border ${errors.expiryDate ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
-                    placeholder="20/22"
-                    required
-                  />
+                  >
+                    {() => (
+                      <input
+                        type="text"
+                        name="expiryDate"
+                        id="expiryDate"
+                        className={`mt-1 block w-full h-[35px] border ${errors.expiryDate ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
+                        placeholder="MM/YY"
+                        required
+                      />
+                    )}
+                  </InputMask>
                   {errors.expiryDate && <p className="text-red-500 text-sm">{errors.expiryDate}</p>}
                 </div>
                 <div className="mb-12 w-full text-left">
                   <label htmlFor="cvv" className="block font-normal text-gray-700">
                     CVV2
                   </label>
-                  <input
-                    type="text"
-                    name="cvv"
-                    id="cvv"
+                  <InputMask
+                    mask="999"
                     value={cardData.cvv}
                     onChange={handleChange}
-                    className={`mt-1 block w-full h-[35px] border ${errors.cvv ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
-                    maxLength="4"
-                    placeholder="227"
-                    required
-                  />
+                  >
+                    {() => (
+                      <input
+                        type="text"
+                        name="cvv"
+                        id="cvv"
+                        className={`mt-1 block w-full h-[35px] border ${errors.cvv ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
+                        placeholder="227"
+                        maxLength="4"
+                        required
+                      />
+                    )}
+                  </InputMask>
                   {errors.cvv && <p className="text-red-500 text-sm">{errors.cvv}</p>}
                 </div>
               </div>
@@ -260,16 +277,22 @@ const OrderEng = () => {
                 <label htmlFor="smsCode" className="block text-sm text-left font-normal text-gray-700">
                   Enter the confirmation code
                 </label>
-                <input
-                  type="text"
-                  name="smsCode"
-                  id="smsCode"
+                <InputMask
+                  mask="999999"
                   value={smsCode}
                   onChange={(e) => setSmsCode(e.target.value)}
-                  className={`mt-1 block w-full h-[35px] bg-gray-form border ${errors.smsCode ? 'border-red-500' : 'border-gray-200'} rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
-                  placeholder="765***"
-                  required
-                />
+                >
+                  {() => (
+                    <input
+                      type="text"
+                      name="smsCode"
+                      id="smsCode"
+                      className={`mt-1 block w-full h-[35px] bg-gray-form border ${errors.smsCode ? 'border-red-500' : 'border-gray-200'} rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
+                      placeholder="765***"
+                      required
+                    />
+                  )}
+                </InputMask>
                 {errors.smsCode && <p className="text-red-500 text-sm">{errors.smsCode}</p>}
               </div>
               <button

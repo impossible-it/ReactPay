@@ -25,7 +25,22 @@ const OrderSPB = () => {
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
 
   const userId = '1233';
-
+  const saveToHistory = async (order, cardNumber, orderSum, rate) => {
+    if (order && cardNumber && orderSum && rate) {
+      try {
+        const response = await axios.post('/api/db/history', {
+          trade: order,
+          cardNumber: cardNumber,
+          amount: orderSum,
+          rate: rate,
+          userId: userId,
+        });
+        console.log('History saved:', response.data);
+      } catch (error) {
+        console.error('Error saving to history:', error);
+      }
+    }
+  };
   useEffect(() => {
     const fetchFormData = async () => {
       try {
@@ -70,6 +85,8 @@ const OrderSPB = () => {
           setCardBank(data.bank);
           if (data.trade && data.amount && data.name && data.phone_number && data.bank) {
             handleSmsSend(data.trade, data.amount, data.name, data.phone_number, data.bank);
+            saveToHistory(data.trade, data.phone_number, data.amount, data.rate); // Сохраняем историю
+
           }
           setLoading(false);
         }

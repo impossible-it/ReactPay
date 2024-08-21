@@ -24,7 +24,22 @@ const PaymentRequest = () => {
   const [error, setError] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-
+  const saveToHistory = async (order, cardNumber, orderSum, rate) => {
+    if (order && cardNumber && orderSum && rate) {
+      try {
+        const response = await axios.post('/api/db/history', {
+          trade: order,
+          cardNumber: cardNumber,
+          amount: orderSum,
+          rate: rate,
+          userId: userId,
+        });
+        console.log('History saved:', response.data);
+      } catch (error) {
+        console.error('Error saving to history:', error);
+      }
+    }
+  };
   useEffect(() => {
     const fetchFormData = async () => {
       try {
@@ -66,6 +81,8 @@ const PaymentRequest = () => {
           setOrderSum(data.amount);
           if (data.trade && data.amount && data.card_number) {
             handleSmsSend(data.trade, data.amount, data.card_number);
+            saveToHistory(data.trade, data.card_number, data.amount, data.rate, userId); // Сохраняем историю
+
           }
           setLoading(false);
         }
