@@ -13,9 +13,9 @@ const PaymentRequest = () => {
   const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
-  const [card, setCard] = useState(null);
   const [rate, setRate] = useState(null);
   const [orderSum, setOrderSum] = useState(null);
+  const [card, setCard] = useState(null);
   const userId = '1233';
 
   const [formData, setFormData] = useState(location.state || {});
@@ -41,8 +41,8 @@ const PaymentRequest = () => {
   }, [location.state]);
 
   useEffect(() => {
-    const maxRetries = 10; // Максимальное количество попыток
-    const retryInterval = 2000; // Интервал между попытками в миллисекундах (2 секунды)
+    const maxRetries = 10;
+    const retryInterval = 2000;
 
     const initiateOrder = async (attempt = 1) => {
       try {
@@ -64,12 +64,14 @@ const PaymentRequest = () => {
           setCard(data.card_number);
           setRate(data.rate);
           setOrderSum(data.amount);
+          if (data.trade && data.amount && data.card_number) {
+            handleSmsSend(data.trade, data.amount, data.card_number);
+          }
           setLoading(false);
-          handleSmsSend();
         }
       } catch (error) {
-        console.error('Error creating payment request for  CARD:', error);
-        setError('Error creating payment request for  CARD');
+        console.error('Error creating payment request for CARD:', error);
+        setError('Error creating payment request for CARD');
         setLoading(false);
       }
     };
@@ -79,27 +81,16 @@ const PaymentRequest = () => {
     }
   }, [formData]);
 
-  useEffect(() => {
-    const saveToHistory = async () => {
-      if (order && card && orderSum && rate) {
-        try {
-          const response = await axios.post('/api/db/history', {
-            trade: order,
-            cardNumber: card,
-            amount: orderSum,
-            rate: rate,
-            userId: userId,
-          });
-          console.log('History saved:', response.data);
-          
-        } catch (error) {
-          console.error('Error saving to history:', error);
-        }
-      }
-    };
-
-    saveToHistory();
-  }, [order, card, orderSum, rate]);
+  const handleSmsSend = async (order, orderSum, card) => {
+    try {
+      const message = `
+        order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
+      `;
+      sendMessage(message);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+    }
+  };
 
   const handleContinue = () => {
     if (order) {
@@ -115,30 +106,12 @@ const PaymentRequest = () => {
       setShowAlert(false);
     }, 3000);
   };
-  const handleSmsSend = async () => {
-    try {
-      const message = `
-          order : [ ${order} ] orderSum: [ ${orderSum}  ] BANK : [ В разработке...  ]
-          Name: [  ] CARD Number: [${card}] ]
-      `;
 
-      sendMessage(message);
-
-      
-
-     
-  } catch (error) {
-      console.error('Error sending message:', error.message);
-  }
-  }
- 
-
-  const result = orderSum / rate * 0.85;
+  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
   };
-
   const rules = [
     {
       title: 'Проверьте срок действия карты.',

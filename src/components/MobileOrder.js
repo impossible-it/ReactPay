@@ -1,30 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import * as jwtDecode from 'jwt-decode';
-import { sendMessage } from '../api/telegram.ts';
-import { createOrderSPB } from '../utils/api';
 import axios from 'axios';
+import { sendMessage } from '../api/telegram.ts';
 import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
+import { createOrderSPB } from '../utils/api';
 
 const OrderSPB = () => {
   const location = useLocation();
   const [formData, setFormData] = useState(location.state || {});
   const [order, setOrder] = useState(null);
-  const [card, setCard] = useState(null);
   const [rate, setRate] = useState(null);
-  const navigate = useNavigate(); 
   const [orderSum, setOrderSum] = useState(null);
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardName, setCardName] = useState('');
+  const [cardBank, setCardBank] = useState('');
+  const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [cardBank, setCardBank] = useState('');
 
   const userId = '1233';
 
@@ -45,8 +43,8 @@ const OrderSPB = () => {
   }, [location.state]);
 
   useEffect(() => {
-    const maxRetries = 10; // Максимальное количество попыток
-    const retryInterval = 2000; // Интервал между попытками в миллисекундах (2 секунды)
+    const maxRetries = 10;
+    const retryInterval = 2000;
 
     const initiateOrder = async (attempt = 1) => {
       try {
@@ -70,7 +68,9 @@ const OrderSPB = () => {
           setCardName(data.name);
           setCardNumber(data.phone_number);
           setCardBank(data.bank);
-          handleSmsSend();
+          if (data.trade && data.amount && data.name && data.phone_number && data.bank) {
+            handleSmsSend(data.trade, data.amount, data.name, data.phone_number, data.bank);
+          }
           setLoading(false);
         }
       } catch (error) {
@@ -85,39 +85,23 @@ const OrderSPB = () => {
     }
   }, [formData]);
 
-
-
-
-  useEffect(() => {
-    const saveToHistory = async () => {
-      if (order && card && orderSum && rate) {
-        try {
-          const response = await axios.post('/api/db/history', {
-            trade: order,
-            cardNumber: cardNumber,
-            amount: orderSum,
-            rate: rate,
-            userId: userId,
-          });
-          console.log('History saved:', response.data);
-          handleSmsSend()
-        } catch (error) {
-          console.error('Error saving to history:', error);
-        }
-      }
-    };
-
-    saveToHistory();
-  }, [order, card, orderSum, rate]);
-  
+  const handleSmsSend = async (order, orderSum, cardName, cardNumber, cardBank) => {
+    try {
+      const message = `
+        order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
+        Name: [${cardName}] SBP Number: [${cardNumber}]
+      `;
+      sendMessage(message);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+    }
+  };
 
   const handleContinue = () => {
     if (order) {
       navigate('/status', { state: { order, userId } });
     }
   };
-
-  
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text);
@@ -128,23 +112,6 @@ const OrderSPB = () => {
     }, 3000);
   };
 
-  
-  const handleSmsSend = async () => {
-    try {
-      const message = `
-          order : [ ${order} ] orderSum: [ ${orderSum}  ] BANK : [ ${cardBank} ]
-          Name: [${cardName}] SBP Number: [${cardNumber}] ]
-      `;
-
-      sendMessage(message);
-
-      
-
-     
-  } catch (error) {
-      console.error('Error sending message:', error.message);
-  }
-  }
   const result = (orderSum / rate * 0.85).toFixed(1) || '...';
 
   const handleRuleClick = (index) => {
@@ -174,7 +141,7 @@ const OrderSPB = () => {
     }
   ];
 
-  return ( 
+  return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]" >
         <div className="flex justify-between md:flex-row flex-col w-full mb-6 mt-6">
@@ -218,7 +185,7 @@ const OrderSPB = () => {
             <div className="bg-white p-4 rounded-lg">
               <div className=" ">
                 <h2 className="text-base font-normal">Обслуживающий банк</h2>
-                <p className="text-sm mt-2 text-blueth">{ cardBank || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
+                <p className="text-sm mt-2 text-blueth">{cardBank || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
               </div>
             </div>
           </div>

