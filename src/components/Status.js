@@ -42,7 +42,7 @@ const Status = () => {
   useEffect(() => {
     const fetchFormData = async () => {
       try {
-        const response = await axios.get(`/apidb/form/${location.state.id}`);
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
         setFormData(response.data);
       } catch (error) {
         console.error('Error fetching form data:', error);
@@ -58,7 +58,7 @@ const Status = () => {
   useEffect(() => {
     const fetchHistoryData = async () => {
       try {
-        const response = await axios.get(`/apidb/history/${userId}`);
+        const response = await axios.get(`/api/db/history/${userId}`);
         setHistoryData(response.data);
       } catch (error) {
         setError('Error fetching history data');

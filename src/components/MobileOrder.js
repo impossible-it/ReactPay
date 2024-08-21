@@ -29,7 +29,7 @@ const OrderSPB = () => {
   useEffect(() => {
     const fetchFormData = async () => {
       try {
-        const response = await axios.get(`/apidb/form/${location.state.id}`);
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
         setFormData(response.data);
       } catch (error) {
         console.error('Error fetching form data:', error);
@@ -90,7 +90,7 @@ const OrderSPB = () => {
     const saveToHistory = async () => {
       if (order && card && orderSum && rate) {
         try {
-          const response = await axios.post('/apidb/history', {
+          const response = await axios.post('/api/db/history', {
             trade: order,
             cardNumber: card,
             amount: orderSum,

@@ -28,7 +28,7 @@ const OrderEng = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-          const response = await axios.get(`/apidb/form/${location.state.id}`);
+          const response = await axios.get(`/api/db/form/${location.state.id}`);
           setFormData(response.data);        
       } catch (error) {
         console.error('Error fetching form data:', error);

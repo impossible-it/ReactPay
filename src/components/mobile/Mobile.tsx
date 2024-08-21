@@ -52,12 +52,20 @@ const MobileInfo: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-fon p-4">
       <div className="container mx-auto p-4">
-        <div className="flex flex-col items-center mb-6">
+        
+
+        <div className="relative flex flex-col items-center">
+            
+          
+
+          <div className="get-in-touch hidden">
+            
+            <form className="w-full max-w-md mx-auto p-4 rounded-lg bg-white shadow-lg" onSubmit={handleSubmit(submit, error)}>
+              <div className="mb-4">
+              <div className="flex flex-col items-center mb-6">
           <h1 className="text-2xl font-bold mb-4 text-center text-grayth">КП Сервис</h1>
           <p className="text-center text-grayth">Тыкни в кота</p>
         </div>
-
-        <div className="relative flex flex-col items-center">
           <div onClick={clickCat} className="cat_container cursor-pointer">
             <div className="cat">
               <div className="cat">
@@ -102,20 +110,17 @@ const MobileInfo: React.FC = () => {
                                 </div>
                             </div>
                     </div>
+                    
           </div>
-
           <div className="get-in-result hidden text-center">
             <p className="text-lg font-bold text-blueth">+7{clientMobile}</p>
             <h1 className="text-2xl font-bold text-blueth">{mobileResult}</h1>
           </div>
-
-          <div className="get-in-touch hidden">
-            <form className="w-full max-w-md mx-auto p-4 rounded-lg bg-white shadow-lg" onSubmit={handleSubmit(submit, error)}>
-              <div className="mb-4">
-                <label htmlFor="phone" className="block text-sm font-normal text-gray-700">Номер телефона</label>
+                <label htmlFor="phone" className="block text-sm font-normal text-gray-700 mb-1">Номер телефона</label>
+                
                 <input
                   id="phone"
-                  className="block w-full border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none"
+                  className="block w-[99%] h-[35px] border bg-gray-form border-gray-200 mb-8 rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none"
                   type="text"
                   {...register('mobilenum', {
                     required: 'Номер телефона обязателен',
@@ -123,12 +128,15 @@ const MobileInfo: React.FC = () => {
                   })}
                   aria-invalid={errors.mobilenum ? 'true' : 'false'}
                 />
+                
                 {errors.mobilenum && <p className="text-red-500 text-sm mt-2">{errors.mobilenum.message}</p>}
               </div>
-
-              <button type="submit" className="w-full py-2 px-4 bg-grayth text-white font-bold rounded-lg hover:bg-purple-950">
+                    <div className='flex flex-row justify-center  '>
+                    <button type="submit" className="w-[60%] py-2 px-4 bg-grayth text-white font-bold rounded-lg hover:bg-purple-950">
                 Отправить
               </button>
+                    </div>
+             
             </form>
           </div>
         </div>

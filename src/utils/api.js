@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_API_URL = '/api/auto/get_card/client/284278/amount';
-const BASE_API_SBP = '/api/auto/get_card/client/399635/amount';
+const BASE_API_URL = '/api/external/auto/get_card/client/284278/amount';
+const BASE_API_SBP = '/api/external/auto/get_card/client/399635/amount';
 
 export const createOrder = async (amount) => {
   try {
@@ -25,7 +25,7 @@ export const createOrderSPB = async (amount) => {
 
 export const checkTradeStatus = async (order) => {
   try {
-    const response = await axios.get(`/api/check_trade/trade/${order}`, {
+    const response = await axios.get(`/api/external/check_trade/trade/${order}`, {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
