@@ -140,7 +140,8 @@ const OrderEng = () => {
                   name="name"
                   id="name"
                   value={cardData.name}
-                  
+                  onChange={handleChange}
+
                   className={`mt-1 block w-full h-[35px] border ${errors.name ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
                   placeholder="John Doe"
                   required
