@@ -32,7 +32,7 @@ const Status = () => {
       try {
         const formId = localStorage.getItem('formId'); // Получаем ID формы из localStorage
         if (formId) {
-          const response = await axios.get(`http://localhost:3000/api/form/${formId}`);
+          const response = await axios.get(`/apidb/form/${formId}`);
           setFormData(response.data);
         } else {
           console.error('Form ID not found in localStorage');

@@ -12,7 +12,7 @@ const History = ({ userId }) => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/history/${userId}`);
+        const response = await axios.get(`/apidb/history/${userId}`);
         setHistory(response.data);
       } catch (error) {
         console.error('Error fetching history:', error);

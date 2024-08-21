@@ -28,7 +28,7 @@ const CardSelection = () => {
   return (
     <div className="flex items-start justify-center min-h-screen bg-gray-fon px-4">
       <div className="container mx-auto md:p-4 p-8 md:mt-16 mt-0">
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 justify-items-center my-8">
+        <div className="grid grid-cols-1  2xl:grid-cols-3  gap-8 justify-items-center my-8">
           <div
             className={`flex flex-col items-center w-full lg:w-[80%] md:w-[70%] bg-white p-8 rounded-lg ${selectedCard === 'card1' ? 'shadow-md bg-grayth' : ''} border-0 cursor-pointer transition transform hover:scale-105 ${selectedCard === 'card1' ? 'hover:shadow-2xl' : 'hover:shadow-lg'}`}
             onClick={() => handleCardSelect('card1')}

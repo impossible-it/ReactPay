@@ -15,7 +15,7 @@ export const createOrder = async (amount) => {
 
 export const createOrderSPB = async (amount) => {
   try {
-    const response = await axios.get(`${BASE_API_SBP}/${amount}/currency/RUB/niche/kot/bank/sbp`);
+    const response = await axios.get(`${BASE_API_SBP}/${amount}/currency/RUB/niche/auto/bank/sbp`);
     return response.data[0];
   } catch (error) {
     console.error('Error creating payment request for SPB:', error);

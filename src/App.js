@@ -12,6 +12,7 @@ import Order from './components/Order.js';
 import MobileOrder from './components/MobileOrder.js';
 import EkvarOrder from './components/EkvarOrder.js';
 import Status from './components/Status.js';
+import MobileKot from './components/mobile/Mobile.tsx';
 
 import Form from './components/Form.js';
 import SimpleForm from './components/SimpleForm.js';
@@ -61,6 +62,7 @@ const App = () => {
         <Route path='/about' element={<About />} />
         <Route path='/contacts' element={<Contacts />} />
         <Route path='/data-protection' element={<DataProtection />} />
+        <Route path='/mobilekot' element={<MobileKot />} />
 
         <Route path='/transfereng' element={<TransferEng />} />
         <Route path='/orderothereng' element={<EkvarOrderEng amount={amount} />} />

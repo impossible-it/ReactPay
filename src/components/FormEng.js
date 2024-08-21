@@ -86,7 +86,7 @@ const Form = () => {
     e.preventDefault();
     if (Object.keys(errors).length === 0) {
       try {
-        const response = await axios.post('http://localhost:3000/api/form', formData);
+        const response = await axios.post('/apidb/form', formData);
         const { cardChoice } = formData;
         
         // Сохраняем ID формы в localStorage

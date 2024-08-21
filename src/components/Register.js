@@ -11,8 +11,8 @@ const Register = () => {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/register', { name, email, password });
-      console.log(res.data); // Отримайтhttp://localhost:3000е токен чи повідомлення про успіх
+      const res = await axios.post('/apidb/auth/register', { name, email, password });
+      console.log(res.data); 
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
       setError(err.response ? err.response.data.msg : err.message);
