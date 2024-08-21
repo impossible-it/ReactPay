@@ -116,7 +116,7 @@ const OrderSPB = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/status', { state: { order, userId } });
+      navigate('/status', { state: { order } });
     }
   };
 

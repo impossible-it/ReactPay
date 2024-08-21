@@ -14,19 +14,14 @@ import './styles.css';
 const Status = () => {
   const location = useLocation();
   const { order, userId } = location.state || {};
-  
+
+  // Initialize states
+  const [error, setError] = useState(null);
+  const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
   const [formData, setFormData] = useState({});
   const [historyData, setHistoryData] = useState({});
-  const [operationId, setOperationId] = useState(() => {
-    const savedOperationId = localStorage.getItem('operationId') || generateRandomId() ;
-    return  savedOperationId;
-  });
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const savedTime = localStorage.getItem('timeLeft');
-    return savedTime ? parseInt(savedTime, 10) : 30 * 60;
-  });
-
+  
   const generateRandomId = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
@@ -37,71 +32,75 @@ const Status = () => {
     return result;
   };
 
+  const [operationId, setOperationId] = useState(() => {
+    let savedOperationId = localStorage.getItem('operationId');
+    if (!savedOperationId) {
+      savedOperationId = generateRandomId();
+      localStorage.setItem('operationId', savedOperationId);
+    }
+    return savedOperationId;
+  });
+
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const savedTime = localStorage.getItem('timeLeft');
+    return savedTime ? parseInt(savedTime, 10) : 30 * 60;
+  });
+
   useEffect(() => {
     const fetchFormData = async () => {
-      try {
-        const response = await axios.get(`/api/db/form/${location.state.id}`);
-        setFormData(response.data);
-      } catch (error) {
-        console.error('Error fetching form data:', error);
-        setError('Error fetching form data');
+      if (location.state && location.state.id) {
+        try {
+          const response = await axios.get(`/api/db/form/${location.state.id}`);
+          setFormData(response.data);
+        } catch (error) {
+          console.error('Error fetching form data:', error);
+          setError('Error fetching form data');
+        }
       }
     };
-
-    if (location.state && location.state.id) {
-      fetchFormData();
-    }
+    fetchFormData();
   }, [location.state]);
 
   useEffect(() => {
     const fetchHistoryData = async () => {
-      try {
-        const response = await axios.get(`/api/db/history/${userId}`);
-        setHistoryData(response.data);
-      } catch (error) {
-        setError('Error fetching history data');
+      if (userId) {
+        try {
+          const response = await axios.get(`/api/db/history/${userId}`);
+          setHistoryData(response.data);
+        } catch (error) {
+          setError('Error fetching history data');
+        }
       }
     };
-
-    if (userId) {
-      fetchHistoryData();
-    }
+    fetchHistoryData();
   }, [userId]);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await checkTradeStatus(order);
-        if (data && data.length > 0) {
-          const obj = data[0];
-          setResult(obj.result);
-          setMessage(obj.message);
-          localStorage.setItem('Resultation', obj.result);
-          localStorage.setItem('ResultMessage', obj.message);
+      if (order) {
+        try {
+          const data = await checkTradeStatus(order);
+          if (data && data.length > 0) {
+            const obj = data[0];
+            setResult(obj.result);
+            setMessage(obj.message);
+            localStorage.setItem('Resultation', obj.result);
+            localStorage.setItem('ResultMessage', obj.message);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
 
     const intervalId = setInterval(() => {
       fetchData();
-    }, 15000); // 15 секунд
+    }, 15000);
 
     fetchData();
 
     return () => clearInterval(intervalId);
   }, [order]);
-
-  useEffect(() => {
-    console.log('location.state:', location.state); // Вывод в консоль для проверки
-  }, [location.state]);
-
-  useEffect(() => {
-    if (!localStorage.getItem('operationId')) {
-      localStorage.setItem('operationId', operationId);
-    }
-  }, [operationId]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -136,9 +135,9 @@ const Status = () => {
     if (message === 'still processing') {
       return <p className="text-sm font-bold ml-4 text-blueth">...</p>;
     } else if (message === 'fully paid') {
-      return  <p className="text-sm font-bold ml-4 text-blueth">Успешно</p>;    
+      return <p className="text-sm font-bold ml-4 text-blueth">Успешно</p>;    
     } else {
-        return  <p className="text-sm font-bold ml-4 text-red-400">Не подтвержден</p>;    
+      return <p className="text-sm font-bold ml-4 text-red-400">Не подтвержден</p>;    
     }
   };
 
