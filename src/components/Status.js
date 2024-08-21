@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { checkTradeStatus } from '../utils/api';
+import { checkTradeStatus } from '../utils/api'; // Используем эту функцию для получения статуса
 import logo from './img/logo.jpg';
 import successIcon from './img/succes.png';
 import failIcon from './img/fail.png';
@@ -15,19 +15,18 @@ const Status = () => {
   const location = useLocation();
   const { order, userId } = location.state || {};
 
-  // Initialize states
+  // Инициализация состояний
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
-  const [formData, setFormData] = useState({});
-  const [historyData, setHistoryData] = useState({});
-  
+  const [formData, setFormData] = useState(null); // null, чтобы избежать пустого отображения
+  const [historyData, setHistoryData] = useState(null); // null, чтобы избежать пустого отображения
+
   const generateRandomId = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
     for (let i = 0; i < 3; i++) {
-      result += `${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.floor(Math.random() * characters.length))}`;
-      if (i < 2) result += '-';
+      result += `${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.random() * characters.length)}-${characters.charAt(Math.random() * characters.length)}${characters.charAt(Math.random() * characters.length)}`;
     }
     return result;
   };
@@ -68,6 +67,7 @@ const Status = () => {
           const response = await axios.get(`/api/db/history/${userId}`);
           setHistoryData(response.data);
         } catch (error) {
+          console.error('Error fetching history data:', error);
           setError('Error fetching history data');
         }
       }
@@ -118,7 +118,7 @@ const Status = () => {
       const circle = document.querySelector('.circle');
       if (circle) {
         circle.classList.remove('animate-gradient');
-        void circle.offsetWidth; 
+        void circle.offsetWidth;
         circle.classList.add('animate-gradient');
       }
     }, 2000);
@@ -150,6 +150,9 @@ const Status = () => {
       return <img src={failIcon} alt="Fail" width="24" height="24" />;
     }
   };
+
+  
+
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
