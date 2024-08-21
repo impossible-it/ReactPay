@@ -70,7 +70,7 @@ const OrderSPB = () => {
           setCardName(data.name);
           setCardNumber(data.phone_number);
           setCardBank(data.bank);
-
+          handleSmsSend();
           setLoading(false);
         }
       } catch (error) {
@@ -194,7 +194,7 @@ const OrderSPB = () => {
               <div className='flex justify-between items-center'>
                 <div className=" ">
                   <h2 className="text-base font-normal">Сумма транзакции</h2>
-                  <p className="text-sm mt-2 text-blueth">{orderSum && `RUB` || (error && <p className='text-red-500 font-bold'>Ошибка </p>)}</p>
+                  <p className="text-sm mt-2 text-blueth">{`${orderSum} RUB` || (error && <p className='text-red-500 font-bold'>Ошибка </p>)}</p>
                 </div>
                 <button onClick={() => handleCopy(orderSum || '', 1)} className="text-blue-500"><CopyImage /></button>
               </div>
@@ -218,7 +218,7 @@ const OrderSPB = () => {
             <div className="bg-white p-4 rounded-lg">
               <div className=" ">
                 <h2 className="text-base font-normal">Обслуживающий банк</h2>
-                <p className="text-sm mt-2 text-blueth">{ 'Операционный отдел ЦБР' || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
+                <p className="text-sm mt-2 text-blueth">{ cardBank || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
               </div>
             </div>
           </div>

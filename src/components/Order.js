@@ -65,6 +65,7 @@ const PaymentRequest = () => {
           setRate(data.rate);
           setOrderSum(data.amount);
           setLoading(false);
+          handleSmsSend();
         }
       } catch (error) {
         console.error('Error creating payment request for  CARD:', error);
@@ -90,7 +91,7 @@ const PaymentRequest = () => {
             userId: userId,
           });
           console.log('History saved:', response.data);
-          handleSmsSend();
+          
         } catch (error) {
           console.error('Error saving to history:', error);
         }
