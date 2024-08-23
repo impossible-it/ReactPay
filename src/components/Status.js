@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { checkTradeStatus } from '../utils/api'; // Используем эту функцию для получения статуса
+import { checkTradeStatus } from '../utils/api';
 import logo from './img/logo.jpg';
 import successIcon from './img/succes.png';
 import failIcon from './img/fail.png';
@@ -14,7 +14,7 @@ import './styles.css';
 const Status = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { order, userId } = location.state || {};
+  const { order, id, userId } = location.state || {}; // Получаем данные из location.state
 
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
@@ -22,7 +22,6 @@ const Status = () => {
   const [formData, setFormData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
 
-  // Генерация случайного идентификатора операции
   const generateRandomId = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
@@ -48,81 +47,77 @@ const Status = () => {
 
   // Проверка наличия необходимых параметров
   useEffect(() => {
-    if (!location.state || !location.state.id || !userId) {
+    if (!order || !id || !userId) {
       setError('Invalid parameters');
       return;
     }
-  }, [location.state, userId]);
+  }, [order, id, userId]);
 
   // Получение данных формы
   useEffect(() => {
     const fetchFormData = async () => {
-      if (location.state && location.state.id) {
-        try {
-          const response = await axios.get(`/api/db/form/${location.state.id}`);
-          if (response.data) {
-            setFormData(response.data);
-          } else {
-            setError('No form data found');
-          }
-        } catch (error) {
-          console.error('Error fetching form data:', error);
-          setError('Error fetching form data');
+      try {
+        const response = await axios.get(`/api/db/form/${id}`);
+        if (response.data) {
+          setFormData(response.data);
+        } else {
+          setError('No form data found');
         }
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+        setError('Error fetching form data');
       }
     };
-    fetchFormData();
-  }, [location.state]);
+    if (id) {
+      fetchFormData();
+    }
+  }, [id]);
 
   // Получение истории пользователя
   useEffect(() => {
     const fetchHistoryData = async () => {
-      if (userId) {
-        try {
-          const response = await axios.get(`/api/db/history/${userId}`);
-          if (response.data) {
-            setHistoryData(response.data);
-          } else {
-            setError('No history data found');
-          }
-        } catch (error) {
-          console.error('Error fetching history data:', error);
-          setError('Error fetching history data');
+      try {
+        const response = await axios.get(`/api/db/history/${userId}`);
+        if (response.data) {
+          setHistoryData(response.data);
+        } else {
+          setError('No history data found');
         }
+      } catch (error) {
+        console.error('Error fetching history data:', error);
+        setError('Error fetching history data');
       }
     };
-    fetchHistoryData();
+    if (userId) {
+      fetchHistoryData();
+    }
   }, [userId]);
 
   // Проверка статуса транзакции
   useEffect(() => {
     const fetchData = async () => {
-      if (order) {
-        try {
-          const data = await checkTradeStatus(order);
-          if (data && data.length > 0) {
-            const obj = data[0];
-            setResult(obj.result);
-            setMessage(obj.message);
-            localStorage.setItem('Resultation', obj.result);
-            localStorage.setItem('ResultMessage', obj.message);
-          } else {
-            setError('No trade status found');
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-          setError('Error fetching trade status');
+      try {
+        const data = await checkTradeStatus(order);
+        if (data && data.length > 0) {
+          const obj = data[0];
+          setResult(obj.result);
+          setMessage(obj.message);
+          localStorage.setItem('Resultation', obj.result);
+          localStorage.setItem('ResultMessage', obj.message);
+        } else {
+          setError('No trade status found');
         }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Error fetching trade status');
       }
     };
 
-    const intervalId = setInterval(() => {
+    if (order) {
       fetchData();
-    }, 15000);
-
-    fetchData();
-
-    return () => clearInterval(intervalId);
+      const intervalId = setInterval(fetchData, 15000);
+      return () => clearInterval(intervalId);
+    }
   }, [order]);
 
   // Таймер обратного отсчета
@@ -158,11 +153,11 @@ const Status = () => {
 
   const renderStatusText = () => {
     if (message === 'still processing') {
-      return <p className="text-sm font-bold ml-4 text-blueth">...</p>;
+      return <p className="text-sm font-bold ml-4 text-blueth">Ожидание подтверждения...</p>;
     } else if (message === 'fully paid') {
       return <p className="text-sm font-bold ml-4 text-blueth">Успешно</p>;    
     } else {
-      return <p className="text-sm font-bold ml-4 text-red-400">Не подтвержден</p>;    
+      return <p className="text-sm font-bold ml-4 text-red-400">Не подтверждено</p>;    
     }
   };
 
@@ -181,14 +176,14 @@ const Status = () => {
     return <div className="text-red-500">{error}</div>;
   }
 
- 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">
-        {error ? (
-          <div className="text-red-500">{error}</div>
-        ) : !formData || !historyData ? (
-          <div>Loading...</div>
+        {(!formData || !historyData) ? (
+          <>
+            {!formData && <p className="text-red-500">Не удалось загрузить данные формы</p>}
+            {!historyData && <p className="text-red-500">Не удалось загрузить данные истории</p>}
+          </>
         ) : (
           <>
             <div className="w-full bg-white p-8 rounded-lg md:mb-16 mb-0 mt-8">
@@ -257,7 +252,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Имя Фамилия отправителя</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{formData.name }</p>
+                    <p className="text-sm font-bold ml-4">{formData.name}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -265,7 +260,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Номер телефона отправителя</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{formData.phoneNumber }</p>
+                    <p className="text-sm font-bold ml-4">{formData.phoneNumber}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">

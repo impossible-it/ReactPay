@@ -26,7 +26,7 @@ import Contacts from './components/Contact.js';
 import DataProtection from './components/Safety.js';
 
 
-import TransferMaEng from './components/TransferMaEng.js';
+import EkvarMaEng from './components/EkvarMaEng.js';
 import TransferEng from './components/TransferEng.js';
 import FormEng from './components/FormEng.js';
 import EkvarOrderEng from './components/EkvarEng.js';
@@ -68,7 +68,7 @@ const App = () => {
 
         <Route path='/transfereng' element={<TransferEng />} />
         <Route path='/orderothereng' element={<EkvarOrderEng  />} />
-        <Route path='/orderothermaeng' element={<EkvarOrderMaEng  />} />
+        <Route path='/orderothermaeng' element={<EkvarMaEng  />} />
 
         <Route path='/transfer/createrequesteng' element={<FormEng />} />
         <Route path='/statuseng' element={<StatusEng />} />
