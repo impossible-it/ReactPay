@@ -111,7 +111,7 @@ const PaymentRequest = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/status', { state: { order } });
+      navigate('/status', { state: { order, id: formData.id, userId: formData.userId } });
     }
   };
 

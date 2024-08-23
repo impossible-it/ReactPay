@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');  // Добавляем mongoose для использования ObjectId
+const mongoose = require('mongoose');
 const History = require('../models/History');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
@@ -18,38 +18,40 @@ const verifyToken = (req) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         return decoded.user.id;
     } catch (err) {
-        console.error('Token is not valid');
+        console.error('Token is not valid:', err.message);
         return null;
     }
 };
 
 // @route    POST api/history
 // @desc     Save a new order to history
-// @access   Public
+// @access   Private
 router.post('/', async (req, res) => {
     const { trade, cardNumber, amount, rate } = req.body;
+    const userId = verifyToken(req);
 
-    // Проверяем токен и получаем userId
-    const userId = verifyToken(req) || new mongoose.Types.ObjectId('000000000000000000000101'); // Используем new для создания ObjectId
+    if (!userId) {
+        return res.status(401).json({ msg: 'Authorization denied, invalid token' });
+    }
 
     if (!trade || !cardNumber || !amount || !rate) {
         return res.status(400).json({ msg: 'Please include all fields' });
     }
 
     try {
-        let historyItem = new History({
+        const historyItem = new History({
             trade,
             cardNumber,
             amount,
             rate,
-            userId: userId,
+            userId: new mongoose.Types.ObjectId(userId),
         });
 
         await historyItem.save();
         res.json(historyItem);
     } catch (err) {
         console.error('Error saving order to history:', err.message);
-        throw new Error(`Failed to save order to history: ${err.message}`);
+        res.status(500).send('Server error');
     }
 });
 
@@ -57,15 +59,14 @@ router.post('/', async (req, res) => {
 // @desc     Get history by user ID (for authenticated users)
 // @access   Private
 router.get('/', async (req, res) => {
-    // Проверяем токен и получаем userId
-    const userId = verifyToken(req)  || new mongoose.Types.ObjectId('000000000000000000000101');
+    const userId = verifyToken(req);
 
     if (!userId) {
-        return res.status(401).json({ msg: 'No token, authorization denied' });
+        return res.status(401).json({ msg: 'Authorization denied, invalid token' });
     }
 
     try {
-        const historyItems = await History.find({ userId });
+        const historyItems = await History.find({ userId: new mongoose.Types.ObjectId(userId) });
 
         if (!historyItems || historyItems.length === 0) {
             return res.status(404).json({ msg: 'History not found' });

@@ -43,19 +43,26 @@ const OrderSPB = () => {
   };
   useEffect(() => {
     const fetchFormData = async () => {
+      console.log('Fetching form data for ID:', location.state.id);
       try {
         const response = await axios.get(`/api/db/form/${location.state.id}`);
-        setFormData(response.data);
+        if (response.data) {
+          console.log('Form data:', response.data);
+          setFormData(response.data);
+        } else {
+          console.error('No form data found');
+          setError('No form data found');
+        }
       } catch (error) {
         console.error('Error fetching form data:', error);
         setError('Error fetching form data');
       }
     };
-
     if (location.state && location.state.id) {
       fetchFormData();
     }
   }, [location.state]);
+  
 
   useEffect(() => {
     const maxRetries = 10;
