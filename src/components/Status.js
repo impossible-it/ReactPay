@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { checkTradeStatus } from '../utils/api'; // Используем эту функцию для получения статуса
 import logo from './img/logo.jpg';
@@ -13,6 +13,7 @@ import './styles.css';
 
 const Status = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { order, userId } = location.state || {};
 
   const [error, setError] = useState(null);
@@ -21,6 +22,7 @@ const Status = () => {
   const [formData, setFormData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
 
+  // Генерация случайного идентификатора операции
   const generateRandomId = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     let result = '';
@@ -44,12 +46,25 @@ const Status = () => {
     return savedTime ? parseInt(savedTime, 10) : 30 * 60;
   });
 
+  // Проверка наличия необходимых параметров
+  useEffect(() => {
+    if (!location.state || !location.state.id || !userId) {
+      setError('Invalid parameters');
+      return;
+    }
+  }, [location.state, userId]);
+
+  // Получение данных формы
   useEffect(() => {
     const fetchFormData = async () => {
       if (location.state && location.state.id) {
         try {
           const response = await axios.get(`/api/db/form/${location.state.id}`);
-          setFormData(response.data);
+          if (response.data) {
+            setFormData(response.data);
+          } else {
+            setError('No form data found');
+          }
         } catch (error) {
           console.error('Error fetching form data:', error);
           setError('Error fetching form data');
@@ -59,12 +74,17 @@ const Status = () => {
     fetchFormData();
   }, [location.state]);
 
+  // Получение истории пользователя
   useEffect(() => {
     const fetchHistoryData = async () => {
       if (userId) {
         try {
           const response = await axios.get(`/api/db/history/${userId}`);
-          setHistoryData(response.data);
+          if (response.data) {
+            setHistoryData(response.data);
+          } else {
+            setError('No history data found');
+          }
         } catch (error) {
           console.error('Error fetching history data:', error);
           setError('Error fetching history data');
@@ -74,6 +94,7 @@ const Status = () => {
     fetchHistoryData();
   }, [userId]);
 
+  // Проверка статуса транзакции
   useEffect(() => {
     const fetchData = async () => {
       if (order) {
@@ -85,9 +106,12 @@ const Status = () => {
             setMessage(obj.message);
             localStorage.setItem('Resultation', obj.result);
             localStorage.setItem('ResultMessage', obj.message);
+          } else {
+            setError('No trade status found');
           }
         } catch (error) {
           console.error('Error fetching data:', error);
+          setError('Error fetching trade status');
         }
       }
     };
@@ -101,6 +125,7 @@ const Status = () => {
     return () => clearInterval(intervalId);
   }, [order]);
 
+  // Таймер обратного отсчета
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prevTime => {
@@ -112,6 +137,7 @@ const Status = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Обновление анимации градиента
   useEffect(() => {
     const gradientTimer = setInterval(() => {
       const circle = document.querySelector('.circle');
@@ -150,6 +176,12 @@ const Status = () => {
     }
   };
 
+  // Условный рендеринг содержимого
+  if (error) {
+    return <div className="text-red-500">{error}</div>;
+  }
+
+ 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">

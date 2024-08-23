@@ -25,6 +25,8 @@ import About from './components/About.js';
 import Contacts from './components/Contact.js';
 import DataProtection from './components/Safety.js';
 
+
+import TransferMaEng from './components/TransferMaEng.js';
 import TransferEng from './components/TransferEng.js';
 import FormEng from './components/FormEng.js';
 import EkvarOrderEng from './components/EkvarEng.js';
@@ -65,9 +67,11 @@ const App = () => {
         <Route path='/mobile' element={<MobileKot />} />
 
         <Route path='/transfereng' element={<TransferEng />} />
-        <Route path='/orderothereng' element={<EkvarOrderEng amount={amount} />} />
+        <Route path='/orderothereng' element={<EkvarOrderEng  />} />
+        <Route path='/orderothermaeng' element={<EkvarOrderMaEng  />} />
+
         <Route path='/transfer/createrequesteng' element={<FormEng />} />
-        <Route path='/statuseng' element={<StatusEng amount={amount} />} />
+        <Route path='/statuseng' element={<StatusEng />} />
 
       </Routes>
 
