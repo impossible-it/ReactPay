@@ -1,38 +1,16 @@
+// routes/history.js
+
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const History = require('../models/History');
-const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
+const authMiddleware = require('../middleware/authMiddleware');
+const generateTemporaryId = require('../src/utils/generateTempId');
 
-dotenv.config();
-
-// Функция для проверки токена и получения userId
-const verifyToken = (req) => {
-    const token = req.header('x-auth-token');
-    if (!token) {
-        return null;
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        return decoded.user.id;
-    } catch (err) {
-        console.error('Token is not valid:', err.message);
-        return null;
-    }
-};
-
-// @route    POST api/history
-// @desc     Save a new order to history
-// @access   Private
-router.post('/', async (req, res) => {
+// Сохранение заказа в истории
+router.post('/', authMiddleware, async (req, res) => {
     const { trade, cardNumber, amount, rate } = req.body;
-    const userId = verifyToken(req);
-
-    if (!userId) {
-        return res.status(401).json({ msg: 'Authorization denied, invalid token' });
-    }
+    const userId = req.user ? req.user.id : generateTemporaryId();
 
     if (!trade || !cardNumber || !amount || !rate) {
         return res.status(400).json({ msg: 'Please include all fields' });
@@ -55,15 +33,9 @@ router.post('/', async (req, res) => {
     }
 });
 
-// @route    GET api/history
-// @desc     Get history by user ID (for authenticated users)
-// @access   Private
-router.get('/', async (req, res) => {
-    const userId = verifyToken(req);
-
-    if (!userId) {
-        return res.status(401).json({ msg: 'Authorization denied, invalid token' });
-    }
+// Получение истории по userId
+router.get('/', authMiddleware, async (req, res) => {
+    const userId = req.user.id;
 
     try {
         const historyItems = await History.find({ userId: new mongoose.Types.ObjectId(userId) });

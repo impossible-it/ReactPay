@@ -1,8 +1,11 @@
-const mongoose = require('mongoose');
+// models/History.js
 
-const HistorySchema = new mongoose.Schema({
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const HistorySchema = new Schema({
     trade: {
-        type: Number,
+        type: String,
         required: true
     },
     cardNumber: {
@@ -14,13 +17,17 @@ const HistorySchema = new mongoose.Schema({
         required: true
     },
     rate: {
-        type: String,
+        type: Number,
         required: true
     },
-    userId: {  // Добавляем поле userId
-        type: mongoose.Schema.Types.ObjectId, // предполагается, что это ссылка на пользователя
-        ref: 'User',
-        required: false
+    userId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 });
 

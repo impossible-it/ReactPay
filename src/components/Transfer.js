@@ -4,7 +4,7 @@ import './styles.css';
 
 import CardImage from './img/card.png';
 import FastsystemImage from './img/spb.png';
-import TerminalImage from './img/terminal.png';
+import TerminalImage from './img/terminalru.png';
 
 const CardSelection = () => {
   const [selectedCard, setSelectedCard] = useState(null);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { checkTradeStatus } from '../utils/api';
 import logo from './img/logo.jpg';
 import successIcon from './img/succes.png';
 import failIcon from './img/fail.png';
@@ -10,17 +9,33 @@ import telegram from './img/telegram.png';
 import print from './img/print.png';
 import download from './img/download.png';
 import './styles.css';
+import { checkTradeStatus } from '../utils/api';
 
 const Status = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { order, id, userId } = location.state || {}; // Получаем данные из location.state
+  
+  const { userId } = location.state || {};
 
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
   const [formData, setFormData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
+
+  const [operationId, setOperationId] = useState(() => {
+    let savedOperationId = localStorage.getItem('operationId');
+    if (!savedOperationId) {
+      const newId = generateRandomId();
+      localStorage.setItem('operationId', newId);
+      return newId;
+    }
+    return savedOperationId;
+  });
+
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const savedTime = localStorage.getItem('timeLeft');
+    return savedTime ? parseInt(savedTime, 10) : 30 * 60;
+  });
 
   const generateRandomId = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -31,50 +46,26 @@ const Status = () => {
     return result;
   };
 
-  const [operationId, setOperationId] = useState(() => {
-    let savedOperationId = localStorage.getItem('operationId');
-    if (!savedOperationId) {
-      savedOperationId = generateRandomId();
-      localStorage.setItem('operationId', savedOperationId);
-    }
-    return savedOperationId;
-  });
-
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const savedTime = localStorage.getItem('timeLeft');
-    return savedTime ? parseInt(savedTime, 10) : 30 * 60;
-  });
-
-  // Проверка наличия необходимых параметров
   useEffect(() => {
-    if (!order || !id || !userId) {
-      setError('Invalid parameters');
-      return;
-    }
-  }, [order, id, userId]);
 
-  // Получение данных формы
-  useEffect(() => {
-    const fetchFormData = async () => {
-      try {
-        const response = await axios.get(`/api/db/form/${id}`);
-        if (response.data) {
-          setFormData(response.data);
-        } else {
-          setError('No form data found');
+    
+      const fetchData = async () => {
+        try {
+          const formId = localStorage.getItem('formId'); // Получаем ID формы из localStorage
+          if (formId) {
+            const response = await axios.get(`/api/db/form/${formId}`);
+            setFormData(response.data);
+          } else {
+            console.error('Form ID not found in localStorage');
+          }
+        } catch (error) {
+          console.error('Error fetching form data:', error);
         }
-      } catch (error) {
-        console.error('Error fetching form data:', error);
-        setError('Error fetching form data');
-      }
-    };
-    if (id) {
-      fetchFormData();
-    }
-  }, [id]);
+      };
+  
+      
+    
 
-  // Получение истории пользователя
-  useEffect(() => {
     const fetchHistoryData = async () => {
       try {
         const response = await axios.get(`/api/db/history/${userId}`);
@@ -88,42 +79,48 @@ const Status = () => {
         setError('Error fetching history data');
       }
     };
+
+    
+      fetchData();
+    
     if (userId) {
       fetchHistoryData();
     }
   }, [userId]);
 
-  // Проверка статуса транзакции
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await checkTradeStatus(order);
-        if (data && data.length > 0) {
-          const obj = data[0];
-          setResult(obj.result);
-          setMessage(obj.message);
-          localStorage.setItem('Resultation', obj.result);
-          localStorage.setItem('ResultMessage', obj.message);
-        } else {
-          setError('No trade status found');
+      if (historyData.trade) {
+        try {
+          const data = await checkTradeStatus(historyData.trade);
+          if (data && data.length > 0) {
+            const obj = data[0];
+            setResult(obj.result);
+            setMessage(obj.message);
+            localStorage.setItem('Resultation', obj.result);
+            localStorage.setItem('ResultMessage', obj.message);
+          } else {
+            setError('No trade status found');
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          setError('Error fetching trade status');
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Error fetching trade status');
       }
     };
 
-    if (order) {
+    const intervalId = setInterval(() => {
       fetchData();
-      const intervalId = setInterval(fetchData, 15000);
-      return () => clearInterval(intervalId);
-    }
-  }, [order]);
+    }, 15000);
 
-  // Таймер обратного отсчета
+    fetchData();
+
+    return () => clearInterval(intervalId);
+  }, [historyData.trade]);
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prevTime => {
+      setTimeLeft((prevTime) => {
         const newTime = prevTime > 0 ? prevTime - 1 : 0;
         localStorage.setItem('timeLeft', newTime);
         return newTime;
@@ -132,7 +129,6 @@ const Status = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Обновление анимации градиента
   useEffect(() => {
     const gradientTimer = setInterval(() => {
       const circle = document.querySelector('.circle');
@@ -145,7 +141,7 @@ const Status = () => {
     return () => clearInterval(gradientTimer);
   }, []);
 
-  const formatTime = time => {
+  const formatTime = (time) => {
     const minutes = String(Math.floor(time / 60)).padStart(2, '0');
     const seconds = String(time % 60).padStart(2, '0');
     return `${minutes}:${seconds}`;
@@ -153,11 +149,11 @@ const Status = () => {
 
   const renderStatusText = () => {
     if (message === 'still processing') {
-      return <p className="text-sm font-bold ml-4 text-blueth">Ожидание подтверждения...</p>;
+      return <p className="text-sm font-bold ml-4 text-blueth">...</p>;
     } else if (message === 'fully paid') {
       return <p className="text-sm font-bold ml-4 text-blueth">Успешно</p>;    
     } else {
-      return <p className="text-sm font-bold ml-4 text-red-400">Не подтверждено</p>;    
+      return <p className="text-sm font-bold ml-4 text-red-400">Не подтвержден</p>;    
     }
   };
 
@@ -171,10 +167,6 @@ const Status = () => {
     }
   };
 
-  // Условный рендеринг содержимого
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
@@ -236,7 +228,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Заявка №</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{order || 'Ошибка'}</p>
+                    <p className="text-sm font-bold ml-4">{historyData.trade || 'Ошибка'}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">

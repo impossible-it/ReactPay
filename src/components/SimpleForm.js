@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CardImage from './img/card.png';
 import FastsystemImage from './img/spb.png';
-import TerminalImage from './img/terminal.png';
+import TerminalImage from './img/terminaleng.png';
 import './styles.css';
 
 const SimpleForm = () => {

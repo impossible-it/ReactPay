@@ -16,14 +16,15 @@ const PaymentRequest = () => {
   const [rate, setRate] = useState(null);
   const [orderSum, setOrderSum] = useState(null);
   const [card, setCard] = useState(null);
-  const userId = '1233';
-
   const [formData, setFormData] = useState(location.state || {});
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+    
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
       try {
@@ -40,6 +41,29 @@ const PaymentRequest = () => {
       }
     }
   };
+
+    useEffect(() => {
+        const fetchUserId = async () => {
+            try {
+                const response = await axios.get('/api/auth/user-id', {
+                    headers: {
+                        'x-auth-token': localStorage.getItem('token'),
+                    },
+                });
+                setUserId(response.data.userId);
+            } catch (error) {
+                console.error('Error fetching user ID:', error);
+                // Если нет авторизации, создаем временный ID
+                const tempId = `TEMP_${Math.random().toString(36).substring(2, 15)}`;
+                localStorage.setItem('tempId', tempId);
+                setUserId(tempId);
+            }
+        };
+
+        fetchUserId();
+    }, []);
+
+
   useEffect(() => {
     const fetchFormData = async () => {
       try {
@@ -111,7 +135,7 @@ const PaymentRequest = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/status', { state: { order, id: formData.id, userId: formData.userId } });
+      navigate('/status', { state: { order, userId } });
     }
   };
 

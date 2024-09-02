@@ -6,6 +6,8 @@ import Header from './components/Headers.js';
 import Footer from './components/Footer.js';
 import HeaderEng from './components/HeadersEng.js';
 import FooterEng from './components/FooterEng.js';
+import HeaderTur from './components/HeadersTur.js'; // Добавьте компонент заголовка для турецкой версии
+import FooterTur from './components/FooterTur.js'; // Добавьте компонент подвала для турецкой версии
 
 import Start from './components/Start.tsx';
 import Order from './components/Order.js';
@@ -25,12 +27,16 @@ import About from './components/About.js';
 import Contacts from './components/Contact.js';
 import DataProtection from './components/Safety.js';
 
-
 import EkvarMaEng from './components/EkvarMaEng.js';
 import TransferEng from './components/TransferEng.js';
 import FormEng from './components/FormEng.js';
 import EkvarOrderEng from './components/EkvarEng.js';
 import StatusEng from './components/StatusEng.js';
+
+import OrderTur from './components/MobileOrderTur.js'; 
+import TransferTur from './components/TransferTur.js';
+import FormTur from './components/FormTur.js';
+import StatusTur from './components/StatusTur.js';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -41,10 +47,17 @@ const App = () => {
     return window.location.pathname.includes('eng');
   };
 
+  // Функция для определения, используется ли турецкая версия страницы
+  const isTurkishRoute = () => {
+    return window.location.pathname.includes('tur');
+  };
+
   return (
     <Router>
       {isEnglishRoute() ? (
         <HeaderEng isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
+      ) : isTurkishRoute() ? (
+        <HeaderTur isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
       ) : (
         <Header isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
       )}
@@ -66,16 +79,27 @@ const App = () => {
         <Route path='/data-protection' element={<DataProtection />} />
         <Route path='/mobile' element={<MobileKot />} />
 
+        {/* Английская версия */}
         <Route path='/transfereng' element={<TransferEng />} />
-        <Route path='/orderothereng' element={<EkvarOrderEng  />} />
-        <Route path='/orderothermaeng' element={<EkvarMaEng  />} />
-
+        <Route path='/orderothereng' element={<EkvarOrderEng />} />
+        <Route path='/orderothermaeng' element={<EkvarMaEng />} />
         <Route path='/transfer/createrequesteng' element={<FormEng />} />
         <Route path='/statuseng' element={<StatusEng />} />
 
+        {/* Турецкая версия */}
+        <Route path='/transfertur' element={<TransferTur />} />
+        <Route path='/ordertur' element={<OrderTur />} />
+        <Route path='/transfer/createrequesttur' element={<FormTur />} />
+        <Route path='/statustur' element={<StatusTur />} />
       </Routes>
 
-      {isEnglishRoute() ? <FooterEng /> : <Footer />}
+      {isEnglishRoute() ? (
+        <FooterEng />
+      ) : isTurkishRoute() ? (
+        <FooterTur />
+      ) : (
+        <Footer />
+      )}
     </Router>
   );
 }

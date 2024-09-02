@@ -19,6 +19,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/payment', require('./routes/payment'));
 app.use('/api/form', require('./routes/form'));
 app.use('/api/history', require('./routes/history'));
+app.use('/api/userData', require('./routes/userData')); // Добавляем маршрут для UserData
 
 const PORT = process.env.PORT || 3000;
 
