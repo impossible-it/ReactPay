@@ -101,9 +101,9 @@ const OrderSPB = () => {
               <div className='flex justify-between items-center'>
                 <div className="">
                   <h2 className="text-base font-normal">İşlem Tutarı</h2> 
-                  <p className="text-sm mt-2 text-blueth">{`${orderSum} RUB`}</p>
+                  <p className="text-sm mt-2 text-blueth">{`${formData.amount} ₺`}</p>
                 </div>
-                <button onClick={() => handleCopy(orderSum || '', 1)} className="text-blue-500"><CopyImage /></button>
+                <button onClick={() => handleCopy(formData.amount || '', 1)} className="text-blue-500"><CopyImage /></button>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg relative">
@@ -111,15 +111,15 @@ const OrderSPB = () => {
               <div className='flex justify-between items-center'>
                 <div className="">
                   <h2 className="text-base font-normal">Bağlı Hesap Bilgileri</h2>
-                  <p className="text-sm mt-2 text-blueth">{cardNumber}</p>
+                  <p className="text-sm mt-2 text-blueth">{cardNumber || 'TR02 0006 4000 0011 5260 2317 91'}</p>
                 </div>
-                <button onClick={() => handleCopy(cardNumber || '', 2)} className="text-blue-500"><CopyImage /></button>
+                <button onClick={() => handleCopy(cardNumber || 'TR02 0006 4000 0011 5260 2317 91', 2)} className="text-blue-500"><CopyImage /></button>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg">
               <div className="">
                 <h2 className="text-base font-normal">Sağlayan Banka</h2>
-                <p className="text-sm mt-2 text-blueth">{cardBank}</p>
+                <p className="text-sm mt-2 text-blueth">{cardBank || 'Limax teknoloji bilgisayar sistemleri Ticaret Limited şirketis'}</p>
               </div>
             </div>
           </div>
@@ -136,7 +136,7 @@ const OrderSPB = () => {
               <div className="w-full md:p-4">
                 <h2 className="text-sm font-normal text-grayth">Bakiyeye Aktarıldı</h2>
                 <div className='flex md:justify-end justify-start'>
-                  <p className="text-base mt-1">{result} USDT</p>
+                  <p className="text-base mt-1">{formData.amount } ₺</p>
                   <TetherImage className="w-5 h-5 ml-2 mt-1" />
                 </div>
               </div>
