@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import LogotypeTextImage from './img/LogotypeText.png';
 import TerminalSecImage from './img/telegram.png';
-import CardImage from './img/card.png';
+import CardImage from './img/terminaleng.png';
 import FastsystemImage from './img/spb.png';
 
 import './styles.css';

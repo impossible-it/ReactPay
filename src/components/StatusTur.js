@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import axios from 'axios';
-import logo from './img/act.png';
+import logo from './img/terminaleng.png';
 import successIcon from './img/succes.png';
 import successBIcon from './img/succesbig.png';
 
@@ -33,7 +33,23 @@ const StatusTur = ({ formDataFromOrder }) => {
       setFormData(formDataFromOrder);
     }
   }, [formDataFromOrder]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const formId = localStorage.getItem('formId'); // Получаем ID формы из localStorage
+        if (formId) {
+          const response = await axios.get(`/api/db/form/${formId}`);
+          setFormData(response.data);
+        } else {
+          console.error('Form ID not found in localStorage');
+        }
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+      }
+    };
 
+    fetchData();
+  }, []);
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">
@@ -53,7 +69,7 @@ const StatusTur = ({ formDataFromOrder }) => {
                 <p className="text-sm text-grayth mr-4">Sipariş Numarası</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{ location.state.trade || 'Hata'}</p>
+                <p className="text-sm font-bold ml-4">{ location.state.trade || '...'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -61,7 +77,7 @@ const StatusTur = ({ formDataFromOrder }) => {
                 <p className="text-sm text-grayth mr-4">İşlem Tutarı</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{`${formData.amount} EUR` || 'Hata'}</p>
+                <p className="text-sm font-bold ml-4">{`${formData.amount} EUR` || '..'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -69,7 +85,7 @@ const StatusTur = ({ formDataFromOrder }) => {
                 <p className="text-sm text-grayth mr-4">Gönderenin Adı</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{formData.name || 'Hata'}</p>
+                <p className="text-sm font-bold ml-4">{formData.name || '...'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -77,7 +93,7 @@ const StatusTur = ({ formDataFromOrder }) => {
                 <p className="text-sm text-grayth mr-4">Gönderenin Telefon Numarası</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{formData.phoneNumber || 'Hata'}</p>
+                <p className="text-sm font-bold ml-4">{formData.phoneNumber || '...'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
