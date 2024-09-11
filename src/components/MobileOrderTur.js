@@ -83,7 +83,27 @@ const OrderSPB = () => {
   ];
 
   const result = (orderSum * 0.85).toFixed(1) || '...';
-
+  useEffect(() => {
+    const fetchFormData = async () => {
+      console.log('Fetching form data for ID:', location.state.id);
+      try {
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
+        if (response.data) {
+          console.log('Form data:', response.data);
+          setFormData(response.data);
+        } else {
+          console.error('No form data found');
+          setError('No form data found');
+        }
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+        setError('Error fetching form data');
+      }
+    };
+    if (location.state && location.state.id) {
+      fetchFormData();
+    }
+  }, [location.state]);
   return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]" >
