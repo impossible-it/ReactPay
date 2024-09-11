@@ -90,14 +90,12 @@ const OrderSPB = () => {
         const response = await axios.get(`/api/db/form/${location.state.id}`);
         if (response.data) {
           console.log('Form data:', response.data);
-          setFormData(response.data);
         } else {
           console.error('No form data found');
           setError('No form data found');
         }
       } catch (error) {
         console.error('Error fetching form data:', error);
-        setError('Error fetching form data');
       }
     };
     if (location.state && location.state.id) {
