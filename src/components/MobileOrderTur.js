@@ -17,7 +17,7 @@ const OrderSPB = () => {
   const [cardBank, setCardBank] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-
+  const [expandedRule, setExpandedRule] = useState(null); 
   const fetchUserData = async () => {
     try {
       const response = await axios.get('/api/userData');
@@ -56,6 +56,9 @@ const OrderSPB = () => {
     }, 3000);
   };
 
+  const handleRuleClick = (index) => {
+    setExpandedRule(expandedRule === index ? null : index);
+  };
   const rules = [
     {
       title: "SBP hesabınızın geçerlilik süresini kontrol edin.",
