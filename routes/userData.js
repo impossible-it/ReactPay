@@ -22,18 +22,32 @@ router.post('/', async (req, res) => {
   }
 });
 
-// @route   GET /api/userData/:userId
-// @desc    Get user data by userId
+// @route   GET /api/userData
+// @desc    Get all user data
 // @access  Public
-router.get('/:userId', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const userData = await UserData.findOne({ userId: req.params.userId });
+    const userDataList = await UserData.find();
+    res.json(userDataList);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route   DELETE /api/userData/:id
+// @desc    Delete user data by ID
+// @access  Public
+router.delete('/:id', async (req, res) => {
+  try {
+    const userData = await UserData.findById(req.params.id);
 
     if (!userData) {
       return res.status(404).json({ msg: 'User data not found' });
     }
 
-    res.json(userData);
+    await userData.remove();
+    res.json({ msg: 'User data removed' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

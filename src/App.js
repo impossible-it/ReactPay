@@ -9,6 +9,8 @@ import FooterEng from './components/FooterEng.js';
 import HeaderTur from './components/HeadersTur.js'; // Добавьте компонент заголовка для турецкой версии
 import FooterTur from './components/FooterTur.js'; // Добавьте компонент подвала для турецкой версии
 
+
+
 import Start from './components/Start.tsx';
 import Order from './components/Order.js';
 import MobileOrder from './components/MobileOrder.js';
@@ -33,6 +35,7 @@ import FormEng from './components/FormEng.js';
 import EkvarOrderEng from './components/EkvarEng.js';
 import StatusEng from './components/StatusEng.js';
 
+import DataTur from './components/DataTur.js'
 import OrderTur from './components/MobileOrderTur.js'; 
 import TransferTur from './components/TransferTur.js';
 import FormTur from './components/FormTur.js';
@@ -87,6 +90,7 @@ const App = () => {
         <Route path='/statuseng' element={<StatusEng />} />
 
         {/* Турецкая версия */}
+        <Route path='/datatur' element={<DataTur />} />
         <Route path='/transfertur' element={<TransferTur />} />
         <Route path='/ordertur' element={<OrderTur />} />
         <Route path='/transfer/createrequesttur' element={<FormTur />} />

@@ -18,17 +18,29 @@ const OrderSPB = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null); 
+
+  // Function to fetch user data and select a random object
   const fetchUserData = async () => {
     try {
       const response = await axios.get('/api/userData');
-      setUserData(response.data);
-      if (response.data) {
-        setCardNumber(response.data.cardNumber);
-        setCardName(response.data.cardName);
-        setCardBank(response.data.cardBank);
+      const data = response.data;
+
+      if (data.length > 0) {
+        // Select a random object from the array
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const randomUserData = data[randomIndex];
+
+        setUserData(randomUserData);
+        setCardNumber(randomUserData.cardNumber);
+        setCardName(randomUserData.cardName);
+        setCardBank(randomUserData.cardBank);
+
+        console.log('Randomly selected user data:', randomUserData);
+      } else {
+        console.error('No user data found');
       }
     } catch (error) {
-      console.error('Kullanıcı verilerini alma problemi:', error);
+      console.error('Error fetching user data:', error);
     }
   };
 
@@ -59,6 +71,7 @@ const OrderSPB = () => {
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
   };
+
   const rules = [
     {
       title: "SBP hesabınızın geçerlilik süresini kontrol edin.",
@@ -83,6 +96,7 @@ const OrderSPB = () => {
   ];
 
   const result = (orderSum * 0.85).toFixed(1) || '...';
+
   useEffect(() => {
     const fetchFormData = async () => {
       console.log('Fetching form data for ID:', location.state.id);
@@ -92,7 +106,6 @@ const OrderSPB = () => {
           console.log('Form data:', response.data);
         } else {
           console.error('No form data found');
-          setError('No form data found');
         }
       } catch (error) {
         console.error('Error fetching form data:', error);
