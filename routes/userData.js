@@ -6,19 +6,21 @@ const UserData = require('../models/UserData');
 // @desc    Create or update user data
 // @access  Public
 router.post('/', async (req, res) => {
-  const { userId, cardNumber, cardName, cardBank } = req.body;
+  const { cardNumber, cardName, cardBank } = req.body;
 
-  if (!userId || !cardNumber || !cardName || !cardBank) {
+  if (!cardNumber || !cardName || !cardBank) {
     return res.status(400).json({ msg: 'Please include all required fields' });
   }
 
   try {
-    const userData = await UserData.findOneAndUpdate(
-      { userId },
-      { cardNumber, cardName, cardBank },
-      { new: true, upsert: true }
-    );
+    // Create a new record
+    const userData = new UserData({
+      cardNumber,
+      cardName,
+      cardBank
+    });
 
+    await userData.save();
     res.json(userData);
   } catch (err) {
     console.error('Error in POST /api/userData:', err.message);

@@ -35,8 +35,7 @@ const DataTur = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Добавьте userId, если это необходимо
-      const dataToSend = { ...formData, userId: formData.userId || generateUniqueId() };
+      const dataToSend = { ...formData };
       const response = await axios.post('/api/userData', dataToSend);
       setDataList([...dataList, response.data]);
       setFormData({ cardNumber: '', cardName: '', cardBank: '' });
@@ -44,7 +43,6 @@ const DataTur = () => {
       console.error('Error adding data:', err);
     }
   };
-  
 
   // Function to delete an item from the server and update the state
   const handleDelete = async (id) => {
@@ -57,9 +55,9 @@ const DataTur = () => {
   };
 
   return (
-    <div>
-      <h2>Add New Data</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-md mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-4">Add New Data</h2>
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <input
           type="text"
           name="cardNumber"
@@ -67,6 +65,7 @@ const DataTur = () => {
           value={formData.cardNumber}
           onChange={handleChange}
           required
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="text"
@@ -75,6 +74,7 @@ const DataTur = () => {
           value={formData.cardName}
           onChange={handleChange}
           required
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <input
           type="text"
@@ -83,19 +83,29 @@ const DataTur = () => {
           value={formData.cardBank}
           onChange={handleChange}
           required
+          className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
-        <button type="submit">Add Data</button>
+        <button type="submit" className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+          Add Data
+        </button>
       </form>
 
-      <h2>Data List</h2>
+      <h2 className="text-2xl font-semibold mt-8 mb-4">Data List</h2>
       {dataList.length === 0 ? (
-        <p>No data available</p>
+        <p className="text-gray-600">No data available</p>
       ) : (
-        <ul>
+        <ul className="space-y-2">
           {dataList.map((item) => (
-            <li key={item._id}>
-              {item.cardNumber} - {item.cardName} - {item.cardBank}
-              <button onClick={() => handleDelete(item._id)}>Delete</button>
+            <li key={item._id} className="flex justify-between items-center p-4 bg-white rounded-md shadow-sm">
+              <div>
+                <span className="font-medium">{item.cardNumber}</span> - <span>{item.cardName}</span> - <span>{item.cardBank}</span>
+              </div>
+              <button 
+                className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                onClick={() => handleDelete(item._id)}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
