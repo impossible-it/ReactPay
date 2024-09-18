@@ -3,7 +3,7 @@ const router = express.Router();
 const UserData = require('../models/UserData');
 
 // @route   POST /api/userData
-// @desc    Create or update user data
+// @desc    Create user data
 // @access  Public
 router.post('/', async (req, res) => {
   const { cardNumber, cardName, cardBank } = req.body;
@@ -13,17 +13,16 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Create a new record
-    const userData = new UserData({
+    // Используем UserData.create для создания и сохранения записи
+    const userData = await UserData.create({
       cardNumber,
       cardName,
       cardBank
     });
 
-    await userData.save();
     res.json(userData);
   } catch (err) {
-    console.error('Error in POST /api/userData:', err.message);
+    console.error('Error in POST /api/userData:', err); // Логируем полный объект ошибки
     res.status(500).send('Server error');
   }
 });
@@ -36,7 +35,7 @@ router.get('/', async (req, res) => {
     const userDataList = await UserData.find();
     res.json(userDataList);
   } catch (err) {
-    console.error('Error in GET /api/userData:', err.message);
+    console.error('Error in GET /api/userData:', err); // Логируем полный объект ошибки
     res.status(500).send('Server error');
   }
 });
@@ -55,7 +54,7 @@ router.delete('/:id', async (req, res) => {
     await userData.remove();
     res.json({ msg: 'User data removed' });
   } catch (err) {
-    console.error('Error in DELETE /api/userData/:id:', err.message);
+    console.error('Error in DELETE /api/userData/:id:', err); // Логируем полный объект ошибки
     res.status(500).send('Server error');
   }
 });

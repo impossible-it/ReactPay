@@ -17,7 +17,7 @@ const DataTur = () => {
   // Function to fetch all data from the server
   const fetchData = async () => {
     try {
-      const response = await axios.get('/api/db/userData');
+      const response = await axios.get('/api/db/cardData');
       // Ensure response.data is an array
       setDataList(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
@@ -36,7 +36,7 @@ const DataTur = () => {
     e.preventDefault();
     try {
       const dataToSend = { ...formData };
-      const response = await axios.post('/api/db/userData', dataToSend);
+      const response = await axios.post('/api/db/cardData', dataToSend);
       setDataList([...dataList, response.data]);
       setFormData({ cardNumber: '', cardName: '', cardBank: '' });
     } catch (err) {
@@ -47,12 +47,13 @@ const DataTur = () => {
   // Function to delete an item from the server and update the state
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/db/userData/${id}`);
+      await axios.delete(`/api/db/cardData/${id}`);
       setDataList(dataList.filter(item => item._id !== id));
     } catch (err) {
       console.error('Error deleting data:', err);
     }
   };
+
 
   return (
     <div className="max-w-md mx-auto p-6 bg-gray-100 rounded-lg shadow-md">

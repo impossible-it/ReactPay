@@ -173,7 +173,7 @@ const HeaderTur = ({ isAuthenticated, setIsAuthenticated }) => {
               img: transferImage,
               alt: 'Transfer',
               text: 'Transferler',
-              path: '/transfertr',
+              path: '/transfertur',
             },
             {
               img: aboutusImage,
@@ -185,7 +185,7 @@ const HeaderTur = ({ isAuthenticated, setIsAuthenticated }) => {
               img: defenseImage,
               alt: 'Veri Koruma',
               text: 'Veri Koruma',
-              path: '/securityinfotr',
+              path: '/datatu',
             },
             {
               img: contactImage,
