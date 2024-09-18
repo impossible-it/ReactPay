@@ -23,7 +23,7 @@ const OrderSPB = () => {
   // Function to fetch user data and select a random object
   const fetchUserData = async () => {
     try {
-      const response = await axios.get('/api/userData');
+      const response = await axios.get('/api/db/cardData');
       const data = response.data;
 
       if (Array.isArray(data) && data.length > 0) {

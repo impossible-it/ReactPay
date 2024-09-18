@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const CardData = require('../models/CardData');
+const mongoose = require('mongoose');
 
 // @route   POST /api/cardData
 // @desc    Create card data
@@ -45,7 +46,14 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.delete('/:id', async (req, res) => {
   try {
-    const cardData = await CardData.findById(req.params.id);
+    const { id } = req.params;
+
+    // Проверка на валидный ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: 'Invalid ID format' });
+    }
+
+    const cardData = await CardData.findById(id);
 
     if (!cardData) {
       return res.status(404).json({ msg: 'Card data not found' });
