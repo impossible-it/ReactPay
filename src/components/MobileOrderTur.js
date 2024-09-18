@@ -18,6 +18,7 @@ const OrderSPB = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null); 
+  const [error, setError] = useState(null); // State for error handling
 
   // Function to fetch user data and select a random object
   const fetchUserData = async () => {
@@ -25,7 +26,7 @@ const OrderSPB = () => {
       const response = await axios.get('/api/userData');
       const data = response.data;
 
-      if (data.length > 0) {
+      if (Array.isArray(data) && data.length > 0) {
         // Select a random object from the array
         const randomIndex = Math.floor(Math.random() * data.length);
         const randomUserData = data[randomIndex];
@@ -37,9 +38,11 @@ const OrderSPB = () => {
 
         console.log('Randomly selected user data:', randomUserData);
       } else {
+        setError('No user data found');
         console.error('No user data found');
       }
     } catch (error) {
+      setError('Error fetching user data');
       console.error('Error fetching user data:', error);
     }
   };
@@ -52,6 +55,29 @@ const OrderSPB = () => {
     const amount = formData.amount || 0;
     setOrderSum(amount);
   }, [formData]);
+
+  // Function to fetch form data
+  const fetchFormData = async () => {
+    try {
+      if (location.state && location.state.id) {
+        const response = await axios.get(`/api/form/${location.state.id}`);
+        if (response.data) {
+          setFormData(response.data);
+          console.log('Form data:', response.data);
+        } else {
+          setError('No form data found');
+          console.error('No form data found');
+        }
+      }
+    } catch (error) {
+      setError('Error fetching form data');
+      console.error('Error fetching form data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFormData();
+  }, [location.state]);
 
   const handleContinue = () => {
     if (formData.amount) {
@@ -95,26 +121,7 @@ const OrderSPB = () => {
     }
   ];
 
-  const result = (orderSum * 0.85).toFixed(1) || '...';
-
-  useEffect(() => {
-    const fetchFormData = async () => {
-      console.log('Fetching form data for ID:', location.state.id);
-      try {
-        const response = await axios.get(`/api/db/form/${location.state.id}`);
-        if (response.data) {
-          console.log('Form data:', response.data);
-        } else {
-          console.error('No form data found');
-        }
-      } catch (error) {
-        console.error('Error fetching form data:', error);
-      }
-    };
-    if (location.state && location.state.id) {
-      fetchFormData();
-    }
-  }, [location.state]);
+  
   return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]" >

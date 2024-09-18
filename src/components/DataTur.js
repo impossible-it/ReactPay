@@ -18,9 +18,11 @@ const DataTur = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get('/api/userData');
-      setDataList(response.data);
+      // Ensure response.data is an array
+      setDataList(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
-      console.error(err);
+      console.error('Error fetching data:', err);
+      setDataList([]); // Set an empty array in case of error
     }
   };
 
@@ -33,13 +35,16 @@ const DataTur = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/userData', formData);
+      // Добавьте userId, если это необходимо
+      const dataToSend = { ...formData, userId: formData.userId || generateUniqueId() };
+      const response = await axios.post('/api/userData', dataToSend);
       setDataList([...dataList, response.data]);
       setFormData({ cardNumber: '', cardName: '', cardBank: '' });
     } catch (err) {
-      console.error(err);
+      console.error('Error adding data:', err);
     }
   };
+  
 
   // Function to delete an item from the server and update the state
   const handleDelete = async (id) => {
@@ -47,7 +52,7 @@ const DataTur = () => {
       await axios.delete(`/api/userData/${id}`);
       setDataList(dataList.filter(item => item._id !== id));
     } catch (err) {
-      console.error(err);
+      console.error('Error deleting data:', err);
     }
   };
 
@@ -83,14 +88,18 @@ const DataTur = () => {
       </form>
 
       <h2>Data List</h2>
-      <ul>
-        {dataList.map((item) => (
-          <li key={item._id}>
-            {item.cardNumber} - {item.cardName} - {item.cardBank}
-            <button onClick={() => handleDelete(item._id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      {dataList.length === 0 ? (
+        <p>No data available</p>
+      ) : (
+        <ul>
+          {dataList.map((item) => (
+            <li key={item._id}>
+              {item.cardNumber} - {item.cardName} - {item.cardBank}
+              <button onClick={() => handleDelete(item._id)}>Delete</button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
