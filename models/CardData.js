@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const UserDataSchema = new mongoose.Schema({
+const CardDataSchema = new mongoose.Schema({
   cardNumber: {
     type: String,
     required: true
@@ -14,6 +14,7 @@ const UserDataSchema = new mongoose.Schema({
     required: true
   }
 }, {
-  timestamps: true
+  timestamps: true // Добавляет поля createdAt и updatedAt
 });
-module.exports = mongoose.model('UserData', UserDataSchema);
+
+module.exports = mongoose.model('CardData', CardDataSchema);

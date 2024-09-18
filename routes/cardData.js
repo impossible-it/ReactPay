@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const UserData = require('../models/UserData');
+const CardData = require('../models/CardData');
 
-// @route   POST /api/userData
-// @desc    Create user data
+// @route   POST /api/cardData
+// @desc    Create card data
 // @access  Public
 router.post('/', async (req, res) => {
   const { cardNumber, cardName, cardBank } = req.body;
@@ -13,48 +13,48 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Используем UserData.create для создания и сохранения записи
-    const userData = await UserData.create({
+    // Используем CardData.create для создания и сохранения записи
+    const cardData = await CardData.create({
       cardNumber,
       cardName,
       cardBank
     });
 
-    res.json(userData);
+    res.json(cardData);
   } catch (err) {
-    console.error('Error in POST /api/userData:', err); // Логируем полный объект ошибки
+    console.error('Error in POST /api/cardData:', err);
     res.status(500).send('Server error');
   }
 });
 
-// @route   GET /api/userData
-// @desc    Get all user data
+// @route   GET /api/cardData
+// @desc    Get all card data
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const userDataList = await UserData.find();
-    res.json(userDataList);
+    const cardDataList = await CardData.find();
+    res.json(cardDataList);
   } catch (err) {
-    console.error('Error in GET /api/userData:', err); // Логируем полный объект ошибки
+    console.error('Error in GET /api/cardData:', err);
     res.status(500).send('Server error');
   }
 });
 
-// @route   DELETE /api/userData/:id
-// @desc    Delete user data by ID
+// @route   DELETE /api/cardData/:id
+// @desc    Delete card data by ID
 // @access  Public
 router.delete('/:id', async (req, res) => {
   try {
-    const userData = await UserData.findById(req.params.id);
+    const cardData = await CardData.findById(req.params.id);
 
-    if (!userData) {
-      return res.status(404).json({ msg: 'User data not found' });
+    if (!cardData) {
+      return res.status(404).json({ msg: 'Card data not found' });
     }
 
-    await userData.remove();
-    res.json({ msg: 'User data removed' });
+    await cardData.remove();
+    res.json({ msg: 'Card data removed' });
   } catch (err) {
-    console.error('Error in DELETE /api/userData/:id:', err); // Логируем полный объект ошибки
+    console.error('Error in DELETE /api/cardData/:id:', err);
     res.status(500).send('Server error');
   }
 });
