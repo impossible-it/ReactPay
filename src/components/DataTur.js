@@ -17,7 +17,7 @@ const DataTur = () => {
   // Function to fetch all data from the server
   const fetchData = async () => {
     try {
-      const response = await axios.get('/api/userData');
+      const response = await axios.get('/api/db/userData');
       // Ensure response.data is an array
       setDataList(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
@@ -36,7 +36,7 @@ const DataTur = () => {
     e.preventDefault();
     try {
       const dataToSend = { ...formData };
-      const response = await axios.post('/api/userData', dataToSend);
+      const response = await axios.post('/api/db/userData', dataToSend);
       setDataList([...dataList, response.data]);
       setFormData({ cardNumber: '', cardName: '', cardBank: '' });
     } catch (err) {
@@ -47,7 +47,7 @@ const DataTur = () => {
   // Function to delete an item from the server and update the state
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/userData/${id}`);
+      await axios.delete(`/api/db/userData/${id}`);
       setDataList(dataList.filter(item => item._id !== id));
     } catch (err) {
       console.error('Error deleting data:', err);
