@@ -8,6 +8,10 @@ const UserData = require('../models/UserData');
 router.post('/', async (req, res) => {
   const { userId, cardNumber, cardName, cardBank } = req.body;
 
+  if (!userId || !cardNumber || !cardName || !cardBank) {
+    return res.status(400).json({ msg: 'Please include all required fields' });
+  }
+
   try {
     const userData = await UserData.findOneAndUpdate(
       { userId },
@@ -17,7 +21,7 @@ router.post('/', async (req, res) => {
 
     res.json(userData);
   } catch (err) {
-    console.error(err.message);
+    console.error('Error in POST /api/userData:', err.message);
     res.status(500).send('Server error');
   }
 });
@@ -30,7 +34,7 @@ router.get('/', async (req, res) => {
     const userDataList = await UserData.find();
     res.json(userDataList);
   } catch (err) {
-    console.error(err.message);
+    console.error('Error in GET /api/userData:', err.message);
     res.status(500).send('Server error');
   }
 });
@@ -49,7 +53,7 @@ router.delete('/:id', async (req, res) => {
     await userData.remove();
     res.json({ msg: 'User data removed' });
   } catch (err) {
-    console.error(err.message);
+    console.error('Error in DELETE /api/userData/:id:', err.message);
     res.status(500).send('Server error');
   }
 });
