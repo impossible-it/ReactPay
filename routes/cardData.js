@@ -31,12 +31,24 @@ router.post('/', async (req, res) => {
 // @route   GET /api/cardData
 // @desc    Get all card data
 // @access  Public
-router.get('/', async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const cardDataList = await CardData.find();
-    res.json(cardDataList);
+    const { id } = req.params;
+
+    // Проверка на валидный ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: 'Invalid ID format' });
+    }
+
+    const cardData = await CardData.findById(id);
+
+    if (!cardData) {
+      return res.status(404).json({ msg: 'Card data not found' });
+    }
+
+    res.json(cardData);
   } catch (err) {
-    console.error('Error in GET /api/cardData:', err);
+    console.error('Error in GET /api/cardData/:id:', err.stack);
     res.status(500).send('Server error');
   }
 });

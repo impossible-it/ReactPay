@@ -45,14 +45,15 @@ const DataTur = () => {
   };
 
   // Function to delete an item from the server and update the state
-  const handleDelete = async (id) => {
+  const handleDelete = async (cardName) => {
     try {
-      await axios.delete(`/api/db/cardData/${id}`);
-      setDataList(dataList.filter(item => item._id !== id));
+      await axios.delete(`/api/db/cardData/name/${cardName}`);
+      setDataList(dataList.filter(item => item.cardName !== cardName));
     } catch (err) {
       console.error('Error deleting data:', err);
     }
   };
+  
 
   return (
     <div className="max-w-md mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
@@ -101,11 +102,11 @@ const DataTur = () => {
                 <span className="font-medium">{item.cardNumber}</span> - <span>{item.cardName}</span> - <span>{item.cardBank}</span>
               </div>
               <button 
-                className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                onClick={() => handleDelete(item._id)}
-              >
-                Delete
-              </button>
+  className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+  onClick={() => handleDelete(item.cardName)}
+>
+  Delete
+</button>
             </li>
           ))}
         </ul>
