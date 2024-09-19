@@ -60,7 +60,7 @@ const OrderSPB = () => {
   const fetchFormData = async () => {
     try {
       if (location.state && location.state.id) {
-        const response = await axios.get(`/api/form/${location.state.id}`);
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
         if (response.data) {
           setFormData(response.data);
           console.log('Form data:', response.data);
@@ -131,10 +131,10 @@ const OrderSPB = () => {
               {showAlert && copyAlertIndex === 0 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 mr-4">Panoya kopyalandı</div>}
               <div className='flex justify-between items-center'>
                 <div className="">
-                  <h2 className="text-base font-normal">Sipariş Numarası</h2>
-                  <p className="text-sm mt-2 text-blueth">199203</p>
+                  <h2 className="text-base font-normal">Alıcı</h2>
+                  <p className="text-sm mt-2 text-blueth">{cardName || 'Alıcı Name'}</p>
                 </div>
-                <button onClick={() => handleCopy('199203', 0)} className="text-blue-500"><CopyImage /></button>
+                <button onClick={() => handleCopy(cardName, 0)} className="text-blue-500"><CopyImage /></button>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg relative">
@@ -152,9 +152,9 @@ const OrderSPB = () => {
               <div className='flex justify-between items-center'>
                 <div className="">
                   <h2 className="text-base font-normal">Bağlı Hesap Bilgileri</h2>
-                  <p className="text-sm mt-2 text-blueth">{cardNumber || 'TR02 0006 4000 0011 5260 2317 91'}</p>
+                  <p className="text-sm mt-2 text-blueth">{cardNumber || ' ... '}</p>
                 </div>
-                <button onClick={() => handleCopy(cardNumber || 'TR02 0006 4000 0011 5260 2317 91', 2)} className="text-blue-500"><CopyImage /></button>
+                <button onClick={() => handleCopy(cardNumber || '', 2)} className="text-blue-500"><CopyImage /></button>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg">
