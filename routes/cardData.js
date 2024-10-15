@@ -31,52 +31,38 @@ router.post('/', async (req, res) => {
 // @route   GET /api/cardData
 // @desc    Get all card data
 // @access  Public
-router.get('/:id', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const { id } = req.params;
-
-    // Проверка на валидный ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ msg: 'Invalid ID format' });
-    }
-
-    const cardData = await CardData.findById(id);
-
-    if (!cardData) {
-      return res.status(404).json({ msg: 'Card data not found' });
-    }
-
-    res.json(cardData);
+    const cardDataList = await CardData.find();
+    res.json(cardDataList);
   } catch (err) {
-    console.error('Error in GET /api/cardData/:id:', err.stack);
+    console.error('Error in GET /api/cardData:', err);
     res.status(500).send('Server error');
   }
 });
-
 // @route   DELETE /api/cardData/:id
 // @desc    Delete card data by ID
 // @access  Public
-router.delete('/:id', async (req, res) => {
+router.delete('/name/:cardName', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { cardName } = req.params;
+    console.log('Delete request received for cardName:', cardName);
 
-    // Проверка на валидный ObjectId
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ msg: 'Invalid ID format' });
-    }
-
-    const cardData = await CardData.findById(id);
+    // Проверка, что запись существует
+    const cardData = await CardData.findOne({ cardName });
 
     if (!cardData) {
+      console.log('No card data found for:', cardName);
       return res.status(404).json({ msg: 'Card data not found' });
     }
 
-    await cardData.remove();
-    res.json({ msg: 'Card data removed' });
+    // Удаление найденной записи
+    await CardData.deleteOne({ _id: cardData._id });
+    console.log('Card data removed:', cardData);
+    res.json({ msg: 'Card data removed', removedData: cardData });
   } catch (err) {
-    console.error('Error in DELETE /api/cardData/:id:', err);
+    console.error('Error in DELETE /api/cardData/name/:cardName:', err);
     res.status(500).send('Server error');
   }
 });
-
 module.exports = router;

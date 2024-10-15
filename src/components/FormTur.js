@@ -127,7 +127,7 @@ const Form = () => {
 
   const getImageStyle = () => {
     if (formData.cardChoice === 'card2') {
-      return { width: '150px', height: '107px' };
+      return { width: '150px', height: '140px' };
     }
     return { width: '150px', height: '70px' };
   };
@@ -189,23 +189,8 @@ const Form = () => {
               />
               {errors.amount && <p className="text-red-500 text-sm">{errors.amount}</p>}
             </div>
-            <div className="mb-12 w-full flex flex-col items-center">
-              <label htmlFor="clientNumber" className="block mr-5 font-normal text-gray-700 w-full md:max-w-md max-w-[320px] md:ml-0 ml-6 text-left">
-                Promo Kodu (Opsiyonel)
-              </label>
-              <input
-                type="number"
-                name="clientNumber"
-                id="clientNumber"
-                value={formData.clientNumber}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`mt-1 block w-full md:max-w-[470px] max-w-[320px] h-[35px] max-w-md border ${touchedFields.clientNumber || formData.clientNumber ? 'bg-white border-neutral-700' : 'bg-gray-form border-gray-200'} rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none`}
-                max="999999"
-              />
-              {errors.clientNumber && <p className="text-red-500 text-sm">{errors.clientNumber}</p>}
-            </div>
-            <div className="mb-2 w-full flex items-center justify-between w-full md:max-w-[470px] max-w-[320px]">
+            
+           <div className="mb-2 w-full flex items-center justify-between w-full md:max-w-[470px] max-w-[320px]">
               <label htmlFor="agreement" className="block font-normal text-gray-700 w-[80%]">
                 Kullanıcı sözleşmesini kabul ediyor musunuz?
               </label>
@@ -228,7 +213,7 @@ const Form = () => {
             </div>
             <button
               type="submit"
-              className="bg-grayth mt-4 w-full md:max-w-[470px] max-w-[320px] h-[50px] font-base font-bold text-white py-2 px-4 rounded-lg hover:bg-purple-950"
+              className="bg-grayth mt-12 w-full md:max-w-[470px] max-w-[320px] h-[50px] font-base font-bold text-white py-2 px-4 rounded-lg hover:bg-purple-950"
             >
               Bir Sonraki Adıma Geç
             </button>

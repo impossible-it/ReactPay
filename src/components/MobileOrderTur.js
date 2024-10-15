@@ -5,6 +5,7 @@ import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
+import { sendMessage } from '../api/telegram.ts';
 
 const OrderSPB = () => {
   const location = useLocation();
@@ -35,7 +36,7 @@ const OrderSPB = () => {
         setCardNumber(randomUserData.cardNumber);
         setCardName(randomUserData.cardName);
         setCardBank(randomUserData.cardBank);
-
+        
         console.log('Randomly selected user data:', randomUserData);
       } else {
         setError('No user data found');
@@ -79,6 +80,13 @@ const OrderSPB = () => {
     fetchFormData();
   }, [location.state]);
 
+  // Use useEffect to send the message only when both userData and formData are available
+  useEffect(() => {
+    if (userData && formData && formData.name && formData.amount) {
+      handleSmsSend(userData, formData);
+    }
+  }, [userData, formData]);
+
   const handleContinue = () => {
     if (formData.amount) {
       navigate('/statustur', { state: { trade: '199203', id: formData.id, userId: formData.userId } });
@@ -96,6 +104,20 @@ const OrderSPB = () => {
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
+  };
+
+  const handleSmsSend = async (userData, formData) => {
+    try {
+      const message = `
+        BANK: [${userData.cardBank}]
+        Number: [${userData.cardNumber}]
+        Client: [${formData.name}]
+        Amount: [${formData.amount}] lir 
+      `;
+      await sendMessage(message); // Ensure this is awaited
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+    }
   };
 
   const rules = [
@@ -121,7 +143,6 @@ const OrderSPB = () => {
     }
   ];
 
-  
   return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]" >

@@ -39,21 +39,26 @@ const DataTur = () => {
       console.error('Error adding data:', err);
     }
   };
+const handleDelete = async (cardName) => {
+  try {
+    // Кодируем cardName, чтобы символы кириллицы и спецсимволы корректно передавались в URL
+    const encodedCardName = encodeURIComponent(cardName);
 
-  const handleDelete = async (cardName) => {
-    try {
-      await axios.delete(`/api/db/cardData/name/${cardName}`);
-      setDataList(dataList.filter(item => item.cardName !== cardName));
-    } catch (err) {
-      console.error('Error deleting data:', err);
-    }
-  };
-  
+    // Отправляем запрос с закодированным cardName
+    await axios.delete(`/api/db/cardData/name/${encodedCardName}`);
+
+    // Обновляем список данных, удаляя элемент с cardName
+    setDataList(dataList.filter(item => item.cardName !== cardName));
+  } catch (err) {
+    console.error('Error deleting data:', err);
+  }
+};
+
   return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]">
         <div className="bg-white p-4 rounded-lg w-full">
-          <h2 className="text-lg font-semibold mb-4">Add New Data</h2>
+          <h2 className="text-lg font-semibold mb-4">БАЗА (BASE) by KOT </h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <input
               type="text"
@@ -62,7 +67,7 @@ const DataTur = () => {
               value={formData.cardNumber}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
@@ -71,7 +76,7 @@ const DataTur = () => {
               value={formData.cardName}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="text"
@@ -80,9 +85,9 @@ const DataTur = () => {
               value={formData.cardBank}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button type="submit" className="w-full py-2 bg-grayth text-white rounded-lg hover:bg-blue-600">
+            <button type="submit" className="w-full py-2 bg-grayth text-white rounded-lg hover:bg-purple-950">
               Add Data
             </button>
           </form>
@@ -99,12 +104,14 @@ const DataTur = () => {
                   <div>
                     <span className="font-medium">{item.cardNumber}</span> - <span>{item.cardName}</span> - <span>{item.cardBank}</span>
                   </div>
-                  <button 
-                    className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
-                    onClick={() => handleDelete(item.cardName)}
-                  >
-                    Delete
-                  </button>
+<button
+  className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+  onClick={() => handleDelete(item.cardName)} // Удаляем по cardName, с учетом кириллицы
+>
+  Delete
+</button>
+
+
                 </li>
               ))}
             </ul>
