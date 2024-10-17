@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import LogotypeTextImage from './img/LogotypeText.png';
-import TerminalSecImage from './img/terminal2.png';
+import TerminalSecImage from './img/terminal.png';
 import CardImage from './img/card.png';
 import FastsystemImage from './img/spb.png';
 
