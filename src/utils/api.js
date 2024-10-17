@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const BASE_API_URL = '/api/external/auto/get_card/client/284278/amount';
 const BASE_API_SBP = '/api/external/auto/get_card/client/399635/amount';
-const API_BASE_URL = '/api2/card/request';
+const API_BASE_URL = '/api/obmenka';
 
 export const createOrder = async (amount) => {
   try {
@@ -42,26 +42,21 @@ export const checkTradeStatus = async (order) => {
 
 export const createCardOrder = async (amount) => {
   const data = {
-    api_key:  'c66eb87d0d2ecabff44fbe2ffe33f5c5b8decc45399e82d942eff802c6506fbe',
+    api_key: c66eb87d0d2ecabff44fbe2ffe33f5c5b8decc45399e82d942eff802c6506fbe,
     amount: amount,
-    merchant_order_id:  'optional',
-    currency: 'RUB',
+    merchant_order_id: optional,
+    notice_url: 'https://www.google.com',
   };
 
-
-
   try {
-    const response = await axios.post(`${API_BASE_URL}`, data, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-    return response.data; // возвращаем объект с order_id, amount, card_number и статусом
+    const response = await axios.post(`${API_BASE_URL}`, data);
+    return response.data; 
   } catch (error) {
     console.error('Ошибка при создании заявки:', error);
     throw error;
   }
 };
+
 // Проверка статуса заявки
 export const checkCardOrderStatus = async (orderId) => {
   const data = {
