@@ -6,7 +6,7 @@ import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
-import { createOrder } from '../utils/api';
+import { createCardOrder } from '../utils/api';
 
 const PaymentRequest = () => {
   const location = useLocation();

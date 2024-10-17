@@ -20,6 +20,8 @@ const OrderOther = () => {
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
+  const [formData, setFormData] = useState({});
+
   const handleSmsSend = async () => {
     setLoading(true);
     try {
@@ -79,7 +81,18 @@ const OrderOther = () => {
     }
     return () => clearInterval(timer);
   }, [step]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
+        setFormData(response.data);
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+      }
+    };
 
+    fetchData();
+  }, [location.state.id]);
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;

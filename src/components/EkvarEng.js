@@ -24,7 +24,6 @@ const OrderEng = () => {
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({});
 
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
