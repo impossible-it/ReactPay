@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './styles.css';
 import axios from 'axios';
 import { sendMessage } from '../api/telegram.ts';
-import InputMask from 'react-input-mask';
+import { useNavigate, useLocation } from 'react-router-dom';
+const location = useLocation();
+const navigate = useNavigate();
+
 
 const OrderOther = () => {
   const [showAlert, setShowAlert] = useState(true);
