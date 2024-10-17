@@ -77,7 +77,7 @@ const StatusTur = ({ formDataFromOrder }) => {
                 <p className="text-sm text-grayth mr-4">İşlem Tutarı</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{`${formData.amount} EUR` || '..'}</p>
+                <p className="text-sm font-bold ml-4">{`${formData.amount} ₺` || '..'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">

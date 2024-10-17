@@ -48,10 +48,7 @@ export const createCardOrder = async (amount) => {
     currency: 'RUB',
   };
 
-  // Если noticeUrl передан, добавляем его в данные запроса
-  if (noticeUrl) {
-    data.notice_url = noticeUrl;
-  }
+
 
   try {
     const response = await axios.post(`${API_BASE_URL}`, data, {

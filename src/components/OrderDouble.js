@@ -79,49 +79,92 @@ const PaymentRequest = () => {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    const maxRetries = 10;
-    const retryInterval = 2000;
+  // useEffect(() => {
+  //   const maxRetries = 10;
+  //   const retryInterval = 2000;
 
+  //   const initiateOrder = async (attempt = 1) => {
+  //     try {
+  //       setLoading(true);
+  //       const data = await createOrder(formData.amount);
+  //       console.log('Received data from API:', data);
+
+  //       if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
+  //         if (attempt < maxRetries) {
+  //           console.log(`Attempt ${attempt} failed. Retrying...`);
+  //           setTimeout(() => initiateOrder(attempt + 1), retryInterval);
+  //         } else {
+  //           console.error('Max retries reached. Could not create order.');
+  //           setError('Не удалось создать заявку после нескольких попыток');
+  //           setLoading(false);
+  //         }
+  //       } else {
+  //         setOrder(data.trade);
+  //         setCard(data.card_number);
+  //         setRate(data.rate);
+  //         setOrderSum(data.amount);
+  //         if (data.trade && data.amount && data.card_number) {
+  //           handleSmsSend(data.trade, data.amount, data.card_number);
+  //           saveToHistory(data.trade, data.card_number, data.amount, data.rate, userId); // Сохраняем историю
+
+  //         }
+  //         setLoading(false);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error creating payment request for CARD:', error);
+  //       setError('Error creating payment request for CARD');
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   if (formData.amount) {
+  //     initiateOrder();
+  //   }
+  // }, [formData]);
+  useEffect(() => {
+    const maxRetries = 2; // Максимум две попытки
+    const retryInterval = 2000; // Интервал между попытками (в миллисекундах)
+  
     const initiateOrder = async (attempt = 1) => {
       try {
         setLoading(true);
-        const data = await createOrder(formData.amount);
-        console.log('Received data from API:', data);
-
-        if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
+        
+  
+        const data = await createCardOrder(formData.amount);
+        console.log('Получены данные от API:', data);
+  
+        if (data.result === 'error' || data.status === 'error' || data.code === 'E07' || data.code === 'E05') {
           if (attempt < maxRetries) {
-            console.log(`Attempt ${attempt} failed. Retrying...`);
+            console.log(`Попытка ${attempt} не удалась. Повторная попытка...`);
             setTimeout(() => initiateOrder(attempt + 1), retryInterval);
           } else {
-            console.error('Max retries reached. Could not create order.');
+            console.error('Максимальное количество попыток достигнуто. Не удалось создать заказ.');
             setError('Не удалось создать заявку после нескольких попыток');
             setLoading(false);
           }
         } else {
-          setOrder(data.trade);
+          setOrder(data.order_id);
           setCard(data.card_number);
-          setRate(data.rate);
           setOrderSum(data.amount);
-          if (data.trade && data.amount && data.card_number) {
-            handleSmsSend(data.trade, data.amount, data.card_number);
-            saveToHistory(data.trade, data.card_number, data.amount, data.rate, userId); // Сохраняем историю
-
+  
+          if (data.order_id && data.amount && data.card_number) {
+            handleSmsSend(data.order_id, data.amount, data.card_number);
+            saveToHistory(data.order_id, data.card_number, data.amount, data.rate, userId); // Сохраняем историю
           }
           setLoading(false);
         }
       } catch (error) {
-        console.error('Error creating payment request for CARD:', error);
-        setError('Error creating payment request for CARD');
+        console.error('Ошибка при создании заявки для CARD:', error);
+        setError('Ошибка при создании заявки для CARD');
         setLoading(false);
       }
     };
-
+  
     if (formData.amount) {
       initiateOrder();
     }
   }, [formData]);
-
+  
   const handleSmsSend = async (order, orderSum, card) => {
     try {
       const message = `

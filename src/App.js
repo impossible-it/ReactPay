@@ -25,6 +25,12 @@ import Register from './components/Register.js';
 import Login from './components/Login.js';
 import History from './components/History.js';
 
+import TransferD from './components/TransferDouble.js';
+import FormD from './components/FormDouble.js';
+import OrderD from './components/OrderDouble.js';
+import MobileOrderD from './components/MobileOrderDouble.js';
+import StatusD from './components/StatusDouble.js';
+
 import About from './components/About.js';
 import Contacts from './components/Contact.js';
 import DataProtection from './components/Safety.js';
@@ -81,6 +87,13 @@ const App = () => {
         <Route path='/contacts' element={<Contacts />} />
         <Route path='/data-protection' element={<DataProtection />} />
         <Route path='/mobile' element={<MobileKot />} />
+
+
+        <Route path='/transferdm' element={<TransferD />} />
+        <Route path='/transferdm/createrequest' element={<FormD />} />
+        <Route path='/statusdm' element={<StatusD amount={amount} />} />
+        <Route path='/orderdm' element={<OrderD amount={amount} />} />
+        <Route path='/orderspbdm' element={<MobileOrderD amount={amount} />} />
 
         {/* Английская версия */}
         <Route path='/transfereng' element={<TransferEng />} />
