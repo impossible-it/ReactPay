@@ -3,11 +3,12 @@ import './styles.css';
 import axios from 'axios';
 import { sendMessage } from '../api/telegram.ts';
 import { useNavigate, useLocation } from 'react-router-dom';
-const location = useLocation();
-const navigate = useNavigate();
+
 
 
 const OrderOther = () => {
+  const location = useLocation();
+const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(true);
   const [step, setStep] = useState(1);
   const [cardData, setCardData] = useState({
