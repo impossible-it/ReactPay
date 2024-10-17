@@ -127,14 +127,14 @@ const Form = () => {
 
   const getImageStyle = () => {
     if (formData.cardChoice === 'card2') {
-      return { width: '150px', height: '140px' };
+      return { width: '150px', height: '144px' };
     }
     return { width: '150px', height: '70px' };
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-fon px-4">
-      <div className="relative bg-white md:mt-0 mt-12 rounded-lg w-full md:max-w-[608px] max-w-[350px] p-4 sm:p-8 md:p-12  md:h-[817px] h-[850px]" >
+      <div className="relative bg-white md:mt-0 mt-12 rounded-lg w-full md:max-w-[608px] max-w-[350px] p-4 sm:p-8 md:p-12  md:h-[817px] h-[770px]" >
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 md:mt-0 mt-12">
           <img src={getCardImage()} alt="Terminal" className="h-auto w-auto" style={getImageStyle()} />
         </div>

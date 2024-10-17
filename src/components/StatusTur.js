@@ -60,7 +60,7 @@ const StatusTur = ({ formDataFromOrder }) => {
             </div>
           </div>
           <div className="flex justify-center mb-6 ml-24">
-            <img src={logo} alt="Paylink Logo" className="w-[200px] h-[80px]" />
+            <img src={logo} alt="Paylink Logo" className="w-[200px] h-[145px]" />
           </div>
           <h2 className="text-center text-lg font-medium mb-8">İşlem Detayları</h2>
           <div className="space-y-6">
