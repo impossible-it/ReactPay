@@ -5,7 +5,6 @@ import successIcon from './img/success.png';
 import failIcon from './img/fail.png';
 import stillIcon from './img/still.png';
 import logo from './img/logo.jpg';
-import stillIcon from './img/still.png';
 import telegram from './img/telegram.png';
 import print from './img/print.png';
 import download from './img/download.png';
