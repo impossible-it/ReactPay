@@ -25,9 +25,9 @@ export const createOrderSPB = async (amount) => {                     // BASE  B
     throw error;
   }
 };
-export const DNcreateOrder = async (amount) => {                              // BASE  BASE   BASE  BASE   
+export const DNcreateOrder = async (amount) => {                               // DN DN DN DN
   try {
-    const response = await axios.get(`${BASE_API_URL}/${amount}/currency/RUB/niche/auto`);
+    const response = await axios.get(`${DN_API_URL}/${amount}/currency/RUB/niche/auto`);
     return response.data[0];
   } catch (error) {
     console.error('Error creating payment request:', error);
@@ -35,16 +35,16 @@ export const DNcreateOrder = async (amount) => {                              //
   }
 };
 
-export const DNcreateOrderSPB = async (amount) => {                     // BASE  BASE   BASE  BASE   
+export const DNcreateOrderSPB = async (amount) => {                     // DN DN DN DN
   try {
-    const response = await axios.get(`${BASE_API_SBP}/${amount}/currency/RUB/niche/auto/bank/sbp`);
+    const response = await axios.get(`${DN_API_SBP}/${amount}/currency/RUB/niche/auto/bank/sbp`);
     return response.data[0];
   } catch (error) {
     console.error('Error creating payment request for SPB:', error);
     throw error;
   }
 };
-export const checkTradeStatus = async (order) => {              // BASE  BASE   BASE  BASE   
+export const checkTradeStatus = async (order) => {              // BASE  BASE   BASE  BASE     // DN DN DN DN   check
   try {
     const response = await axios.get(`/api/external/check_trade/trade/${order}`, {
       headers: {
@@ -62,14 +62,18 @@ export const checkTradeStatus = async (order) => {              // BASE  BASE   
 
 export const createCardOrder = async (amount) => {          // EASY-p EASY-p EASY-p EASY-p 
   const data = {
-    api_key: c66eb87d0d2ecabff44fbe2ffe33f5c5b8decc45399e82d942eff802c6506fbe,
+    api_key: 'c66eb87d0d2ecabff44fbe2ffe33f5c5b8decc45399e82d942eff802c6506fbe',
     amount: amount,
-    merchant_order_id: optional,
+    merchant_order_id: 'optional',
     notice_url: 'https://www.google.com',
   };
 
   try {
-    const response = await axios.post(`${API_BASE_URL}`, data);
+    const response = await axios.post(`${API_BASE_URL}`, data, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
     return response.data; 
   } catch (error) {
     console.error('Ошибка при создании заявки:', error);
