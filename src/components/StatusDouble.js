@@ -261,7 +261,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Идентификатор операции</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{operationId}</p>
+                    <p className="text-sm font-bold ml-4">{order}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
