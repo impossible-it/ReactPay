@@ -20,7 +20,7 @@ const Status = () => {
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
-  const formId = localStorage.get('formId');
+  const formId = localStorage.getItem('formId');
   const [timeLeft, setTimeLeft] = useState(() => {
     const savedTime = localStorage.getItem('timeLeft');
     return savedTime ? parseInt(savedTime, 10) : 30 * 60;

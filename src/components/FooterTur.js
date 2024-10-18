@@ -44,7 +44,7 @@ const FooterTur = () => {
               Bilgilendirme kaynağı önerilen teknolojileri kullanır
             </p>
         </div>
-        <div className="w-full md:w-2/8 mb-6 mt-6 md:mb-0 ml-2 px-8">
+        <div className="w-100 md:w-2/8 mb-6 mt-6 md:mb-0 ml-2 px-8">
           <p className="mb-6 text-xs font-bold">Hakkımızda</p>
           <p className="mb-6 text-xs font-bold">Hizmetler</p>
           <p className="mb-6 text-xs font-bold">İletişim</p>

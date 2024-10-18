@@ -126,20 +126,7 @@ const OrderSPB = () => {
       navigate('/status', { state: { order } });
     }
   };
-  useEffect(() => {
-    if (!location.state?.id) {
-      const savedId = localStorage.getItem('savedFormId');
-      if (savedId) {
-        // Используйте сохраненный id
-        console.log('Using saved ID:', savedId);
-        // Загрузите данные с помощью этого сохраненного ID
-      } else {
-        console.error("ID not found in location.state or localStorage");
-      }
-    } else {
-      localStorage.setItem('savedFormId', location.state.id);
-    }
-  }, [location.state]);
+
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text);
     setCopyAlertIndex(index);
