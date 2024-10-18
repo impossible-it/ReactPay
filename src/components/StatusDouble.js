@@ -14,8 +14,7 @@ import { checkTradeStatus } from '../utils/api';
 const Status = () => {
   const location = useLocation();
   
-  const { userId } = location.state || {};
-
+  const { order } = location.state || {};
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
