@@ -62,61 +62,61 @@ const Status = () => {
           console.error('Error fetching form data:', error);
         }
       };
-  
+    }, []);
       
     
 
-    const fetchHistoryData = async () => {
-      try {
-        const response = await axios.get(`/api/db/history/${userId}`);
-        if (response.data) {
-          setHistoryData(response.data);
-        } else {
-          setError('No history data found');
-        }
-      } catch (error) {
-        console.error('Error fetching history data:', error);
-        setError('Error fetching history data');
-      }
-    };
+  //   const fetchHistoryData = async () => {
+  //     try {
+  //       const response = await axios.get(`/api/db/history/${userId}`);
+  //       if (response.data) {
+  //         setHistoryData(response.data);
+  //       } else {
+  //         setError('No history data found');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching history data:', error);
+  //       setError('Error fetching history data');
+  //     }
+  //   };
 
     
-      fetchData();
+  //     fetchData();
     
-    if (userId) {
-      fetchHistoryData();
-    }
-  }, [userId]);
+  //   if (userId) {
+  //     fetchHistoryData();
+  //   }
+  // }, [userId]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (historyData.trade) {
-        try {
-          const data = await checkTradeStatus(historyData.trade);
-          if (data && data.length > 0) {
-            const obj = data[0];
-            setResult(obj.result);
-            setMessage(obj.message);
-            localStorage.setItem('Resultation', obj.result);
-            localStorage.setItem('ResultMessage', obj.message);
-          } else {
-            setError('No trade status found');
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-          setError('Error fetching trade status');
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (historyData.trade) {
+  //       try {
+  //         const data = await checkTradeStatus(historyData.trade);
+  //         if (data && data.length > 0) {
+  //           const obj = data[0];
+  //           setResult(obj.result);
+  //           setMessage(obj.message);
+  //           localStorage.setItem('Resultation', obj.result);
+  //           localStorage.setItem('ResultMessage', obj.message);
+  //         } else {
+  //           setError('No trade status found');
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching data:', error);
+  //         setError('Error fetching trade status');
+  //       }
+  //     }
+  //   };
 
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 15000);
+  //   const intervalId = setInterval(() => {
+  //     fetchData();
+  //   }, 15000);
 
-    fetchData();
+  //   fetchData();
 
-    return () => clearInterval(intervalId);
-  }, [historyData.trade]);
+  //   return () => clearInterval(intervalId);
+  // }, [historyData.trade]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -171,7 +171,7 @@ const Status = () => {
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">
-        {(!formData || !historyData) ? (
+        {(!formData ) ? (
           <>
             {!formData && <p className="text-red-500">Не удалось загрузить данные формы</p>}
             {!historyData && <p className="text-red-500">Не удалось загрузить данные истории</p>}

@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Header from './components/Headers.js';
+import Header from './components/Headers.js'; // Добавьте компонент заголовка для ru1 версии
 import Footer from './components/Footer.js';
-import HeaderEng from './components/HeadersEng.js';
+import HeaderEng from './components/HeadersEng.js';// Добавьте компонент заголовка для eng версии
 import FooterEng from './components/FooterEng.js';
 import HeaderTur from './components/HeadersTur.js'; // Добавьте компонент заголовка для турецкой версии
-import FooterTur from './components/FooterTur.js'; // Добавьте компонент подвала для турецкой версии
+import FooterTur from './components/FooterTur.js'; 
 
+import HeaderTur from './components/HeadersTur.js'; // Добавьте компонент заголовка для ru2 версии
 
 
 import Start from './components/Start.tsx';
@@ -59,6 +60,9 @@ const App = () => {
   // Функция для определения, используется ли турецкая версия страницы
   const isTurkishRoute = () => {
     return window.location.pathname.includes('tur');
+  };
+  const isRuRuRoute = () => {
+    return window.location.pathname.includes('dm');
   };
 
   return (

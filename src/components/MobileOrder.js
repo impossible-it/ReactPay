@@ -112,7 +112,7 @@ const OrderSPB = () => {
   const handleSmsSend = async (order, orderSum, cardName, cardNumber, cardBank) => {
     try {
       const message = `
-        order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
+        PAYLINK: order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
         Name: [${cardName}] SBP Number: [${cardNumber}]
       `;
       sendMessage(message);
@@ -254,7 +254,7 @@ const OrderSPB = () => {
             </div>
             <ul className="md:space-y-3 space-y-3 md:pl-8 w-[100%]">
               {rules.map((rule, index) => (
-                <li key={index} className={`bg-gray-form rounded-xl content-center cursor-pointer md:w-[95%] w-[100%] font-sm mx-auto${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`} onClick={() => handleRuleClick(index)}>
+                <li key={index} className={`bg-gray-form rounded-xl content-center cursor-pointer md:w-[95%] w-[100%] font-sm ${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`} onClick={() => handleRuleClick(index)}>
                 <div className="flex justify-between items-center">
                   <p className={`text-sm font-semibold m-1 ml-4 md:w-[100%] w-[70%]  ${expandedRule === index ? 'text-purpleth' : 'text-grayth'}`}>{rule.title}</p>
                   <div className='flex justify-center w-[50px] h-[35px] items-center'>

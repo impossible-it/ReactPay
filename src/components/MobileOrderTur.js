@@ -215,7 +215,7 @@ const OrderSPB = () => {
               {rules.map((rule, index) => (
                 <li
                   key={index}
-                  className={`bg-gray-form rounded-xl content-center cursor-pointer md:w-[95%] w-full font-sm mx-auto ${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`}
+                  className={`bg-gray-form rounded-xl content-center cursor-pointer md:w-[95%] w-full font-sm ${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`}
                   onClick={() => handleRuleClick(index)}
                 >
                   <div className="flex justify-between items-center">

@@ -27,7 +27,7 @@ const FooterTur = () => {
           </div>
         </div>
         
-        <div className="w-full flex flex-col md:w-3/8 md:ml-0 ml-2 px-12">
+        <div className="w-full flex flex-col md:w-3/8 md:ml-0 ml-2 px-8">
           <p className="mb-6 text-xs text-grayth">
               Genel Bankacılık İşlemleri Lisansı No. 1481, 11.08.2015.
             </p>
@@ -53,9 +53,9 @@ const FooterTur = () => {
         </div>
         <div className="w-full md:w-1/4 mb-6 md:mb-0 flex justify-end md:justify-start px-4">
           <div className="absolute flex-col items-center space-y-8 md:mt-0 mt-6">
-            <img src={paypal} alt="PayPal" className="h-4 w-14" />
-            <img src={visa} alt="Visa" className="pl-1 h-[15px] w-100" />
-            <img src={mastercard} alt="MasterCard" className="pl-2 h-[15px] w-100" />
+          <img src={paypal} alt="PayPal" className="h-4 w-4" />
+            <img src={visa} alt="Visa" className="pl-1 w-8" />
+            <img src={mastercard} alt="MasterCard" className="w-8" />
           </div>
         </div>
       </div>

