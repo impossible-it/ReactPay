@@ -139,7 +139,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               </>
             ) : (
               <>
-                <button
+                {/* <button
                   onClick={NavigateRegister}
                   className="text-gray-600 hover:text-gray-900 px-3 py-2"
                 >
@@ -150,7 +150,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   className="text-gray-600 hover:text-gray-900 px-3 py-2"
                 >
                   Войти
-                </button>
+                </button> */}
               </>
             )}
             <button

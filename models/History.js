@@ -22,12 +22,13 @@ const HistorySchema = new Schema({
     },
     userId: {
         type: Schema.Types.ObjectId,
-        required: true,
+        required: false,
         ref: 'User'
     },
     date: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        required: false
     }
 });
 
