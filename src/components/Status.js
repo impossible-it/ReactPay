@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { checkTradeStatus } from '../utils/api';  // Importing the checkTradeStatus function
 import successIcon from './img/success.png';
 import failIcon from './img/fail.png';
 import stillIcon from './img/still.png';
+import logo from './img/logo.jpg';
+import stillIcon from './img/still.png';
+import telegram from './img/telegram.png';
+import print from './img/print.png';
+import download from './img/download.png';
+import { checkTradeStatus } from '../utils/api';  // Importing the checkTradeStatus function
 import './styles.css';
+
 
 const Status = () => {
   const location = useLocation();
   const { order } = location.state || {};
-
+  const [formData, setFormData] = useState(null);
+  const [historyData, setHistoryData] = useState(null);
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
@@ -177,7 +184,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Идентификатор операции</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{operationId}</p>
+                    <p className="text-sm font-bold ml-4">{order}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
