@@ -22,15 +22,7 @@ const Status = () => {
   const [formData, setFormData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
 
-  const [operationId, setOperationId] = useState(() => {
-    let savedOperationId = localStorage.getItem('operationId');
-    if (!savedOperationId) {
-      const newId = generateRandomId();
-      localStorage.setItem('operationId', newId);
-      return newId;
-    }
-    return savedOperationId;
-  });
+  
 
   const [timeLeft, setTimeLeft] = useState(() => {
     const savedTime = localStorage.getItem('timeLeft');

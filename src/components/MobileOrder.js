@@ -66,7 +66,7 @@ const OrderSPB = () => {
 
   useEffect(() => {
     const maxRetries = 10;
-    const retryInterval = 2000;
+    const retryInterval = 1500;
 
     const initiateOrder = async (attempt = 1) => {
       try {
@@ -123,7 +123,7 @@ const OrderSPB = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/status', { state: { order, id: formData.id, userId: formData.userId } });
+      navigate('/status', { state: { order } });
     }
   };
   useEffect(() => {

@@ -27,7 +27,7 @@ const FooterTur = () => {
           </div>
         </div>
         
-        <div className="w-full flex flex-col md:w-3/8 md:ml-0 ml-2 px-8">
+        <div className="w-99 flex flex-col md:w-3/8 md:ml-0 ml-2 px-8">
           <p className="mb-6 text-xs text-grayth">
               Genel Bankacılık İşlemleri Lisansı No. 1481, 11.08.2015.
             </p>

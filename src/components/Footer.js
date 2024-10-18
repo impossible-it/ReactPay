@@ -1,8 +1,8 @@
 import React from 'react';
 import logo from './img/logo.jpg';
 import copyright from './img/copyright.jpg';
-import paypal from './img/visa.png';
-import visa from './img/paypal.png';
+import paypal from './img/paypal.png';
+import visa from './img/visa.png';
 import mastercard from './img/mir.png';
 
 const Footer = () => {
@@ -45,7 +45,7 @@ const Footer = () => {
             На информационном ресурсе применяются рекомендательные технологии
             </p>
         </div>
-        <div className="w-full md:w-2/8 mb-6 mt-6 md:mb-0 px-4">
+        <div className="w-full md:w-2/8 mb-6 mt-6 md:mb-0 px-8">
           <p className="mb-6 text-xs font-bold">О нас</p>
           <p className="mb-6 text-xs font-bold">Сервис</p>
           <p className="mb-6 text-xs font-bold">Контакты</p>

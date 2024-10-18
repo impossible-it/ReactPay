@@ -93,6 +93,8 @@ const Form = () => {
     if (Object.keys(errors).length === 0) {
       try {
         const response = await axios.post('/api/db/form', formData);
+        localStorage.setItem('formId', response.data._id);
+
         const { cardChoice } = formData;
         if (cardChoice === 'card1') {
           navigate('/orderspb', { state: { id: response.data._id } });

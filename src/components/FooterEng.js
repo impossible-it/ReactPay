@@ -44,7 +44,7 @@ const FooterEng = () => {
             The informational resource uses recommended technologies
             </p>
         </div>
-        <div className="w-full md:w-2/8 mb-6 mt-6 md:mb-0 px-4">
+        <div className="w-full md:w-2/8 mb-6 mt-6 md:mb-0 px-8">
           <p className="mb-6 text-xs font-bold">About Us</p>
           <p className="mb-6 text-xs font-bold">Service</p>
           <p className="mb-6 text-xs font-bold">Contacts</p>

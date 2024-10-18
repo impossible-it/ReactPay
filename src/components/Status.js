@@ -1,172 +1,81 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import logo from './img/logo.jpg';
-import successIcon from './img/succes.png';
+import { checkTradeStatus } from '../utils/api';  // Importing the checkTradeStatus function
+import successIcon from './img/success.png';
 import failIcon from './img/fail.png';
 import stillIcon from './img/still.png';
-import telegram from './img/telegram.png';
-import print from './img/print.png';
-import download from './img/download.png';
 import './styles.css';
-import { checkTradeStatus } from '../utils/api';
 
 const Status = () => {
   const location = useLocation();
-  
-  const { userId } = location.state || {};
+  const { order } = location.state || {};
 
-  const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
-  const [formData, setFormData] = useState(null);
-  const [historyData, setHistoryData] = useState(null);
-
-  const [operationId, setOperationId] = useState(() => {
-    let savedOperationId = localStorage.getItem('operationId');
-    if (!savedOperationId) {
-      const newId = generateRandomId();
-      localStorage.setItem('operationId', newId);
-      return newId;
-    }
-    return savedOperationId;
-  });
-
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const savedTime = localStorage.getItem('timeLeft');
-    return savedTime ? parseInt(savedTime, 10) : 30 * 60;
-  });
-
-  const generateRandomId = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let result = '';
-    for (let i = 0; i < 3; i++) {
-      result += `${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.random() * characters.length)}-${characters.charAt(Math.random() * characters.length)}${characters.charAt(Math.random() * characters.length)}`;
-    }
-    return result;
-  };
-
+  const [error, setError] = useState(null);
+  const formId = localStorage.get('formId');
+  // Fetch the order status periodically
   useEffect(() => {
-
-    
-      const fetchData = async () => {
+    const fetchOrderStatus = async () => {
+      if (order) {
         try {
-          const formId = localStorage.getItem('formId'); // Получаем ID формы из localStorage
-          if (formId) {
-            const response = await axios.get(`/api/db/form/${formId}`);
-            setFormData(response.data);
-          } else {
-            console.error('Form ID not found in localStorage');
+          const data = await checkTradeStatus(order);
+          if (data && data.length > 0) {
+            setResult(data[0].result);
+            setMessage(data[0].message);
           }
         } catch (error) {
-          console.error('Error fetching form data:', error);
+          console.error('Error fetching trade status:', error);
+          setError('Error fetching trade status');
         }
-      };
-    }, []);
-      
-    
-
-  //   const fetchHistoryData = async () => {
-  //     try {
-  //       const response = await axios.get(`/api/db/history/${userId}`);
-  //       if (response.data) {
-  //         setHistoryData(response.data);
-  //       } else {
-  //         setError('No history data found');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching history data:', error);
-  //       setError('Error fetching history data');
-  //     }
-  //   };
-
-    
-  //     fetchData();
-    
-  //   if (userId) {
-  //     fetchHistoryData();
-  //   }
-  // }, [userId]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (historyData.trade) {
-  //       try {
-  //         const data = await checkTradeStatus(historyData.trade);
-  //         if (data && data.length > 0) {
-  //           const obj = data[0];
-  //           setResult(obj.result);
-  //           setMessage(obj.message);
-  //           localStorage.setItem('Resultation', obj.result);
-  //           localStorage.setItem('ResultMessage', obj.message);
-  //         } else {
-  //           setError('No trade status found');
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching data:', error);
-  //         setError('Error fetching trade status');
-  //       }
-  //     }
-  //   };
-
-  //   const intervalId = setInterval(() => {
-  //     fetchData();
-  //   }, 15000);
-
-  //   fetchData();
-
-  //   return () => clearInterval(intervalId);
-  // }, [historyData.trade]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        const newTime = prevTime > 0 ? prevTime - 1 : 0;
-        localStorage.setItem('timeLeft', newTime);
-        return newTime;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    const gradientTimer = setInterval(() => {
-      const circle = document.querySelector('.circle');
-      if (circle) {
-        circle.classList.remove('animate-gradient');
-        void circle.offsetWidth;
-        circle.classList.add('animate-gradient');
       }
-    }, 2000);
-    return () => clearInterval(gradientTimer);
-  }, []);
+    };
 
-  const formatTime = (time) => {
-    const minutes = String(Math.floor(time / 60)).padStart(2, '0');
-    const seconds = String(time % 60).padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  };
+    const intervalId = setInterval(() => {
+      fetchOrderStatus();
+    }, 15000); // Poll every 15 seconds
 
+    // Fetch order status on component mount
+    fetchOrderStatus();
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, [order]);
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        const response = await axios.get(`/api/db/form/${formId}`);
+        setFormData(response.data);
+      } catch (error) {
+        setError('Error fetching form data');
+      }
+    };
+
+    if (location.state && location.state.id) {
+      fetchFormData();
+    }
+  }, [location.state]);
+  // Render the status text and icon based on the current message
   const renderStatusText = () => {
     if (message === 'still processing') {
-      return <p className="text-sm font-bold ml-4 text-blueth">...</p>;
+      return 'Ожидание подтверждения...';
     } else if (message === 'fully paid') {
-      return <p className="text-sm font-bold ml-4 text-blueth">Успешно</p>;    
+      return 'Успешно';
     } else {
-      return <p className="text-sm font-bold ml-4 text-red-400">Не подтвержден</p>;    
+      return 'Не подтвержден';
     }
   };
 
   const renderStatusIcon = () => {
     if (message === 'still processing') {
-      return <img src={stillIcon} alt="Still Processing" width="24" height="24" />;
+      return <img src={stillIcon} alt="Still Processing" />;
     } else if (message === 'fully paid') {
-      return <img src={successIcon} alt="Success" width="24" height="24" />;
+      return <img src={successIcon} alt="Success" />;
     } else {
-      return <img src={failIcon} alt="Fail" width="24" height="24" />;
+      return <img src={failIcon} alt="Fail" />;
     }
   };
-
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
