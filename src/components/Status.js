@@ -21,6 +21,10 @@ const Status = () => {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const formId = localStorage.get('formId');
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const savedTime = localStorage.getItem('timeLeft');
+    return savedTime ? parseInt(savedTime, 10) : 30 * 60;
+  });
   // Fetch the order status periodically
   useEffect(() => {
     const fetchOrderStatus = async () => {
