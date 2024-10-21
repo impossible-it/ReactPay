@@ -81,7 +81,7 @@ const PaymentRequest = () => {
 
   useEffect(() => {
     const maxRetries = 10;
-    const retryInterval = 1200;
+    const retryInterval = 1000;
 
     const initiateOrder = async (attempt = 1) => {
       try {
@@ -135,7 +135,7 @@ const PaymentRequest = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/status', { state: { order, userId } });
+      navigate('/status', { state: { order} });
     }
   };
 
@@ -180,7 +180,7 @@ const PaymentRequest = () => {
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]">
         <div className="flex justify-between md:flex-row flex-col w-full mb-6 mt-6">
-          <div className="space-y-4 md:w-[630px] w-[382px] md:max-w-[630px] md:max-w-[382px]">
+          <div className="space-y-4 md:w-[630px] w-[350px] md:max-w-[630px] ">
             <div className="bg-white p-4 rounded-lg relative">
               {showAlert && copyAlertIndex === 0 && (
                 <div className="font-semibold text-sm text-grayth absolute top-0 right-0 mr-4">Скопировано в буфер обмена</div>
@@ -234,7 +234,7 @@ const PaymentRequest = () => {
             </div>
           </div>
 
-          <div className="bg-white space-y-4 rounded-lg p-4 md:text-right text-left md:w-[300px] w-[382px] md:mt-0 mt-8">
+          <div className="bg-white space-y-4 rounded-lg p-4 md:text-right text-left md:w-[300px] w-[350px] md:mt-0 mt-8">
             <div className="md:space-y-4 space-y-8 text-gray-700">
               <div className="w-full md:p-4">
                 <h2 className="text-sm font-normal text-grayth">Имя пользователя</h2>

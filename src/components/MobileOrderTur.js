@@ -147,7 +147,7 @@ const OrderSPB = () => {
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]" >
         <div className="flex justify-between md:flex-row flex-col w-full mb-6 mt-6">
-          <div className="space-y-4 md:w-[630px] w-[382px]">
+          <div className="space-y-4 md:w-[630px] w-[350px]">
             <div className="bg-white p-4 rounded-lg relative">
               {showAlert && copyAlertIndex === 0 && <div className="font-semibold text-sm text-grayth absolute top-0 right-0 mr-4">Panoya kopyalandı</div>}
               <div className='flex justify-between items-center'>
@@ -185,7 +185,7 @@ const OrderSPB = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white space-y-4 rounded-lg p-4 md:w-[300px] w-[382px] md:text-right text-left">
+          <div className="bg-white space-y-4 rounded-lg p-4 md:w-[300px] w-[350px] md:text-right text-left">
             <div className="md:space-y-4 space-y-8 text-gray-700">
               <div className="w-full md:p-4">
                 <h2 className="text-sm font-normal text-grayth">Kullanıcı Adı</h2>
