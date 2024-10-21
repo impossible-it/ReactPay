@@ -135,7 +135,13 @@ const PaymentRequest = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/status', { state: { order} });
+      navigate('/status', {
+        state: {
+          order,
+          amount: orderSum,
+          cardNumber: card,
+        },
+      });
     }
   };
 

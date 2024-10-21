@@ -13,7 +13,7 @@ import './styles.css';
 
 const Status = () => {
   const location = useLocation();
-  const { order } = location.state || {};
+  const { order, amount, cardNumber } = location.state || {};
   const [formData, setFormData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
   const [result, setResult] = useState(null);
@@ -77,6 +77,21 @@ const Status = () => {
     fetchFormData();
   }, [formId]);
 
+  // Timer countdown
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        const newTime = prevTime - 1;
+        localStorage.setItem('timeLeft', newTime);
+        return newTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
   // Render the status text and icon based on the current message
   const renderStatusText = () => {
     if (message === 'still processing') {
@@ -98,6 +113,7 @@ const Status = () => {
     }
   };
 
+
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">
@@ -105,7 +121,7 @@ const Status = () => {
           <>
             <div className="w-full bg-white p-8 rounded-lg md:mb-16 mb-0 mt-8">
               <div className="text-center mb-8">
-                <p className="text-sm text-gray-600 mb-4">Ожидание подтверждения</p>
+                <p className="text-sm text-gray-600 mb-4">Идет проверка платежа</p>
                 <div className="relative flex justify-center items-center">
                   <svg className="w-24 h-24" viewBox="0 0 100 100">
                     <defs>
@@ -153,7 +169,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Заявка №</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{historyData?.trade || 'Ошибка'}</p>
+                    <p className="text-sm font-bold ml-4">{ order || 'Загрузка...'}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -161,7 +177,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Сумма транзакции</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{historyData?.amount || 'Ошибка'}</p>
+                    <p className="text-sm font-bold ml-4">{amount || 'Загрузка...'}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -185,7 +201,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Банк-исполнитель</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{historyData?.cardNumber || 'Ошибка'}</p>
+                    <p className="text-sm font-bold ml-4">{cardNumber || 'Загрузка...'}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -200,7 +216,7 @@ const Status = () => {
                   <div className="w-1/2 text-right">
                     <p className="text-sm text-grayth mr-4">Статус</p>
                   </div>
-                  <div className="w-1/2 text-left">
+                  <div className="w-1/2  mt-6 md:mt-0 ml-0 md:ml-6 text-left">
                     {renderStatusText()}
                   </div>
                 </div>
