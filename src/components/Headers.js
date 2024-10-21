@@ -197,15 +197,15 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
             <div
               key={index}
               ref={(el) => (blocksRef.current[index] = el)}
-              className={`flex flex-col items-center justify-center p-2 md:w-[200px] w-[50%] md:h-[150px] h-[125px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
-                activeIndex === index ? 'bg-grayth' : ''
+              className={`flex flex-row items-center justify-center p-2 md:w-[190px]  h-[50px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
+                activeIndex === index ? 'bg-purpleth' : ''
               }`}
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={() => handleMouseLeave(index)}
               onClick={() => handleBlockClick(block.path, index)}
             >
-              <span className="mb-2 font-bold">{block.text}</span>
               <img src={block.img} alt={block.alt} className="h-16 w-16" />
+              <span className={`mb-2 font-bold ${activeIndex === index ? 'text-white' : 'text-purpleth'}`}>{block.text}</span>
             </div>
           ))}
         </div>

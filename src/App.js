@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
-
 
 import Header from './components/Headers.js'; // Добавьте компонент заголовка для ru1 версии
 import Footer from './components/Footer.js';
@@ -11,7 +9,6 @@ import FooterEng from './components/FooterEng.js';
 import HeaderTur from './components/HeadersTur.js'; // Добавьте компонент заголовка для турецкой версии
 import FooterTur from './components/FooterTur.js'; 
 import HeaderD from './components/HeadersDouble.js'; // Добавьте компонент заголовка для ru2 версии
-
 
 import Start from './components/Start.tsx';
 import Order from './components/Order.js';
@@ -43,25 +40,25 @@ import FormEng from './components/FormEng.js';
 import EkvarOrderEng from './components/EkvarEng.js';
 import StatusEng from './components/StatusEng.js';
 
-import DataTur from './components/DataTur.js'
+import DataTur from './components/DataTur.js';
 import OrderTur from './components/MobileOrderTur.js'; 
 import TransferTur from './components/TransferTur.js';
 import FormTur from './components/FormTur.js';
 import StatusTur from './components/StatusTur.js';
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const amount = 1957; // Пример суммы
-  const location = useLocation();
-  const ScrollToTop = () => {
-    const { pathname } = useLocation();
-  
-    useEffect(() => {
-      window.scrollTop(0, 0);
-    }, [pathname]);
-  
-    return null;
-  };
 
   // Функция для определения, используется ли английская версия страницы
   const isEnglishRoute = () => {
@@ -78,7 +75,7 @@ const App = () => {
 
   return (
     <Router>
-       <ScrollToTop />
+      <ScrollToTop />
       {isEnglishRoute() ? (
         <HeaderEng isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
       ) : isTurkishRoute() ? (
@@ -105,7 +102,6 @@ const App = () => {
         <Route path='/contacts' element={<Contacts />} />
         <Route path='/data-protection' element={<DataProtection />} />
         <Route path='/mobile' element={<MobileKot />} />
-
 
         <Route path='/transferdm' element={<TransferD />} />
         <Route path='/transferdm/createrequest' element={<FormD />} />
