@@ -71,7 +71,7 @@ const OrderSPB = () => {
     const initiateOrder = async (attempt = 1) => {
       try {
         setLoading(true);
-        const data = await createOrderSPB(formData.amount);
+        const data = await DNcreateOrderSPB(formData.amount);
         console.log('Received data from API:', data);
 
         if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
@@ -123,23 +123,16 @@ const OrderSPB = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/statusdm', { state: { order, id: formData.id, userId: formData.userId } });
+      navigate('/status', {
+        state: {
+          order,
+          amount: orderSum,
+          cardNumber: cardNumber,
+        },
+      });
     }
   };
-  useEffect(() => {
-    if (!location.state?.id) {
-      const savedId = localStorage.getItem('savedFormId');
-      if (savedId) {
-        // Используйте сохраненный id
-        console.log('Using saved ID:', savedId);
-        // Загрузите данные с помощью этого сохраненного ID
-      } else {
-        console.error("ID not found in location.state or localStorage");
-      }
-    } else {
-      localStorage.setItem('savedFormId', location.state.id);
-    }
-  }, [location.state]);
+
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text);
     setCopyAlertIndex(index);

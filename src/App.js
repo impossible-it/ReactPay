@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+
 
 import Header from './components/Headers.js'; // Добавьте компонент заголовка для ru1 версии
 import Footer from './components/Footer.js';
@@ -8,7 +10,6 @@ import HeaderEng from './components/HeadersEng.js'; // Добавьте комп
 import FooterEng from './components/FooterEng.js';
 import HeaderTur from './components/HeadersTur.js'; // Добавьте компонент заголовка для турецкой версии
 import FooterTur from './components/FooterTur.js'; 
-
 import HeaderD from './components/HeadersDouble.js'; // Добавьте компонент заголовка для ru2 версии
 
 
@@ -51,22 +52,33 @@ import StatusTur from './components/StatusTur.js';
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const amount = 1957; // Пример суммы
+  const location = useLocation();
+  const ScrollToTop = () => {
+    const { pathname } = useLocation();
+  
+    useEffect(() => {
+      window.scrollTop(0, 0);
+    }, [pathname]);
+  
+    return null;
+  };
 
   // Функция для определения, используется ли английская версия страницы
   const isEnglishRoute = () => {
     return window.location.pathname.includes('eng');
   };
-
   // Функция для определения, используется ли турецкая версия страницы
   const isTurkishRoute = () => {
     return window.location.pathname.includes('tur');
   };
+   // Функция для определения, используется ли ru2 версия страницы
   const isRuRuRoute = () => {
     return window.location.pathname.includes('dm');
   };
 
   return (
     <Router>
+       <ScrollToTop />
       {isEnglishRoute() ? (
         <HeaderEng isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
       ) : isTurkishRoute() ? (

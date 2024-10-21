@@ -177,7 +177,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Сумма транзакции</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{amount || 'Загрузка...'}</p>
+                    <p className="text-sm font-bold ml-4">{amount || 'Загрузка...'} </p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -216,7 +216,7 @@ const Status = () => {
                   <div className="w-1/2 text-right">
                     <p className="text-sm text-grayth mr-4">Статус</p>
                   </div>
-                  <div className="w-1/2  mt-6 md:mt-0 ml-0 md:ml-6 text-left">
+                  <div className="w-1/2 font-bold mt-6 md:mt-0 ml-4 md:ml-6 text-left">
                     {renderStatusText()}
                   </div>
                 </div>

@@ -1,137 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-import logo from './img/logo.jpg';
-import successIcon from './img/succes.png';
+import successIcon from './img/success.png';
 import failIcon from './img/fail.png';
 import stillIcon from './img/still.png';
+import logo from './img/logo.jpg';
 import telegram from './img/telegram.png';
 import print from './img/print.png';
 import download from './img/download.png';
+import { checkTradeStatus, checkCardOrderStatus } from '../utils/api'; // Importing the checkTradeStatus and checkCardOrderStatus functions
 import './styles.css';
-import { checkTradeStatus } from '../utils/api';
 
 const Status = () => {
   const location = useLocation();
-  
-  const { order } = location.state || {};
-  const [error, setError] = useState(null);
+  const { order, amount, cardNumber, apiSource } = location.state || {};
+  const [formData, setFormData] = useState(null);
   const [result, setResult] = useState(null);
   const [message, setMessage] = useState(null);
-  const [formData, setFormData] = useState(null);
-  const [historyData, setHistoryData] = useState(null);
-
-  
+  const [error, setError] = useState(null);
+  const formId = localStorage.getItem('formId');
 
   const [timeLeft, setTimeLeft] = useState(() => {
     const savedTime = localStorage.getItem('timeLeft');
     return savedTime ? parseInt(savedTime, 10) : 30 * 60;
   });
-
-  const generateRandomId = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let result = '';
-    for (let i = 0; i < 3; i++) {
-      result += `${characters.charAt(Math.floor(Math.random() * characters.length))}${characters.charAt(Math.random() * characters.length)}-${characters.charAt(Math.random() * characters.length)}${characters.charAt(Math.random() * characters.length)}`;
-    }
-    return result;
-  };
-
-  useEffect(() => {
-
-    
-    const fetchData = async () => {
-      try {
-        const formId = localStorage.getItem('formId'); // Получаем ID формы из localStorage
-        if (formId) {
-          const response = await axios.get(`/api/db/form/${formId}`);
-          setFormData(response.data);
-        } else {
-          console.error('Form ID not found in localStorage');
-        }
-      } catch (error) {
-        console.error('Error fetching form data:', error);
-      }
-    };
-  }, []);
-  
-      
-    
-
-  //   const fetchHistoryData = async () => {
-  //     try {
-  //       const response = await axios.get(`/api/db/history/${userId}`);
-  //       if (response.data) {
-  //         setHistoryData(response.data);
-  //       } else {
-  //         setError('No history data found');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching history data:', error);
-  //       setError('Error fetching history data');
-  //     }
-  //   };
-
-    
-  //     fetchData();
-    
-  //   if (userId) {
-  //     fetchHistoryData();
-  //   }
-  // }, [userId]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (historyData.trade) {
-  //       try {
-  //         const data = await checkTradeStatus(historyData.trade);
-  //         if (data && data.length > 0) {
-  //           const obj = data[0];
-  //           setResult(obj.result);
-  //           setMessage(obj.message);
-  //           localStorage.setItem('Resultation', obj.result);
-  //           localStorage.setItem('ResultMessage', obj.message);
-  //         } else {
-  //           setError('No trade status found');
-  //         }
-  //       } catch (error) {
-  //         console.error('Error fetching data:', error);
-  //         setError('Error fetching trade status');
-  //       }
-  //     }
-  //   };
-
-  //   const intervalId = setInterval(() => {
-  //     fetchData();
-  //   }, 15000);
-
-  //   fetchData();
-
-  //   return () => clearInterval(intervalId);
-  // }, [historyData.trade]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        const newTime = prevTime > 0 ? prevTime - 1 : 0;
-        localStorage.setItem('timeLeft', newTime);
-        return newTime;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    const gradientTimer = setInterval(() => {
-      const circle = document.querySelector('.circle');
-      if (circle) {
-        circle.classList.remove('animate-gradient');
-        void circle.offsetWidth;
-        circle.classList.add('animate-gradient');
-      }
-    }, 2000);
-    return () => clearInterval(gradientTimer);
-  }, []);
 
   const formatTime = (time) => {
     const minutes = String(Math.floor(time / 60)).padStart(2, '0');
@@ -139,40 +31,128 @@ const Status = () => {
     return `${minutes}:${seconds}`;
   };
 
+  // Fetch the order status periodically
+  useEffect(() => {
+    const fetchOrderStatus = async () => {
+      if (order) {
+        try {
+          let data;
+          if (apiSource === 'API1') {
+            data = await checkTradeStatus(order);
+            if (data && data.length > 0) {
+              setResult(data[0].result);
+              setMessage(data[0].message);
+            }
+          } else if (apiSource === 'API2') {
+            data = await checkCardOrderStatus(order);
+            if (data) {
+              setResult(data.status);
+              setMessage(data.status);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching trade status:', error);
+          setError('Error fetching trade status');
+        }
+      }
+    };
+
+    const intervalId = setInterval(() => {
+      fetchOrderStatus();
+    }, 15000); // Poll every 15 seconds
+
+    // Fetch order status on component mount
+    fetchOrderStatus();
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, [order, apiSource]);
+
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        if (formId) {
+          const response = await axios.get(`/api/db/form/${formId}`);
+          console.log('Form data:', response.data); // Logging for debugging
+          setFormData(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching form data:', error);
+        setError('Error fetching form data');
+      }
+    };
+
+    fetchFormData();
+  }, [formId]);
+
+  // Timer countdown
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        const newTime = prevTime - 1;
+        localStorage.setItem('timeLeft', newTime);
+        return newTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  // Render the status text and icon based on the current message
   const renderStatusText = () => {
-    if (message === 'still processing') {
-      return <p className="text-sm font-bold ml-4 text-blueth">...</p>;
-    } else if (message === 'fully paid') {
-      return <p className="text-sm font-bold ml-4 text-blueth">Успешно</p>;    
-    } else {
-      return <p className="text-sm font-bold ml-4 text-red-400">Не подтвержден</p>;    
+    if (apiSource === 'API1') {
+      if (message === 'still processing') {
+        return 'Ожидание подтверждения...';
+      } else if (message === 'fully paid') {
+        return 'Успешно';
+      } else {
+        return 'Не подтвержден';
+      }
+    } else if (apiSource === 'API2') {
+      if (message === 'payment_wait') {
+        return 'Заявка создана';
+      } else if (message === 'payment_success') {
+        return 'Заказ оплачен';
+      } else if (message === 'payment_canceled') {
+        return 'Заказ отменен';
+      } else {
+        return 'Неизвестный статус, обратитесь в ТП';
+      }
     }
   };
 
   const renderStatusIcon = () => {
-    if (message === 'still processing') {
-      return <img src={stillIcon} alt="Still Processing" width="24" height="24" />;
-    } else if (message === 'fully paid') {
-      return <img src={successIcon} alt="Success" width="24" height="24" />;
-    } else {
-      return <img src={failIcon} alt="Fail" width="24" height="24" />;
+    if (apiSource === 'API1') {
+      if (message === 'still processing') {
+        return <img src={stillIcon} alt="Still Processing" />;
+      } else if (message === 'fully paid') {
+        return <img src={successIcon} alt="Success" />;
+      } else {
+        return <img src={failIcon} alt="Fail" />;
+      }
+    } else if (apiSource === 'API2') {
+      if (message === 'payment_wait') {
+        return <img src={stillIcon} alt="Payment Wait" />;
+      } else if (message === 'payment_success') {
+        return <img src={successIcon} alt="Payment Success" />;
+      } else if (message === 'payment_canceled') {
+        return <img src={failIcon} alt="Payment Canceled" />;
+      } else {
+        return <img src={failIcon} alt="Unknown Status" />;
+      }
     }
   };
-
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">
-        {(!formData ) ? (
-          <>
-            {!formData && <p className="text-red-500">Не удалось загрузить данные формы</p>}
-            {!historyData && <p className="text-red-500">Не удалось загрузить данные истории</p>}
-          </>
-        ) : (
+       
           <>
             <div className="w-full bg-white p-8 rounded-lg md:mb-16 mb-0 mt-8">
               <div className="text-center mb-8">
-                <p className="text-sm text-gray-600 mb-4">Ожидание подтверждения</p>
+                <p className="text-sm text-gray-600 mb-4">Идет проверка платежа</p>
                 <div className="relative flex justify-center items-center">
                   <svg className="w-24 h-24" viewBox="0 0 100 100">
                     <defs>
@@ -220,7 +200,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Заявка №</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{historyData.trade || 'Ошибка'}</p>
+                    <p className="text-sm font-bold ml-4">{ order || 'Загрузка...'}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -228,7 +208,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Сумма транзакции</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{historyData.amount || 'Ошибка'}</p>
+                    <p className="text-sm font-bold ml-4">{amount || 'Загрузка...'} </p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -236,7 +216,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Имя Фамилия отправителя</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{formData.name}</p>
+                    <p className="text-sm font-bold ml-4">{formData?.name}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -244,7 +224,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Номер телефона отправителя</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{formData.phoneNumber}</p>
+                    <p className="text-sm font-bold ml-4">{formData?.phoneNumber}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -252,7 +232,7 @@ const Status = () => {
                     <p className="text-sm text-grayth mr-4">Банк-исполнитель</p>
                   </div>
                   <div className="w-1/2 text-left">
-                    <p className="text-sm font-bold ml-4">{historyData.cardNumber || 'Ошибка'}</p>
+                    <p className="text-sm font-bold ml-4">{cardNumber || 'Загрузка...'}</p>
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
@@ -267,7 +247,7 @@ const Status = () => {
                   <div className="w-1/2 text-right">
                     <p className="text-sm text-grayth mr-4">Статус</p>
                   </div>
-                  <div className="w-1/2 text-left">
+                  <div className="w-1/2 font-bold mt-6 md:mt-0 ml-4 md:ml-6 text-left">
                     {renderStatusText()}
                   </div>
                 </div>
@@ -303,7 +283,7 @@ const Status = () => {
               <p className="text-sm text-gray-500 mt-4">Все данные защищены</p>
             </div>
           </>
-        )}
+        
       </div>
     </div>
   );

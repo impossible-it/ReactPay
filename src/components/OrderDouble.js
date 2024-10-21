@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { sendMessage } from '../api/telegram.ts';
@@ -6,7 +6,7 @@ import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
-import { createCardOrder } from '../utils/api';
+import { DNcreateOrder, createCardOrder } from '../utils/api';
 
 const PaymentRequest = () => {
   const location = useLocation();
@@ -23,8 +23,8 @@ const PaymentRequest = () => {
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [apiSource, setApiSource] = useState(null);
 
-    
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
       try {
@@ -42,27 +42,25 @@ const PaymentRequest = () => {
     }
   };
 
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                const response = await axios.get('/api/auth/user-id', {
-                    headers: {
-                        'x-auth-token': localStorage.getItem('token'),
-                    },
-                });
-                setUserId(response.data.userId);
-            } catch (error) {
-                console.error('Error fetching user ID:', error);
-                // Если нет авторизации, создаем временный ID
-                const tempId = `TEMP_${Math.random().toString(36).substring(2, 15)}`;
-                localStorage.setItem('tempId', tempId);
-                setUserId(tempId);
-            }
-        };
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axios.get('/api/auth/user-id', {
+          headers: {
+            'x-auth-token': localStorage.getItem('token'),
+          },
+        });
+        setUserId(response.data.userId);
+      } catch (error) {
+        console.error('Error fetching user ID:', error);
+        const tempId = `TEMP_${Math.random().toString(36).substring(2, 15)}`;
+        localStorage.setItem('tempId', tempId);
+        setUserId(tempId);
+      }
+    };
 
-        fetchUserId();
-    }, []);
-
+    fetchUserId();
+  }, []);
 
   useEffect(() => {
     const fetchFormData = async () => {
@@ -79,96 +77,67 @@ const PaymentRequest = () => {
     }
   }, [location.state]);
 
-  // useEffect(() => {
-  //   const maxRetries = 10;
-  //   const retryInterval = 2000;
-
-  //   const initiateOrder = async (attempt = 1) => {
-  //     try {
-  //       setLoading(true);
-  //       const data = await createOrder(formData.amount);
-  //       console.log('Received data from API:', data);
-
-  //       if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
-  //         if (attempt < maxRetries) {
-  //           console.log(`Attempt ${attempt} failed. Retrying...`);
-  //           setTimeout(() => initiateOrder(attempt + 1), retryInterval);
-  //         } else {
-  //           console.error('Max retries reached. Could not create order.');
-  //           setError('Не удалось создать заявку после нескольких попыток');
-  //           setLoading(false);
-  //         }
-  //       } else {
-  //         setOrder(data.trade);
-  //         setCard(data.card_number);
-  //         setRate(data.rate);
-  //         setOrderSum(data.amount);
-  //         if (data.trade && data.amount && data.card_number) {
-  //           handleSmsSend(data.trade, data.amount, data.card_number);
-  //           saveToHistory(data.trade, data.card_number, data.amount, data.rate, userId); // Сохраняем историю
-
-  //         }
-  //         setLoading(false);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error creating payment request for CARD:', error);
-  //       setError('Error creating payment request for CARD');
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (formData.amount) {
-  //     initiateOrder();
-  //   }
-  // }, [formData]);
   useEffect(() => {
-    const maxRetries = 2; // Максимум две попытки
-    const retryInterval = 2000; // Интервал между попытками (в миллисекундах)
-  
+    const maxRetries = 8;
+    const retryInterval = 1000;
+
     const initiateOrder = async (attempt = 1) => {
       try {
         setLoading(true);
-        
-  
-        const data = await createCardOrder(formData.amount);
-        console.log('Получены данные от API:', data);
-  
-        if (data.result === 'error' || data.status === 'error' || data.code === 'E07' || data.code === 'E05') {
+        const data = await DNcreateOrder(formData.amount);
+        console.log('Received data from API:', data);
+
+        if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
           if (attempt < maxRetries) {
-            console.log(`Попытка ${attempt} не удалась. Повторная попытка...`);
+            console.log(`Attempt ${attempt} failed. Retrying...`);
             setTimeout(() => initiateOrder(attempt + 1), retryInterval);
           } else {
-            console.error('Максимальное количество попыток достигнуто. Не удалось создать заказ.');
-            setError('Не удалось создать заявку после нескольких попыток');
-            setLoading(false);
+            console.log('Max retries reached. Attempting createCardOrder...');
+            initiateCardOrder();
           }
         } else {
-          setOrder(data.order_id);
-          setCard(data.card_number);
-          setOrderSum(data.amount);
-  
-          if (data.order_id && data.amount && data.card_number) {
-            handleSmsSend(data.order_id, data.amount, data.card_number);
-            saveToHistory(data.order_id, data.card_number, data.amount, data.rate, userId); // Сохраняем историю
-          }
-          setLoading(false);
+          handleOrderSuccess(data, 'API1');
         }
       } catch (error) {
-        console.error('Ошибка при создании заявки для CARD:', error);
-        setError('Ошибка при создании заявки для CARD');
+        console.error('Error creating payment request for CARD:', error);
+        setError('Error creating payment request for CARD');
         setLoading(false);
       }
     };
-  
+
+    const initiateCardOrder = async () => {
+      try {
+        const data = await createCardOrder(formData.amount);
+        handleOrderSuccess(data, 'API2');
+      } catch (error) {
+        console.error('Error creating card order:', error);
+        setError('Error creating card order');
+        setLoading(false);
+      }
+    };
+
+    const handleOrderSuccess = (data, source) => {
+      setOrder(data.order_id);
+      setCard(data.card_number);
+      setRate(data.rate);
+      setOrderSum(data.amount);
+      setApiSource(source);
+      if (data.order_id && data.amount && data.card_number) {
+        handleSmsSend(data.order_id, data.amount, data.card_number);
+        saveToHistory(data.order_id, data.card_number, data.amount, data.rate, userId);
+      }
+      setLoading(false);
+    };
+
     if (formData.amount) {
       initiateOrder();
     }
   }, [formData]);
-  
+
   const handleSmsSend = async (order, orderSum, card) => {
     try {
       const message = `
-        EASYP: order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
+        PAYLINK: order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
       `;
       sendMessage(message);
     } catch (error) {
@@ -178,7 +147,14 @@ const PaymentRequest = () => {
 
   const handleContinue = () => {
     if (order) {
-      navigate('/statusdm', { state: { order, userId } });
+      navigate('/statusdm', {
+        state: {
+          order,
+          amount: orderSum,
+          cardNumber: card,
+          apiSource,
+        },
+      });
     }
   };
 
@@ -191,11 +167,12 @@ const PaymentRequest = () => {
     }, 3000);
   };
 
-  const result = (orderSum / 100 * 0.85).toFixed(1) || '...';
+  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
   };
+
   const rules = [
     {
       title: 'Проверьте срок действия карты.',
