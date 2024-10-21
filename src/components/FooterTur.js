@@ -1,3 +1,10 @@
+import React from 'react';
+import logo from './img/logo.jpg';
+import copyright from './img/copyright.jpg';
+import paypal from './img/paypal.png';
+import visa from './img/visa.png';
+import mastercard from './img/mastercard.png';
+
 const FooterTur = () => {
   return (
     <footer className="bg-white shadow-md py-8">
