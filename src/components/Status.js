@@ -83,7 +83,7 @@ const Status = () => {
 
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
-        const newTime = prevTime - 1;
+        const newTime = prevTime > 0 ? prevTime - 1 : 0;
         localStorage.setItem('timeLeft', newTime);
         return newTime;
       });
@@ -113,11 +113,10 @@ const Status = () => {
     }
   };
 
-
   return (
     <div className="flex flex-col items-center justify-start min-h-screen p-4 bg-gray-fon">
       <div className="flex flex-col items-center justify-between space-y-4 h-full w-full max-w-3xl">
-       
+        
           <>
             <div className="w-full bg-white p-8 rounded-lg md:mb-16 mb-0 mt-8">
               <div className="text-center mb-8">

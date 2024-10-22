@@ -178,30 +178,34 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               alt: 'Translation',
               text: 'Переводы',
               path: '/transfer',
+              description: 'Переводите деньги быстро и безопасно с помощью нашего сервиса.',
             },
             {
               img: aboutusImage,
               alt: 'About Us',
               text: 'О нас',
               path: '/abouts',
+              description: 'Узнайте больше о нашей компании и нашей миссии.',
             },
             {
               img: defenseImage,
               alt: 'Protection',
               text: 'Защита данных',
               path: '/securityinfo',
+              description: 'Обеспечиваем надежную защиту ваших данных.',
             },
             {
               img: contactImage,
               alt: 'Contacts',
               text: 'Контакты',
               path: '/contacts',
+              description: 'Свяжитесь с нами для получения поддержки и информации.',
             },
           ].map((block, index) => (
             <div
               key={index}
               ref={(el) => (blocksRef.current[index] = el)}
-              className={`flex flex-row items-center justify-center p-2 md:w-[190px]  h-[50px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
+              className={`flex flex-col items-center justify-center p-2 w-[190px] h-[50px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
                 activeIndex === index ? 'bg-purpleth' : ''
               }`}
               onMouseEnter={() => handleMouseEnter(index)}
@@ -212,16 +216,17 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                 src={block.img}
                 alt={block.alt}
                 className={`h-[25px] w-[25px] transition-colors duration-300 ${
-                  activeIndex === index ? 'filter invert' : ''
+                  activeIndex === index ? 'filter invert-[100%]' : 'filter invert-[0%]'
                 }`}
               />
               <span
-                className={`mb-2 ml-2 transition-colors duration-300 ${
+                className={`ml-2 transition-colors duration-300 ${
                   activeIndex === index ? 'text-white' : 'text-purpleth'
                 }`}
               >
                 {block.text}
               </span>
+              <p className="text-purpleth mt-2 text-center">{block.description}</p>
             </div>
           ))}
         </div>
