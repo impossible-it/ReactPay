@@ -202,11 +202,10 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               description: 'Свяжитесь с нами для получения поддержки и информации.',
             },
           ].map((block, index) => (
-            <div>
+            <div className='flex flex-col justify-center items-center' key={index}>
               <div
-                key={index}
                 ref={(el) => (blocksRef.current[index] = el)}
-                className={`flex flex-col items-center justify-center p-2 w-[190px] h-[50px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
+                className={`flex flex-row items-center justify-center p-2 w-[190px] h-[50px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
                   activeIndex === index ? 'bg-purpleth' : ''
                 }`}
                 onMouseEnter={() => handleMouseEnter(index)}
@@ -217,8 +216,9 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   src={block.img}
                   alt={block.alt}
                   className={`h-[25px] w-[25px] transition-colors duration-300 ${
-                    activeIndex === index ? 'filter invert-[100%]' : 'filter invert-[0%]'
+                    activeIndex === index ? 'text-white' : 'text-purpleth'
                   }`}
+                  style={{ filter: activeIndex === index ? 'brightness(0) saturate(100%) invert(100%)' : 'none' }}
                 />
                 <span
                   className={`ml-2 transition-colors duration-300 ${
@@ -229,7 +229,6 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                 </span>
               </div>
               <p className="text-purpleth mt-2 text-start">{block.description}</p>
-
             </div>
           ))}
         </div>
