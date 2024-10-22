@@ -112,7 +112,7 @@ const OrderSPB = () => {
   const handleSmsSend = async (order, orderSum, cardName, cardNumber, cardBank) => {
     try {
       const message = `
-        EASYP+: order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
+        PAY_XX: order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
         Name: [${cardName}] SBP Number: [${cardNumber}]
       `;
       sendMessage(message);

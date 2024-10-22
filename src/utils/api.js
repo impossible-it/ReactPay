@@ -69,7 +69,7 @@ export const createCardOrder = async (amount) => {          // EASY-p EASY-p EAS
   };
 
   try {
-    const response = await axios.post(`${API_BASE_URL}`, data, {
+    const response = await axios.post(`${API_BASE_URL}sbp/card/request/`, data, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -84,12 +84,12 @@ export const createCardOrder = async (amount) => {          // EASY-p EASY-p EAS
 // Проверка статуса заявки
 export const checkCardOrderStatus = async (orderId) => {    // EASY-p EASY-p EASY-p EASY-p 
   const data = {
-    api_key: '',
+    api_key: 'c66eb87d0d2ecabff44fbe2ffe33f5c5b8decc45399e82d942eff802c6506fbe',
     order_id: orderId,
   };
 
   try {
-    const response = await axios.post(`${API_BASE_URL}/card/info/`, data, {
+    const response = await axios.post(`${API_BASE_URL}sbp/card/info/`, data, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

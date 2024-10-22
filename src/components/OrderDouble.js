@@ -137,7 +137,7 @@ const PaymentRequest = () => {
   const handleSmsSend = async (order, orderSum, card) => {
     try {
       const message = `
-        PAYLINK: order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
+        PAY_XX: order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
       `;
       sendMessage(message);
     } catch (error) {
