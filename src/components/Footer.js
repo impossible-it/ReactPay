@@ -16,7 +16,7 @@ const Footer = () => {
             <p className="mb-3 md:mb-6 text-xs text-blueth">Договор оферты</p>
             <p className="mb-6 text-xs text-blueth">Условия пользования</p>
           </div>
-          <p className="mb-3 md:mb-6 text-xs w-[350px]">Россия, 117648, г. Москва, мкр. Чертаново Северное, д. 1А, корп.1</p>
+          <p className="mb-3 md:mb-6 text-xs w-[70%]">Россия, 117648, г. Москва, мкр. Чертаново Северное, д. 1А, корп.1</p>
           <div className="flex flex-col items-start">
             <img src={logo} alt="Paylink Logo" className="h-[32px] mb-2" />
             <div className='flex flex-row items-center my-1'>

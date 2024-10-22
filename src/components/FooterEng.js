@@ -16,7 +16,7 @@ const FooterEng = () => {
             <p className="mb-3 md:mb-6 text-xs text-blueth">Offer Agreement</p>
             <p className="mb-6 text-xs text-blueth">Terms of Use</p>
           </div>
-          <p className="mb-3 md:mb-6 text-xs w-[350px]">Switzerland, Zugerbergstrasse 41B, 6300 Zug</p>
+          <p className="mb-3 md:mb-6 text-xs w-[70%]">Switzerland, Zugerbergstrasse 41B, 6300 Zug</p>
           <div className="flex flex-col items-start">
             <img src={logo} alt="Paylink Logo" className="h-[32px] mb-2" />
             <div className='flex flex-row items-center my-1'>

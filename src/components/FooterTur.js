@@ -16,7 +16,7 @@ const FooterTur = () => {
             <p className="mb-3 md:mb-6 text-xs text-blueth">Teklif Sözleşmesi</p>
             <p className="mb-6 text-xs text-blueth">Kullanım Şartları</p>
           </div>
-          <p className="mb-3 md:mb-6 text-xs w-[350px]">İsviçre, Zugerbergstrasse 41B, 6300 Zug</p>
+          <p className="mb-3 md:mb-6 text-xs w-[70%]">İsviçre, Zugerbergstrasse 41B, 6300 Zug</p>
           <div className="flex flex-col items-start">
             <img src={logo} alt="Paylink Logo" className="h-[32px] mb-2" />
             <div className='flex flex-row items-center my-1'>

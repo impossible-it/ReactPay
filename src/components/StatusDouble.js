@@ -8,7 +8,7 @@ import logo from './img/logo.jpg';
 import telegram from './img/telegram.png';
 import print from './img/print.png';
 import download from './img/download.png';
-import { checkTradeStatus, checkCardOrderStatus } from '../utils/api'; // Importing the checkTradeStatus and checkCardOrderStatus functions
+import { checkTradeStatus, checkCardOrderStatus } from '../utils/api'; 
 import './styles.css';
 
 const Status = () => {
