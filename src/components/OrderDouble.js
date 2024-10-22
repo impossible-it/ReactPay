@@ -117,7 +117,7 @@ const PaymentRequest = () => {
     };
 
     const handleOrderSuccess = (data, source) => {
-      setOrder(data.order_id);
+      if (source == 'API2') { setOrder(data.order_id); } else { setOrder(data.trade); }
       setCard(data.card_number);
       setRate(data.rate);
       setOrderSum(data.amount);

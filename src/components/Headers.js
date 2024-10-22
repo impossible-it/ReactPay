@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import logo from './img/logo.jpg';
 import menu from './img/menu.png';
 
-import transferImage from '../components/img/transfer.png';
-import contactImage from '../components/img/contact.png';
-import aboutusImage from '../components/img/aboutus.png';
-import defenseImage from '../components/img/defens.png';
+import transferImage from '../components/img/transfer.svg';
+import contactImage from '../components/img/contact.svg';
+import aboutusImage from '../components/img/aboutus.svg';
+import defenseImage from '../components/img/defens.svg';
 
 const Header = ({ isAuthenticated, setIsAuthenticated }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -28,12 +28,12 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
       if (window.innerWidth < 768) {
         // Mobile behavior
         gsap.to(menuRef.current, {
-          height: 'auto',  // Adjust height based on content
+          height: 'auto',
           duration: 0.5,
           ease: 'power2.out',
         });
         gsap.to('.page-content', {
-          y: '100vh',  // Move the content down the screen on mobile
+          y: '100vh',
           duration: 0.5,
           ease: 'power2.out',
         });
@@ -86,6 +86,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
   };
 
   const handleMouseEnter = (index) => {
+    setActiveIndex(index);
     gsap.to(blocksRef.current[index], {
       scale: 1.1,
       boxShadow: '0px 10px 20px rgba(0, 0, 0, 0.2)',
@@ -93,11 +94,14 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
     });
   };
 
-  const handleMouseLeave = (index) => {
-    gsap.to(blocksRef.current[index], {
-      scale: 1,
-      boxShadow: '0px 0px 0px rgba(0, 0, 0, 0)',
-      duration: 0.3,
+  const handleMouseLeave = () => {
+    setActiveIndex(null);
+    blocksRef.current.forEach((block, index) => {
+      gsap.to(block, {
+        scale: 1,
+        boxShadow: '0px 0px 0px rgba(0, 0, 0, 0)',
+        duration: 0.3,
+      });
     });
   };
 
@@ -201,11 +205,23 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                 activeIndex === index ? 'bg-purpleth' : ''
               }`}
               onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={() => handleMouseLeave(index)}
+              onMouseLeave={handleMouseLeave}
               onClick={() => handleBlockClick(block.path, index)}
             >
-              <img src={block.img} alt={block.alt} className="h-16 w-16" />
-              <span className={`mb-2 font-bold ${activeIndex === index ? 'text-white' : 'text-purpleth'}`}>{block.text}</span>
+              <img
+                src={block.img}
+                alt={block.alt}
+                className={`h-[25px] w-[25px] transition-colors duration-300 ${
+                  activeIndex === index ? 'filter invert' : ''
+                }`}
+              />
+              <span
+                className={`mb-2 ml-2 transition-colors duration-300 ${
+                  activeIndex === index ? 'text-white' : 'text-purpleth'
+                }`}
+              >
+                {block.text}
+              </span>
             </div>
           ))}
         </div>
