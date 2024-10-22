@@ -228,7 +228,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   {block.text}
                 </span>
               </div>
-              <p className="text-purpleth mt-2 text-center">{block.description}</p>
+              <p className="text-purpleth mt-2 w-[50%] text-center">{block.description}</p>
             </div>
           ))}
         </div>
