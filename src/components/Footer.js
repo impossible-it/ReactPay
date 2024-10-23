@@ -28,7 +28,7 @@ const Footer = () => {
           </div>
         </div>
         
-        <div className="w-99 flex flex-col md:w-3/8 md:ml-0 px-8">
+        <div className="md:w-99 w-full flex flex-col md:w-3/8 md:ml-0 px-8">
           <p className="mb-6 text-xs text-grayth">
           Генеральная лицензия на осуществление банковских операций №1481 от 11.08.2015 г
             </p>
@@ -45,12 +45,12 @@ const Footer = () => {
             На информационном ресурсе применяются рекомендательные технологии
             </p>
         </div>
-        <div className="w-full md:w-2/8 mb-6 mt-6 md:mb-0 px-8">
+        <div className="md:w-full md:w-2/8 mb-6 mt-6 md:mb-0 px-8">
           <p className="mb-6 text-xs font-bold">О нас</p>
           <p className="mb-6 text-xs font-bold">Сервис</p>
           <p className="mb-6 text-xs font-bold">Контакты</p>
           <p className="mb-6 text-xs font-bold">Поддержка</p>
-          <p className="text-xs font-bold">Защшита персональных данных</p>
+          <p className="text-xs font-bold">Защита персональных данных</p>
         </div>
         <div className="w-full md:w-1/4 mb-6 md:mb-0 flex justify-end md:justify-start px-4">
           <div className="absolute flex-col items-center space-y-8 md:mt-0 mt-6">

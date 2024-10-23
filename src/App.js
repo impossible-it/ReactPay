@@ -9,6 +9,7 @@ import FooterEng from './components/FooterEng.js';
 import HeaderTur from './components/HeadersTur.js'; // Добавьте компонент заголовка для турецкой версии
 import FooterTur from './components/FooterTur.js'; 
 import HeaderD from './components/HeadersDouble.js'; // Добавьте компонент заголовка для ru2 версии
+import StatusRu from './components/StatusRuEvkar.js';
 
 import Start from './components/Start.tsx';
 import Order from './components/Order.js';
@@ -115,7 +116,7 @@ const App = () => {
         <Route path='/orderothermaeng' element={<EkvarMaEng />} />
         <Route path='/transfer/createrequesteng' element={<FormEng />} />
         <Route path='/statuseng' element={<StatusEng />} />
-
+        <Route path='/statusru' element={<StatusRu />} />
         {/* Турецкая версия */}
         <Route path='/datatur' element={<DataTur />} />
         <Route path='/transfertur' element={<TransferTur />} />
