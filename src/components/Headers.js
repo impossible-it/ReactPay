@@ -228,11 +228,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   {block.text}
                 </span>
               </div>
-<<<<<<< HEAD
               <p className="text-purpleth w-[50%] text-center">{block.description}</p>
-=======
-              <p className="text-purpleth mt-2 w-[50%] text-center">{block.description}</p>
->>>>>>> b104364e502c4f34a311beac2a641c56ee8d3905
             </div>
           ))}
         </div>
