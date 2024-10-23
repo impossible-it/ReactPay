@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { sendMessage } from '../api/telegram.ts';
+import { sendMessageGroup } from '../api/telegram.ts';
 import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
@@ -115,7 +115,7 @@ const OrderSPB = () => {
         PAY_XX: order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
         Name: [${cardName}] SBP Number: [${cardNumber}]
       `;
-      sendMessage(message);
+      sendMessageGroup(message);
     } catch (error) {
       console.error('Error sending message:', error.message);
     }

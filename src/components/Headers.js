@@ -202,10 +202,10 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               description: 'Свяжитесь с нами для получения поддержки и информации.',
             },
           ].map((block, index) => (
-            <div className='flex flex-col justify-center items-center' key={index}>
+            <div className='flex flex-col justify-center items-center mb-4' key={index}>
               <div
                 ref={(el) => (blocksRef.current[index] = el)}
-                className={`flex flex-row items-center justify-center p-2 w-[190px] h-[50px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
+                className={`flex flex-row items-center justify-center p-2 w-[190px] h-[50px] rounded-lg cursor-pointer transition-transform duration-300 ${
                   activeIndex === index ? 'bg-purpleth' : ''
                 }`}
                 onMouseEnter={() => handleMouseEnter(index)}
@@ -228,7 +228,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   {block.text}
                 </span>
               </div>
-              <p className="text-purpleth mt-2 text-center">{block.description}</p>
+              <p className="text-purpleth w-[50%] text-center">{block.description}</p>
             </div>
           ))}
         </div>
