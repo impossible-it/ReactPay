@@ -98,16 +98,16 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               </>
             ) : (
               <div className="flex space-x-2">
-                {/* Блок с кнопками Войти и Зарегистрироваться */}
+                {/* Кнопка Зарегистрироваться */}
                 <div
-                  className="relative flex justify-between items-center w-[150px] h-[50px] bg-gray-fon rounded-lg transition-colors duration-300 cursor-pointer"
+                  className="relative flex justify-center items-center w-[150px] h-[50px] bg-[rgba(250,249,255,1)] rounded-lg transition-colors duration-300 cursor-pointer"
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'purple';
-                    e.currentTarget.querySelectorAll('span').forEach((span) => (span.style.color = 'white'));
+                    e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)';
+                    e.currentTarget.querySelector('span').style.color = 'white';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'gray';
-                    e.currentTarget.querySelectorAll('span').forEach((span) => (span.style.color = 'purpleth'));
+                    e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)';
+                    e.currentTarget.querySelector('span').style.color = 'purpleth';
                   }}
                 >
                   <button
@@ -123,6 +123,19 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                     />
                     <span className="ml-2 text-purpleth">Зарегистрироваться</span>
                   </button>
+                </div>
+                {/* Кнопка Войти */}
+                <div
+                  className="relative flex justify-center items-center w-[150px] h-[50px] bg-[rgba(250,249,255,1)] rounded-lg transition-colors duration-300 cursor-pointer"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)';
+                    e.currentTarget.querySelector('span').style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)';
+                    e.currentTarget.querySelector('span').style.color = 'purpleth';
+                  }}
+                >
                   <button
                     onClick={() => handleBlockClick('/login')}
                     className="relative flex items-center justify-center w-full h-full"
@@ -147,9 +160,9 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
             style={{ position: 'relative' }}
           >
             <div
-              className="flex items-center justify-center w-[54px] h-[50px] bg-gray-fon rounded-md transition-colors"
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'purple')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'gray')}
+              className="flex items-center justify-center w-[54px] h-[50px] bg-[rgba(250,249,255,1)] rounded-md transition-colors"
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)')}
               onClick={(e) => gsap.to(e.currentTarget, { rotate: 45, duration: 0.3 })}
             >
               <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
