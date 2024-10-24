@@ -72,22 +72,6 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Бургер-меню, которое отображается на всех экранах */}
-          <button
-            className="text-gray-600 hover:text-gray-900 px-3 py-2"
-            onClick={toggleMenu}
-            style={{ position: 'relative' }}
-          >
-            <div
-              className="flex items-center justify-center w-[54px] h-[50px] bg-grayth rounded-md transition-colors"
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'purple')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'gray')}
-              onClick={(e) => gsap.to(e.currentTarget, { rotate: 45, duration: 0.3 })}
-            >
-              <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
-            </div>
-          </button>
-
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
@@ -113,52 +97,64 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                 </button>
               </>
             ) : (
-              <>
-                <button
-                  onClick={() => handleBlockClick('/register')}
-                  className="relative flex items-center justify-center w-[150px] h-[50px] rounded-lg transition-colors duration-300 bg-grayth"
+              <div className="flex space-x-2">
+                {/* Блок с кнопками Войти и Зарегистрироваться */}
+                <div
+                  className="relative flex justify-between items-center w-[150px] h-[50px] bg-gray-fon rounded-lg transition-colors duration-300 cursor-pointer"
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'purple';
-                    e.currentTarget.style.color = 'white';
+                    e.currentTarget.querySelectorAll('span').forEach((span) => (span.style.color = 'white'));
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'gray';
-                    e.currentTarget.style.color = 'purpleth';
+                    e.currentTarget.querySelectorAll('span').forEach((span) => (span.style.color = 'purpleth'));
                   }}
                 >
-                  <img
-                    src={activeIndex === 2 ? historyactive : history}
-                    alt="Register"
-                    className="h-6 w-6"
-                    onMouseEnter={() => setActiveIndex(2)}
-                    onMouseLeave={() => setActiveIndex(null)}
-                  />
-                  <span className={`ml-2 ${activeIndex === 2 ? 'text-white' : 'text-purpleth'}`}>Зарегистрироваться</span>
-                </button>
-                <button
-                  onClick={() => handleBlockClick('/login')}
-                  className="relative flex items-center justify-center w-[150px] h-[50px] rounded-lg transition-colors duration-300 bg-grayth"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'purple';
-                    e.currentTarget.style.color = 'white';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'gray';
-                    e.currentTarget.style.color = 'purpleth';
-                  }}
-                >
-                  <img
-                    src={activeIndex === 3 ? loginactive : logiin}
-                    alt="Login"
-                    className="h-6 w-6"
-                    onMouseEnter={() => setActiveIndex(3)}
-                    onMouseLeave={() => setActiveIndex(null)}
-                  />
-                  <span className={`ml-2 ${activeIndex === 3 ? 'text-white' : 'text-purpleth'}`}>Войти</span>
-                </button>
-              </>
+                  <button
+                    onClick={() => handleBlockClick('/register')}
+                    className="relative flex items-center justify-center w-full h-full"
+                  >
+                    <img
+                      src={activeIndex === 2 ? historyactive : history}
+                      alt="Register"
+                      className="h-6 w-6"
+                      onMouseEnter={() => setActiveIndex(2)}
+                      onMouseLeave={() => setActiveIndex(null)}
+                    />
+                    <span className="ml-2 text-purpleth">Зарегистрироваться</span>
+                  </button>
+                  <button
+                    onClick={() => handleBlockClick('/login')}
+                    className="relative flex items-center justify-center w-full h-full"
+                  >
+                    <img
+                      src={activeIndex === 3 ? loginactive : logiin}
+                      alt="Login"
+                      className="h-6 w-6"
+                      onMouseEnter={() => setActiveIndex(3)}
+                      onMouseLeave={() => setActiveIndex(null)}
+                    />
+                    <span className="ml-2 text-purpleth">Войти</span>
+                  </button>
+                </div>
+              </div>
             )}
           </div>
+          {/* Бургер-меню, которое теперь находится справа */}
+          <button
+            className="text-gray-600 hover:text-gray-900 px-3 py-2"
+            onClick={toggleMenu}
+            style={{ position: 'relative' }}
+          >
+            <div
+              className="flex items-center justify-center w-[54px] h-[50px] bg-gray-fon rounded-md transition-colors"
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'purple')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'gray')}
+              onClick={(e) => gsap.to(e.currentTarget, { rotate: 45, duration: 0.3 })}
+            >
+              <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
+            </div>
+          </button>
         </div>
       </div>
 
@@ -169,7 +165,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               img: transferImage,
               alt: 'Translation',
               text: 'Переводы',
-              path: '/transfer',
+              path: '/transferdm',
               description: 'Переводите деньги быстро и безопасно с помощью нашего сервиса.',
             },
             {
@@ -207,7 +203,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                 <img
                   src={block.img}
                   alt={block.alt}
-                  className={`h-[25px] w-[25px] font-bold transition-colors duration-300 ${
+                  className={`h-[25px] w-[25px] transition-colors duration-300 ${
                     activeIndex === index ? 'text-white' : 'text-purpleth'
                   }`}
                   style={{ filter: activeIndex === index ? 'brightness(0) saturate(100%) invert(100%)' : 'none' }}
@@ -220,7 +216,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   {block.text}
                 </span>
               </div>
-              <p className="text-purpleth w-[50%] md:mt-0 mt-4 text-center">{block.description}</p>
+              <p className="text-purpleth w-[50%] text-center">{block.description}</p>
             </div>
           ))}
         </div>
