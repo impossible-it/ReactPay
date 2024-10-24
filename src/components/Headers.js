@@ -104,23 +104,19 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)';
                     e.currentTarget.querySelector('span').style.color = 'white';
+                    e.currentTarget.querySelector('img').src = historyactive;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)';
                     e.currentTarget.querySelector('span').style.color = 'purpleth';
+                    e.currentTarget.querySelector('img').src = history;
                   }}
                 >
                   <button
                     onClick={() => handleBlockClick('/register')}
                     className="relative flex items-center justify-center w-full h-full"
                   >
-                    <img
-                      src={activeIndex === 2 ? historyactive : history}
-                      alt="Register"
-                      className="h-6 w-6"
-                      onMouseEnter={() => setActiveIndex(2)}
-                      onMouseLeave={() => setActiveIndex(null)}
-                    />
+                    <img src={history} alt="Register" className="h-6 w-6" />
                     <span className="ml-2 text-purpleth">Зарегистрироваться</span>
                   </button>
                 </div>
@@ -130,23 +126,19 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)';
                     e.currentTarget.querySelector('span').style.color = 'white';
+                    e.currentTarget.querySelector('img').src = loginactive;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)';
                     e.currentTarget.querySelector('span').style.color = 'purpleth';
+                    e.currentTarget.querySelector('img').src = logiin;
                   }}
                 >
                   <button
                     onClick={() => handleBlockClick('/login')}
                     className="relative flex items-center justify-center w-full h-full"
                   >
-                    <img
-                      src={activeIndex === 3 ? loginactive : logiin}
-                      alt="Login"
-                      className="h-6 w-6"
-                      onMouseEnter={() => setActiveIndex(3)}
-                      onMouseLeave={() => setActiveIndex(null)}
-                    />
+                    <img src={logiin} alt="Login" className="h-6 w-6" />
                     <span className="ml-2 text-purpleth">Войти</span>
                   </button>
                 </div>
@@ -163,7 +155,10 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               className="flex items-center justify-center w-[54px] h-[50px] bg-[rgba(250,249,255,1)] rounded-md transition-colors"
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)')}
-              onClick={(e) => gsap.to(e.currentTarget, { rotate: 45, duration: 0.3 })}
+              onClick={(e) => {
+                gsap.to(e.currentTarget, { rotate: 45, duration: 0.3 });
+                setTimeout(() => gsap.to(e.currentTarget, { rotate: 0, duration: 0.3 }), 500); // Возвращаем назад после анимации
+              }}
             >
               <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
             </div>
@@ -172,7 +167,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
       </div>
 
       <div ref={menuRef} className="absolute left-0 top-full w-full bg-white shadow-md overflow-hidden z-50">
-      <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
           {[
             {
               img: transferImage,
@@ -239,3 +234,4 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
 };
 
 export default Header;
+
