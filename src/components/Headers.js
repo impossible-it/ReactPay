@@ -3,11 +3,15 @@ import { gsap } from 'gsap';
 import { useNavigate } from 'react-router-dom';
 import logo from './img/logo.jpg';
 import menu from './img/menu.png';
-
 import transferImage from '../components/img/transfer.svg';
 import contactImage from '../components/img/contact.svg';
 import aboutusImage from '../components/img/aboutus.svg';
 import defenseImage from '../components/img/defens.svg';
+
+import logiin from '../components/img/logiin.png';
+import loginactive from '../components/img/loginactive.png';
+import history from '../components/img/history.png';
+import historyactive from '../components/img/historyactive.png';
 
 const Header = ({ isAuthenticated, setIsAuthenticated }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -25,64 +29,18 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
 
   useEffect(() => {
     if (menuOpen) {
-      if (window.innerWidth < 768) {
-        // Mobile behavior
-        gsap.to(menuRef.current, {
-          height: 'auto',
-          duration: 0.5,
-          ease: 'power2.out',
-        });
-        gsap.to('.page-content', {
-          y: '100vh',
-          duration: 0.5,
-          ease: 'power2.out',
-        });
-      } else {
-        // Desktop behavior
-        gsap.to(menuRef.current, {
-          height: 'auto',
-          duration: 0.5,
-          ease: 'power2.out',
-        });
-      }
+      gsap.to(menuRef.current, { height: 'auto', duration: 0.5, ease: 'power2.out' });
     } else {
-      gsap.to(menuRef.current, {
-        height: 0,
-        duration: 0.5,
-        ease: 'power2.in',
-      });
-      gsap.to('.page-content', {
-        y: '0px',
-        duration: 0.5,
-        ease: 'power2.in',
-      });
+      gsap.to(menuRef.current, { height: 0, duration: 0.5, ease: 'power2.in' });
     }
   }, [menuOpen]);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
     window.location.href = '/';
-  };
-
-  const NavigateHome = () => {
-    window.location.href = '/startp';
-  };
-
-  const NavigateLogin = () => {
-    window.location.href = '/login';
-  };
-
-  const NavigateRegister = () => {
-    window.location.href = '/register';
-  };
-
-  const NavigateHistory = () => {
-    window.location.href = '/history';
   };
 
   const handleMouseEnter = (index) => {
@@ -96,18 +54,13 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
 
   const handleMouseLeave = () => {
     setActiveIndex(null);
-    blocksRef.current.forEach((block, index) => {
-      gsap.to(block, {
-        scale: 1,
-        boxShadow: '0px 0px 0px rgba(0, 0, 0, 0)',
-        duration: 0.3,
-      });
+    blocksRef.current.forEach((block) => {
+      gsap.to(block, { scale: 1, boxShadow: '0px 0px 0px rgba(0, 0, 0, 0)', duration: 0.3 });
     });
   };
 
-  const handleBlockClick = (path, index) => {
-    setActiveIndex(index);
-    setMenuOpen(false); // Close the menu
+  const handleBlockClick = (path) => {
+    setMenuOpen(false);
     navigate(path);
   };
 
@@ -122,116 +75,72 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
           <button
             className="text-gray-600 hover:text-gray-900 px-3 py-2 md:hidden"
             onClick={toggleMenu}
+            style={{ position: 'relative' }}
           >
-            <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
+            <img
+              src={menu}
+              alt="menu"
+              className="h-8 w-8 mr-2"
+              onMouseEnter={(e) => e.target.style.background = 'purple'}
+              onMouseLeave={(e) => e.target.style.background = 'none'}
+              onClick={(e) => gsap.to(e.target, { rotate: 45, duration: 0.3 })}
+              style={{ borderRadius: '10px', padding: '5px', width: '54px', height: '50px' }}
+            />
           </button>
           <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <>
-                <button
-                  onClick={NavigateHistory}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2"
-                >
-                  История
+                <button onClick={() => handleBlockClick('/history')} className="relative flex items-center">
+                  <img
+                    src={activeIndex === 0 ? historyactive : history}
+                    alt="History"
+                    className="h-6 w-6"
+                    onMouseEnter={() => setActiveIndex(0)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                  />
+                  <span className="ml-2">История</span>
                 </button>
-                <button
-                  onClick={handleLogout}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2"
-                >
-                  Выйти
+                <button onClick={handleLogout} className="relative flex items-center">
+                  <img
+                    src={activeIndex === 1 ? loginactive : logiin}
+                    alt="Logout"
+                    className="h-6 w-6"
+                    onMouseEnter={() => setActiveIndex(1)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                  />
+                  <span className="ml-2">Выйти</span>
                 </button>
               </>
             ) : (
               <>
-                <button
-                  onClick={NavigateRegister}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2"
-                >
-                  Зарегистрироваться
+                <button onClick={() => handleBlockClick('/register')} className="relative flex items-center">
+                  <img
+                    src={activeIndex === 2 ? historyactive : history}
+                    alt="Register"
+                    className="h-6 w-6"
+                    onMouseEnter={() => setActiveIndex(2)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                  />
+                  <span className="ml-2">Зарегистрироваться</span>
                 </button>
-                <button
-                  onClick={NavigateLogin}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2"
-                >
-                  Войти
+                <button onClick={() => handleBlockClick('/login')} className="relative flex items-center">
+                  <img
+                    src={activeIndex === 3 ? loginactive : logiin}
+                    alt="Login"
+                    className="h-6 w-6"
+                    onMouseEnter={() => setActiveIndex(3)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                  />
+                  <span className="ml-2">Войти</span>
                 </button>
               </>
             )}
-            <button
-              className="text-gray-600 hover:text-gray-900 px-3 py-2"
-              onClick={toggleMenu}
-            >
-              <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
-            </button>
           </div>
         </div>
       </div>
 
-      <div
-        ref={menuRef}
-        className="absolute left-0 top-full w-full bg-white shadow-md overflow-hidden z-50"
-      >
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
-          {[
-            {
-              img: transferImage,
-              alt: 'Translation',
-              text: 'Переводы',
-              path: '/transfer',
-              description: 'Переводите деньги быстро и безопасно с помощью нашего сервиса.',
-            },
-            {
-              img: aboutusImage,
-              alt: 'About Us',
-              text: 'О нас',
-              path: '/abouts',
-              description: 'Узнайте больше о нашей компании и нашей миссии.',
-            },
-            {
-              img: defenseImage,
-              alt: 'Protection',
-              text: 'Защита данных',
-              path: '/securityinfo',
-              description: 'Обеспечиваем надежную защиту ваших данных.',
-            },
-            {
-              img: contactImage,
-              alt: 'Contacts',
-              text: 'Контакты',
-              path: '/contacts',
-              description: 'Свяжитесь с нами для получения поддержки и информации.',
-            },
-          ].map((block, index) => (
-            <div className='flex flex-col justify-center items-center mb-4' key={index}>
-              <div
-                ref={(el) => (blocksRef.current[index] = el)}
-                className={`flex flex-row items-center justify-center p-2 w-[190px] h-[50px] rounded-lg cursor-pointer transition-transform duration-300 ${
-                  activeIndex === index ? 'bg-purpleth' : ''
-                }`}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => handleBlockClick(block.path, index)}
-              >
-                <img
-                  src={block.img}
-                  alt={block.alt}
-                  className={`h-[25px] w-[25px] transition-colors duration-300 ${
-                    activeIndex === index ? 'text-white' : 'text-purpleth'
-                  }`}
-                  style={{ filter: activeIndex === index ? 'brightness(0) saturate(100%) invert(100%)' : 'none' }}
-                />
-                <span
-                  className={`ml-2 transition-colors duration-300 ${
-                    activeIndex === index ? 'text-white' : 'text-purpleth'
-                  }`}
-                >
-                  {block.text}
-                </span>
-              </div>
-              <p className="text-purpleth w-[50%] text-center">{block.description}</p>
-            </div>
-          ))}
-        </div>
+      <div ref={menuRef} className="absolute left-0 top-full w-full bg-white shadow-md overflow-hidden z-50">
+        {/* Ваши блоки меню */}
       </div>
     </nav>
   );

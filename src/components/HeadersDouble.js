@@ -167,45 +167,64 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
         ref={menuRef}
         className="absolute left-0 top-full w-full bg-white shadow-md overflow-hidden z-50"
       >
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
+         <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
           {[
             {
               img: transferImage,
               alt: 'Translation',
               text: 'Переводы',
               path: '/transferdm',
+              description: 'Переводите деньги быстро и безопасно с помощью нашего сервиса.',
             },
             {
               img: aboutusImage,
               alt: 'About Us',
               text: 'О нас',
               path: '/abouts',
+              description: 'Узнайте больше о нашей компании и нашей миссии.',
             },
             {
               img: defenseImage,
               alt: 'Protection',
               text: 'Защита данных',
               path: '/securityinfo',
+              description: 'Обеспечиваем надежную защиту ваших данных.',
             },
             {
               img: contactImage,
               alt: 'Contacts',
               text: 'Контакты',
               path: '/contacts',
+              description: 'Свяжитесь с нами для получения поддержки и информации.',
             },
           ].map((block, index) => (
-            <div
-              key={index}
-              ref={(el) => (blocksRef.current[index] = el)}
-              className={`flex flex-col items-center justify-center p-2 md:w-[200px] w-[50%] md:h-[150px] h-[125px] rounded-lg cursor-pointer transition-transform duration-300 mb-4 ${
-                activeIndex === index ? 'bg-grayth' : ''
-              }`}
-              onMouseEnter={() => handleMouseEnter(index)}
-              onMouseLeave={() => handleMouseLeave(index)}
-              onClick={() => handleBlockClick(block.path, index)}
-            >
-              <span className="mb-2 font-bold">{block.text}</span>
-              <img src={block.img} alt={block.alt} className="h-16 w-16" />
+            <div className='flex flex-col justify-center items-center mb-4' key={index}>
+              <div
+                ref={(el) => (blocksRef.current[index] = el)}
+                className={`flex flex-row items-center justify-center p-2 w-[190px] h-[50px] rounded-lg cursor-pointer transition-transform duration-300 ${
+                  activeIndex === index ? 'bg-purpleth' : ''
+                }`}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => handleBlockClick(block.path, index)}
+              >
+                <img
+                  src={block.img}
+                  alt={block.alt}
+                  className={`h-[25px] w-[25px] transition-colors duration-300 ${
+                    activeIndex === index ? 'text-white' : 'text-purpleth'
+                  }`}
+                  style={{ filter: activeIndex === index ? 'brightness(0) saturate(100%) invert(100%)' : 'none' }}
+                />
+                <span
+                  className={`ml-2 transition-colors duration-300 ${
+                    activeIndex === index ? 'text-white' : 'text-purpleth'
+                  }`}
+                >
+                  {block.text}
+                </span>
+              </div>
+              <p className="text-purpleth w-[50%] text-center">{block.description}</p>
             </div>
           ))}
         </div>
