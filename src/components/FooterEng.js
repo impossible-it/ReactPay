@@ -10,7 +10,7 @@ const FooterEng = () => {
     <footer className="bg-white shadow-md py-8">
   
       <div className="container mx-auto flex flex-col-reverse md:flex-row justify-between items-start space-y-8 md:space-y-0">
-        <div className="w-100 md:w-3/8 md:mb-0 text-gray-700 text-left px-8">
+        <div className="md:w-100 w-full md:w-3/8 md:mb-0 text-gray-700 text-left px-8">
           <div className="md:mt-0 mt-6">
             <p className="mb-3 md:mb-6 text-xs text-blueth">Central Bank License</p>
             <p className="mb-3 md:mb-6 text-xs text-blueth">Offer Agreement</p>
@@ -28,7 +28,7 @@ const FooterEng = () => {
           </div>
         </div>
         
-        <div className="w-99 flex flex-col md:w-3/8 md:ml-0 px-8">
+        <div className="md:w-99 w-full flex flex-col md:w-3/8 md:ml-0 px-8">
            
             <p className="mb-6 text-xs text-grayth">
             Paylink's page on the Interfax agency for information disclosure
