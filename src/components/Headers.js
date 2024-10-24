@@ -20,7 +20,6 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
   const blocksRef = useRef([]);
   const navigate = useNavigate();
 
-  // Проверка токена и установка аутентификации
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -28,7 +27,6 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
     }
   }, [setIsAuthenticated]);
 
-  // Анимация открытия/закрытия меню
   useEffect(() => {
     if (menuOpen) {
       gsap.to(menuRef.current, { height: 'auto', duration: 0.5, ease: 'power2.out' });
@@ -37,25 +35,14 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
     }
   }, [menuOpen]);
 
-  // Переключение меню
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-    const menuIcon = document.querySelector('.menu-icon');
-    // Поворот и возврат меню иконки на 45 градусов
-    gsap.to(menuIcon, { rotate: menuOpen ? 0 : 45, duration: 0.3 });
-    if (!menuOpen) {
-      setTimeout(() => gsap.to(menuIcon, { rotate: 0, duration: 0.3 }), 500);
-    }
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  // Выход из системы
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
     window.location.href = '/';
   };
 
-  // Анимация кнопок при наведении
   const handleMouseEnter = (index) => {
     setActiveIndex(index);
     gsap.to(blocksRef.current[index], {
@@ -72,7 +59,6 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
     });
   };
 
-  // Обработка клика по блокам навигации
   const handleBlockClick = (path) => {
     setMenuOpen(false);
     navigate(path);
@@ -159,7 +145,6 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
               </div>
             )}
           </div>
-
           {/* Бургер-меню, которое теперь находится справа */}
           <button
             className="text-gray-600 hover:text-gray-900 px-3 py-2"
@@ -167,15 +152,20 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
             style={{ position: 'relative' }}
           >
             <div
-              className="flex items-center justify-center w-[54px] h-[50px] bg-[rgba(250,249,255,1)] rounded-md transition-colors menu-icon"
+              className="flex items-center justify-center w-[54px] h-[50px] bg-[rgba(250,249,255,1)] rounded-md transition-colors"
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)')}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)')}
+              onClick={(e) => {
+                gsap.to(e.currentTarget, { rotate: 45, duration: 0.3 });
+                setTimeout(() => gsap.to(e.currentTarget, { rotate: 0, duration: 0.3 }), 500); // Возвращаем назад после анимации
+              }}
             >
-              <img src={menu} alt="menu" className="h-8 w-8" />
+              <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
             </div>
           </button>
         </div>
       </div>
+
       <div ref={menuRef} className="absolute left-0 top-full w-full bg-white shadow-md overflow-hidden z-50">
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
           {[
