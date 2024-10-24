@@ -72,21 +72,23 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
         </div>
 
         <div className="flex items-center space-x-4">
+          {/* Бургер-меню, которое отображается на всех экранах */}
           <button
-            className="text-gray-600 hover:text-gray-900 px-3 py-2 md:hidden"
+            className="text-gray-600 hover:text-gray-900 px-3 py-2"
             onClick={toggleMenu}
             style={{ position: 'relative' }}
           >
             <div
-              className="flex items-center justify-center w-[54px] h-[50px] bg-transparent rounded-md"
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'purple'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              className="flex items-center justify-center w-[54px] h-[50px] bg-grayth rounded-md transition-colors"
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'purple')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'gray')}
               onClick={(e) => gsap.to(e.currentTarget, { rotate: 45, duration: 0.3 })}
             >
               <img src={menu} alt="menu" className="h-8 w-8 mr-2" />
             </div>
           </button>
-          <div className="hidden md:flex items-center space-x-4">
+
+          <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <>
                 <button onClick={() => handleBlockClick('/history')} className="relative flex items-center">
@@ -97,7 +99,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                     onMouseEnter={() => setActiveIndex(0)}
                     onMouseLeave={() => setActiveIndex(null)}
                   />
-                  <span className="ml-2">История</span>
+                  <span className={`ml-2 ${activeIndex === 0 ? 'text-white' : 'text-purpleth'}`}>История</span>
                 </button>
                 <button onClick={handleLogout} className="relative flex items-center">
                   <img
@@ -107,16 +109,22 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                     onMouseEnter={() => setActiveIndex(1)}
                     onMouseLeave={() => setActiveIndex(null)}
                   />
-                  <span className="ml-2">Выйти</span>
+                  <span className={`ml-2 ${activeIndex === 1 ? 'text-white' : 'text-purpleth'}`}>Выйти</span>
                 </button>
               </>
             ) : (
               <>
                 <button
                   onClick={() => handleBlockClick('/register')}
-                  className="relative flex items-center justify-center w-[150px] h-[50px] rounded-lg transition-colors duration-300"
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'purple'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  className="relative flex items-center justify-center w-[150px] h-[50px] rounded-lg transition-colors duration-300 bg-grayth"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'purple';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'gray';
+                    e.currentTarget.style.color = 'purpleth';
+                  }}
                 >
                   <img
                     src={activeIndex === 2 ? historyactive : history}
@@ -125,13 +133,19 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                     onMouseEnter={() => setActiveIndex(2)}
                     onMouseLeave={() => setActiveIndex(null)}
                   />
-                  <span className="ml-2 text-white">Зарегистрироваться</span>
+                  <span className={`ml-2 ${activeIndex === 2 ? 'text-white' : 'text-purpleth'}`}>Зарегистрироваться</span>
                 </button>
                 <button
                   onClick={() => handleBlockClick('/login')}
-                  className="relative flex items-center justify-center w-[150px] h-[50px] rounded-lg transition-colors duration-300"
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'purple'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  className="relative flex items-center justify-center w-[150px] h-[50px] rounded-lg transition-colors duration-300 bg-grayth"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'purple';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'gray';
+                    e.currentTarget.style.color = 'purpleth';
+                  }}
                 >
                   <img
                     src={activeIndex === 3 ? loginactive : logiin}
@@ -140,7 +154,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                     onMouseEnter={() => setActiveIndex(3)}
                     onMouseLeave={() => setActiveIndex(null)}
                   />
-                  <span className="ml-2 text-white">Войти</span>
+                  <span className={`ml-2 ${activeIndex === 3 ? 'text-white' : 'text-purpleth'}`}>Войти</span>
                 </button>
               </>
             )}
@@ -193,7 +207,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                 <img
                   src={block.img}
                   alt={block.alt}
-                  className={`h-[25px] w-[25px] transition-colors duration-300 ${
+                  className={`h-[25px] w-[25px] font-bold transition-colors duration-300 ${
                     activeIndex === index ? 'text-white' : 'text-purpleth'
                   }`}
                   style={{ filter: activeIndex === index ? 'brightness(0) saturate(100%) invert(100%)' : 'none' }}
@@ -206,7 +220,7 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                   {block.text}
                 </span>
               </div>
-              <p className="text-purpleth w-[50%] text-center">{block.description}</p>
+              <p className="text-purpleth w-[50%] md:mt-0 mt-4 text-center">{block.description}</p>
             </div>
           ))}
         </div>
