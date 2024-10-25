@@ -78,12 +78,44 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
-              <>
-                {/* Your authenticated buttons */}
-              </>
+               <>
+               {/* Кнопка История */}
+               <button
+                 onClick={() => navigate('/history')}
+                 className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+               >
+                 <img src={history} alt="History" className="h-6 w-6" />
+                 <span className="ml-2 text-purpleth hover:text-white">История</span>
+               </button>
+               {/* Кнопка Выйти */}
+               <button
+                 onClick={handleLogout}
+                 className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+               >
+                 <img src={logiin} alt="Logout" className="h-6 w-6" style={{ transform: 'scaleX(-1)' }} />
+                 <span className="ml-2 text-purpleth hover:text-white">Выйти</span>
+               </button>
+             </>
             ) : (
               <div className="flex space-x-2">
-                {/* Your non-authenticated buttons */}
+                 <>
+              {/* Кнопка Зарегистрироваться */}
+              <button
+                onClick={() => navigate('/register')}
+                className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+              >
+                <img src={history} alt="Register" className="h-6 w-6" />
+                <span className="ml-2 text-purpleth hover:text-white">Зарегистрироваться</span>
+              </button>
+              {/* Кнопка Войти */}
+              <button
+                onClick={() => navigate('/login')}
+                className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+              >
+                <img src={logiin} alt="Login" className="h-6 w-6" />
+                <span className="ml-2 text-purpleth hover:text-white">Войти</span>
+              </button>
+            </>
               </div>
             )}
           </div>
