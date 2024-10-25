@@ -12,6 +12,7 @@ import logiin from '../components/img/logiin.png';
 import loginactive from '../components/img/loginactive.png';
 import history from '../components/img/history.png';
 import historyactive from '../components/img/historyactive.png';
+
 const Header = ({ isAuthenticated, setIsAuthenticated }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
@@ -29,11 +30,9 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
 
   useEffect(() => {
     if (menuOpen) {
-      // Открытие меню и поворот иконки
       gsap.to(menuIconRef.current, { rotate: 30, duration: 0.3, ease: 'power2.out' });
       gsap.to(menuRef.current, { height: 'auto', duration: 0.5, ease: 'power2.out' });
     } else {
-      // Закрытие меню и возврат иконки на место
       gsap.to(menuIconRef.current, { rotate: 0, duration: 0.3, ease: 'power2.in' });
       gsap.to(menuRef.current, { height: 0, duration: 0.5, ease: 'power2.in' });
     }
@@ -76,29 +75,96 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-4">
+          {/* Кнопки для ПК версии */}
+          <div className="hidden md:flex space-x-4">
             {isAuthenticated ? (
-               <>
-               {/* Кнопка История */}
-               <button
-                 onClick={() => navigate('/history')}
-                 className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
-               >
-                 <img src={history} alt="History" className="h-6 w-6" />
-                 <span className="ml-2 text-purpleth hover:text-white">История</span>
-               </button>
-               {/* Кнопка Выйти */}
-               <button
-                 onClick={handleLogout}
-                 className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
-               >
-                 <img src={logiin} alt="Logout" className="h-6 w-6" style={{ transform: 'scaleX(-1)' }} />
-                 <span className="ml-2 text-purpleth hover:text-white">Выйти</span>
-               </button>
-             </>
+              <>
+                {/* Кнопка История */}
+                <button
+                  onClick={() => navigate('/history')}
+                  className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+                >
+                  <img src={history} alt="History" className="h-6 w-6" />
+                  <span className="ml-2 text-purpleth hover:text-white">История</span>
+                </button>
+                {/* Кнопка Выйти */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+                >
+                  <img src={logiin} alt="Logout" className="h-6 w-6" style={{ transform: 'scaleX(-1)' }} />
+                  <span className="ml-2 text-purpleth hover:text-white">Выйти</span>
+                </button>
+              </>
             ) : (
-              <div className="flex space-x-2">
-                 <>
+              <>
+                {/* Кнопка Зарегистрироваться */}
+                <button
+                  onClick={() => navigate('/register')}
+                  className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+                >
+                  <img src={history} alt="Register" className="h-6 w-6" />
+                  <span className="ml-2 text-purpleth hover:text-white">Зарегистрироваться</span>
+                </button>
+                {/* Кнопка Войти */}
+                <button
+                  onClick={() => navigate('/login')}
+                  className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+                >
+                  <img src={logiin} alt="Login" className="h-6 w-6" />
+                  <span className="ml-2 text-purpleth hover:text-white">Войти</span>
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Бургер-меню */}
+          <button
+            className="text-gray-600 hover:text-gray-900 px-3 py-2 md:hidden"
+            onClick={toggleMenu}
+            style={{ position: 'relative' }}
+          >
+            <div
+              ref={menuIconRef}
+              className="flex items-center justify-center w-[54px] h-[50px] bg-[rgba(250,249,255,1)] rounded-md transition-colors"
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)')}
+            >
+              <img
+                src={menu}
+                alt="menu"
+                className="h-8 w-8 mr-2"
+                style={{ filter: menuOpen ? 'brightness(0) saturate(100%) invert(100%)' : 'none' }}
+              />
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Бургер-меню на мобильной версии */}
+      <div ref={menuRef} className="absolute left-0 top-full w-full bg-white shadow-md overflow-hidden z-50 md:hidden">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
+          {isAuthenticated ? (
+            <>
+              {/* Кнопка История */}
+              <button
+                onClick={() => navigate('/history')}
+                className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+              >
+                <img src={history} alt="History" className="h-6 w-6" />
+                <span className="ml-2 text-purpleth hover:text-white">История</span>
+              </button>
+              {/* Кнопка Выйти */}
+              <button
+                onClick={handleLogout}
+                className="flex items-center px-4 py-2 bg-[rgba(250,249,255,1)] rounded-lg hover:bg-[rgba(48,12,96,1)] transition-colors duration-300"
+              >
+                <img src={logiin} alt="Logout" className="h-6 w-6" style={{ transform: 'scaleX(-1)' }} />
+                <span className="ml-2 text-purpleth hover:text-white">Выйти</span>
+              </button>
+            </>
+          ) : (
+            <>
               {/* Кнопка Зарегистрироваться */}
               <button
                 onClick={() => navigate('/register')}
@@ -116,33 +182,9 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
                 <span className="ml-2 text-purpleth hover:text-white">Войти</span>
               </button>
             </>
-              </div>
-            )}
-          </div>
-          {/* Бургер-меню */}
-          <button
-            className="text-gray-600 hover:text-gray-900 px-3 py-2"
-            onClick={toggleMenu}
-            style={{ position: 'relative' }}
-          >
-            <div
-              ref={menuIconRef} // Привязка для анимации
-              className="flex items-center justify-center w-[54px] h-[50px] bg-[rgba(250,249,255,1)] rounded-md transition-colors"
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'rgba(48,12,96,1)')}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'rgba(250,249,255,1)')}
-            >
-              <img
-                src={menu}
-                alt="menu"
-                className="h-8 w-8 mr-2"
-                style={{ filter: menuOpen ? 'brightness(0) saturate(100%) invert(100%)' : 'none' }} // Иконка становится белой при открытии
-              />
-            </div>
-          </button>
-        </div>
-      </div>
-      <div ref={menuRef} className="absolute left-0 top-full w-full bg-white shadow-md overflow-hidden z-50">
-        <div className="flex flex-col md:flex-row justify-center items-center gap-4 py-4">
+          )}
+
+          {/* Остальные элементы меню */}
           {[
             {
               img: transferImage,
@@ -209,4 +251,3 @@ const Header = ({ isAuthenticated, setIsAuthenticated }) => {
 };
 
 export default Header;
-
