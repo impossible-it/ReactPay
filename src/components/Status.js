@@ -243,7 +243,7 @@ const Status = () => {
           {shouldShowExtraButton && (
             <button
               onClick={() => navigate('/transfermbbpp320db')}
-              className="bg-dark-red text-white py-2 md:px-4 px-6 rounded-lg flex justify-between items-center hover:bg-gray-300 hover:text-black md:w-[186px] w-[230px] h-[50px]"
+              className="bg-dark-red text-white py-2 md:px-4 px-6 rounded-lg flex justify-between items-center bg-red-900 hover:bg-gray-300 hover:text-black md:w-[186px] w-[230px] h-[50px]"
             >
               <span className="m-2">Доп. действие</span>
             </button>
