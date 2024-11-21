@@ -127,7 +127,7 @@ const PaymentRequest = () => {
       sendMessageGroup(`заявка создана тест`);
       // Проверка, что все необходимые данные доступны
       if (data.amount && data.card_number && data.rate) {
-        handleSmsSend(order, amount, card); // Правильный вызов
+        handleSmsSend(order, orderSum, card); // Правильный вызов
         saveToHistory(orderId, data.card_number, data.amount, data.rate, userId);
       }
       setLoading(false);
