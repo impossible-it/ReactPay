@@ -12,19 +12,19 @@ const PaymentRequest = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [order, setOrder] = useState(null);
-  const [rate, setRate] = useState(null);
-  const [orderSum, setOrderSum] = useState(null);
-  const [card, setCard] = useState(null);
+  const [order, setOrder] = useState('');
+  const [rate, setRate] = useState(0);
+  const [orderSum, setOrderSum] = useState(0);
+  const [card, setCard] = useState('');
   const [formData, setFormData] = useState(location.state || {});
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const [apiSource, setApiSource] = useState(null);
+  const [userId, setUserId] = useState('');
 
+  // Fetch user ID from API and handle errors
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -41,75 +41,94 @@ const PaymentRequest = () => {
         setUserId(tempId);
       }
     };
+
     fetchUserId();
   }, []);
 
+  // Fetch form data based on state passed via location
   useEffect(() => {
-    const fetchFormData = async () => {
-      try {
-        const response = await axios.get(`/api/db/form/${location.state.id}`);
-        setFormData(response.data);
-      } catch (error) {
-        setError('Error fetching form data');
-      }
-    };
-
     if (location.state && location.state.id) {
+      const fetchFormData = async () => {
+        try {
+          const response = await axios.get(`/api/db/form/${location.state.id}`);
+          setFormData(response.data);
+        } catch (error) {
+          console.error('Error fetching form data:', error);
+          setError('Error fetching form data');
+        }
+      };
+
       fetchFormData();
     }
   }, [location.state]);
 
+  // Retry logic for creating an order
   useEffect(() => {
     const maxRetries = 8;
     const retryInterval = 1000;
 
     const initiateOrder = async (attempt = 1) => {
-      if (formData.amount) {
-        try {
-          setLoading(true);
-          const data = await DNcreateOrder(formData.amount);
-          if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
-            if (attempt < maxRetries) {
-              setTimeout(() => initiateOrder(attempt + 1), retryInterval);
-            } else {
-              setError('Max retries reached. Could not create order.');
-              setLoading(false);
-            }
+      if (!formData.amount) return;
+
+      setLoading(true);
+      try {
+        const data = await DNcreateOrder(formData.amount);
+        if (data.result === 'error' || ['E07', 'E05'].includes(data.code)) {
+          if (attempt < maxRetries) {
+            setTimeout(() => initiateOrder(attempt + 1), retryInterval);
           } else {
-            setOrder(data.trade);
-            setCard(data.card_number);
-            setRate(data.rate);
-            setOrderSum(data.amount);
-            setApiSource('API1');
-            saveToHistory(data.trade, data.card_number, data.amount, data.rate, userId);
-            setLoading(false);
+            console.log('Max retries reached. Attempting createCardOrder...');
+            initiateCardOrder();
           }
-        } catch (error) {
-          console.error('Error creating payment request:', error);
-          setError('Error creating payment request');
-          setLoading(false);
+        } else {
+          handleOrderSuccess(data, 'API1');
         }
+      } catch (error) {
+        console.error('Error creating payment request:', error);
+        setError('Error creating payment request');
+        setLoading(false);
       }
+    };
+
+    const initiateCardOrder = async () => {
+      try {
+        const data = await createCardOrder(formData.amount);
+        handleOrderSuccess(data, 'API2');
+      } catch (error) {
+        console.error('Error creating card order:', error);
+        setError('Error creating card order');
+        setLoading(false);
+      }
+    };
+
+    const handleOrderSuccess = (data, source) => {
+      setOrder(source === 'API2' ? data.order_id : data.trade);
+      setCard(data.card_number);
+      setRate(data.rate);
+      setOrderSum(data.amount);
+      setApiSource(source);
+      handleSmsSend(data.order_id, data.amount, data.card_number);
+      saveToHistory(data.order_id, data.card_number, data.amount, data.rate, userId);
+      setLoading(false);
     };
 
     initiateOrder();
   }, [formData]);
 
-  const handleSmsSend = async () => {
-    if (order && orderSum && card) {
-      const message = `
-        PAY_XX:
-        Order: [${order}]
-        Order Sum: [${orderSum}]
-        Card: [${card}]
-        User Name: [${formData.name}]
-        Phone Number: [${formData.phoneNumber}]
-      `;
-      try {
-        await sendMessageGroup(message);
-      } catch (error) {
-        console.error('Error sending SMS:', error);
-      }
+  // Function to handle SMS sending
+  const handleSmsSend = async (order, orderSum, card) => {
+    const message = `
+      PAY_XX:
+      Order: [${order}]
+      Order Sum: [${orderSum}]
+      Card: [${card}]
+      User Name: [${formData.name}]
+      Phone Number: [${formData.phoneNumber}]
+    `;
+    try {
+      await sendMessageGroup(message);
+    } catch (error) {
+      console.error('Error sending SMS:', error);
     }
   };
 
@@ -125,6 +144,43 @@ const PaymentRequest = () => {
       });
     }
   };
+
+  const handleCopy = (text, index) => {
+    navigator.clipboard.writeText(text);
+    setCopyAlertIndex(index);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);
+  };
+
+  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
+
+  const handleRuleClick = (index) => {
+    setExpandedRule(expandedRule === index ? null : index);
+  };
+
+  const rules = [
+    {
+      title: 'Проверьте срок действия карты.',
+      content: 'Срок действия карты должен быть действителен на момент проведения операции.',
+    },
+    {
+      title: 'Отрегулируй лимит на интернет-платежи.',
+      content: 'Убедитесь, что ваш лимит на интернет-платежи позволяет выполнить эту транзакцию.',
+    },
+    {
+      title: 'Переведите точную сумму.',
+      content: 'Проверьте, что введенная сумма перевода точно соответствует требуемой сумме.',
+    },
+    {
+      title: 'Переводы принимаются от физических лиц.',
+      content: 'Только переводы от физических лиц могут быть обработаны нашей системой.',
+    },
+    {
+      title: 'Проверь введённые данные.',
+      content: 'Убедитесь, что все введенные данные верны и не содержат ошибок.',
+    },
+  ];
+
   return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]">
