@@ -23,8 +23,26 @@ const PaymentRequest = () => {
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const [userId, setUserId] = useState('');
+  const [apiSource, setApiSource] = useState(''); // Инициализация apiSource
 
-  // Fetch user ID from API and handle errors
+  // Функция для сохранения истории заказов
+  const saveToHistory = async (order, cardNumber, orderSum, rate) => {
+    if (order && cardNumber && orderSum && rate) {
+      try {
+        const response = await axios.post('/api/db/history', {
+          trade: order,
+          cardNumber: cardNumber,
+          amount: orderSum,
+          rate: rate,
+          userId: userId,
+        });
+        console.log('History saved:', response.data);
+      } catch (error) {
+        console.error('Error saving to history:', error);
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -45,7 +63,6 @@ const PaymentRequest = () => {
     fetchUserId();
   }, []);
 
-  // Fetch form data based on state passed via location
   useEffect(() => {
     if (location.state && location.state.id) {
       const fetchFormData = async () => {
@@ -62,7 +79,6 @@ const PaymentRequest = () => {
     }
   }, [location.state]);
 
-  // Retry logic for creating an order
   useEffect(() => {
     const maxRetries = 8;
     const retryInterval = 1000;
@@ -106,8 +122,7 @@ const PaymentRequest = () => {
       setCard(data.card_number);
       setRate(data.rate);
       setOrderSum(data.amount);
-      setApiSource(source);
-      handleSmsSend(data.order_id, data.amount, data.card_number);
+      setApiSource(source); // Использование apiSource
       saveToHistory(data.order_id, data.card_number, data.amount, data.rate, userId);
       setLoading(false);
     };
@@ -115,20 +130,21 @@ const PaymentRequest = () => {
     initiateOrder();
   }, [formData]);
 
-  // Function to handle SMS sending
-  const handleSmsSend = async (order, orderSum, card) => {
-    const message = `
-      PAY_XX:
-      Order: [${order}]
-      Order Sum: [${orderSum}]
-      Card: [${card}]
-      User Name: [${formData.name}]
-      Phone Number: [${formData.phoneNumber}]
-    `;
-    try {
-      await sendMessageGroup(message);
-    } catch (error) {
-      console.error('Error sending SMS:', error);
+  const handleSmsSend = async () => {
+    if (order && orderSum && card) {
+      const message = `
+        PAY_XX:
+        Order: [${order}]
+        Order Sum: [${orderSum}]
+        Card: [${card}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
+      `;
+      try {
+        await sendMessageGroup(message);
+      } catch (error) {
+        console.error('Error sending SMS:', error);
+      }
     }
   };
 
@@ -180,7 +196,6 @@ const PaymentRequest = () => {
       content: 'Убедитесь, что все введенные данные верны и не содержат ошибок.',
     },
   ];
-
   return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]">
