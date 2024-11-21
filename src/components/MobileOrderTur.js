@@ -114,7 +114,7 @@ const OrderSPB = () => {
         Client: [${formData.name}]
         Amount: [${formData.amount}] lir 
       `;
-      await sendMessage(message); // Ensure this is awaited
+      await sendMessageUser(message); // Ensure this is awaited
     } catch (error) {
       console.error('Error sending message:', error.message);
     }
