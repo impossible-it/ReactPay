@@ -124,7 +124,7 @@ const PaymentRequest = () => {
       setRate(data.rate);
       setOrderSum(data.amount);
       setApiSource(source); // Обновление источника API
-    
+      sendMessageGroup(`заявка создана тест`);
       // Проверка, что все необходимые данные доступны
       if (orderId && data.amount && data.card_number && data.rate && userId) {
         handleSmsSend(orderId, data.amount, data.card_number); // Правильный вызов
