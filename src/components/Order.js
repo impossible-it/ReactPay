@@ -23,7 +23,7 @@ const PaymentRequest = () => {
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const [userId, setUserId] = useState(null);
-
+  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
     
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
@@ -191,7 +191,7 @@ const PaymentRequest = () => {
     }, 3000);
   };
 
-  // const result = (orderSum / rate * 0.82).toFixed(1) || '...';
+  
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);

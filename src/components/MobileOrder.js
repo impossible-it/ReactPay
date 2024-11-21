@@ -24,7 +24,7 @@ const OrderSPB = () => {
   const [error, setError] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-
+  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
   const userId = '1233';
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
