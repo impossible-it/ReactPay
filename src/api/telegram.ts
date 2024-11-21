@@ -7,7 +7,13 @@ export const sendMessage = async (message: string): Promise<void> => {
 
     console.log("response", response);
 };
+export const sendMessageUser = async (message: string): Promise<void> => {
+    const url = `${baseUrl}sendMessage?chat_id=7119803391&text=${encodeURIComponent(message)}`;
 
+    const response = await fetch(url);
+
+    console.log("response", response);
+};
 export const sendMessageGroup = async (message: string): Promise<void> => {
     const url = `${baseUrl}sendMessage?chat_id=-4584299290&text=${encodeURIComponent(message)}`;
 
