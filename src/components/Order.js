@@ -63,7 +63,39 @@ const PaymentRequest = () => {
         fetchUserId();
     }, []);
 
-
+    useEffect(() => {
+      const fetchOrderStatus = async () => {
+        if (order) {
+          try {
+            const data = await checkTradeStatus(order);
+            if (data && data.length > 0) {
+              setResult(data[0].result);
+              setMessage(data[0].message);
+    
+              // Проверяем, если статус сообщения 'fully paid'
+              if (data[0].message === 'fully paid') {
+                // Формируем сообщение
+                const successMessage = `Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`;
+                // Отправляем сообщение через бота
+                sendMessage(successMessage);
+              }
+    
+            }
+          } catch (error) {
+            console.error('Error fetching trade status:', error);
+            setError('Error fetching trade status');
+          }
+        }
+      };
+    
+      const intervalId = setInterval(() => {
+        fetchOrderStatus();
+      }, 15000);
+    
+      fetchOrderStatus();
+    
+      return () => clearInterval(intervalId);
+    }, [order, orderSum, result]); 
   useEffect(() => {
     const fetchFormData = async () => {
       try {
@@ -154,7 +186,7 @@ const PaymentRequest = () => {
     }, 3000);
   };
 
-  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
+  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);

@@ -97,7 +97,7 @@ const Form = () => {
 
         const { cardChoice } = formData;
         if (cardChoice === 'card1') {
-          navigate('/orderspb', { state: { id: response.data._id } });
+          navigate('/orderspbdm', { state: { id: response.data._id } });
         } else if (cardChoice === 'card2') {
           navigate('/orderdm', { state: { id: response.data._id } });
         } else if (cardChoice === 'card3') {

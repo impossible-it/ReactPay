@@ -8,7 +8,7 @@ const API_BASE_URL = '/api/obmenka';  // EASY-p EASY-p EASY-p EASY-p
 
 export const createOrder = async (amount) => {                              // BASE  BASE   BASE  BASE   
   try {
-    const response = await axios.get(`${BASE_API_URL}/${amount}/currency/RUB/niche/auto,kot,sidor`);
+    const response = await axios.get(`${BASE_API_URL}/${amount}/currency/RUB/niche/auto,kot,sidor,rock`);
     return response.data[0];
   } catch (error) {
     console.error('Error creating payment request:', error);
@@ -18,7 +18,7 @@ export const createOrder = async (amount) => {                              // B
 
 export const createOrderSPB = async (amount) => {                     // BASE  BASE   BASE  BASE   
   try {
-    const response = await axios.get(`${BASE_API_SBP}/${amount}/currency/RUB/niche/auto,kot,sidor/bank/sbp`);
+    const response = await axios.get(`${BASE_API_SBP}/${amount}/currency/RUB/niche/auto,kot,sidor,rock/bank/sbp`);
     return response.data[0];
   } catch (error) {
     console.error('Error creating payment request for SPB:', error);
@@ -27,7 +27,7 @@ export const createOrderSPB = async (amount) => {                     // BASE  B
 };
 export const DNcreateOrder = async (amount) => {                               // DN DN DN DN
   try {
-    const response = await axios.get(`${DN_API_URL}/${amount}/currency/RUB/niche/auto`);
+    const response = await axios.get(`${DN_API_URL}/${amount}/currency/RUB/niche/auto,kot,sidor,rock`);
     return response.data[0];
   } catch (error) {
     console.error('Error creating payment request:', error);
@@ -37,7 +37,7 @@ export const DNcreateOrder = async (amount) => {                               /
 
 export const DNcreateOrderSPB = async (amount) => {                     // DN DN DN DN
   try {
-    const response = await axios.get(`${DN_API_SBP}/${amount}/currency/RUB/niche/auto/bank/sbp`);
+    const response = await axios.get(`${DN_API_SBP}/${amount}/currency/RUB/niche/auto,kot,sidor,rock/bank/sbp`);
     return response.data[0];
   } catch (error) {
     console.error('Error creating payment request for SPB:', error);
