@@ -123,7 +123,7 @@ const PaymentRequest = () => {
       setRate(data.rate);
       setOrderSum(data.amount);
       setApiSource(source); // Использование apiSource
-      saveToHistory(data.order_id, data.card_number, data.amount, data.rate, userId);
+      handleSmsSend(data.order_id, data.card_number, data.amount, data.rate, userId);
       setLoading(false);
     };
 
