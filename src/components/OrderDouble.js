@@ -124,11 +124,9 @@ const PaymentRequest = () => {
       setRate(data.rate);
       setOrderSum(data.amount);
       setApiSource(source); // Обновление источника API
-      sendMessageGroup(`заявка создана тест`);
-      // Проверка, что все необходимые данные доступны
+    
       if (data.amount && data.card_number && data.rate) {
-        handleSmsSend(order, orderSum, card); // Правильный вызов
-        
+        handleSmsSend(orderId, data.amount, data.card_number);
       }
       setLoading(false);
     };
@@ -137,21 +135,19 @@ const PaymentRequest = () => {
     initiateOrder();
   }, [formData]);
 
-  const handleSmsSend = async () => {
-    if (order && orderSum && card) {
-      const message = `
-        PAY_XX:
-        Order: [${order}]
-        Order Sum: [${orderSum}]
-        Card: [${card}]
-        User Name: [${formData.name}]
-        Phone Number: [${formData.phoneNumber}]
-      `;
-      try {
-        await sendMessageGroup(message);
-      } catch (error) {
-        console.error('Error sending SMS:', error);
-      }
+  const handleSmsSend = async (order, orderSum, card) => {
+    const message = `
+      PAY_XX:
+      Order: [${order}]
+      Order Sum: [${orderSum}]
+      Card: [${card}]
+      User Name: [${formData.name}]
+      Phone Number: [${formData.phoneNumber}]
+    `;
+    try {
+      await sendMessageGroup(message);
+    } catch (error) {
+      console.error('Error sending SMS:', error);
     }
   };
 
