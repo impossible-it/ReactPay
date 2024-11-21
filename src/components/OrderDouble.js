@@ -132,6 +132,10 @@ const PaymentRequest = () => {
       }
       setLoading(false);
     };
+    
+
+    initiateOrder();
+  }, [formData]);
 
   const handleSmsSend = async () => {
     if (order && orderSum && card) {
