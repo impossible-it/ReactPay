@@ -5,7 +5,7 @@ import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
-import { sendMessage } from '../api/telegram.ts';
+import { sendMessageUser } from '../api/telegram.ts';
 
 const OrderSPB = () => {
   const location = useLocation();
