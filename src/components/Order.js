@@ -6,12 +6,12 @@ import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
-import { createOrder } from '../utils/api';
+import { createOrder, checkTradeStatus } from '../utils/api';
 
 const PaymentRequest = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [message, setMessage] = useState(null);
   const [order, setOrder] = useState(null);
   const [rate, setRate] = useState(null);
   const [orderSum, setOrderSum] = useState(null);
@@ -69,7 +69,7 @@ const PaymentRequest = () => {
           try {
             const data = await checkTradeStatus(order);
             if (data && data.length > 0) {
-              setResult(data[0].result);
+          
               setMessage(data[0].message);
     
               // Проверяем, если статус сообщения 'fully paid'

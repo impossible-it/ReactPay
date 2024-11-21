@@ -6,7 +6,7 @@ import { ReactComponent as CopyImage } from '../components/img/copy.svg';
 import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
-import { createOrderSPB } from '../utils/api';
+import { createOrderSPB, checkTradeStatus } from '../utils/api';
 
 const OrderSPB = () => {
   const location = useLocation();
@@ -17,6 +17,7 @@ const OrderSPB = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [cardName, setCardName] = useState('');
   const [cardBank, setCardBank] = useState('');
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -69,7 +70,7 @@ const OrderSPB = () => {
         try {
           const data = await checkTradeStatus(order);
           if (data && data.length > 0) {
-            setResult(data[0].result);
+    
             setMessage(data[0].message);
   
             // Проверяем, если статус сообщения 'fully paid'
