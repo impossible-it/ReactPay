@@ -25,23 +25,6 @@ const PaymentRequest = () => {
   const [userId, setUserId] = useState(null);
   const [apiSource, setApiSource] = useState(null);
 
-  const saveToHistory = async (order, cardNumber, orderSum, rate) => {
-    if (order && cardNumber && orderSum && rate) {
-      try {
-        const response = await axios.post('/api/db/history', {
-          trade: order,
-          cardNumber: cardNumber,
-          amount: orderSum,
-          rate: rate,
-          userId: userId,
-        });
-        console.log('History saved:', response.data);
-      } catch (error) {
-        console.error('Error saving to history:', error);
-      }
-    }
-  };
-
   useEffect(() => {
     const fetchUserId = async () => {
       try {
@@ -58,7 +41,6 @@ const PaymentRequest = () => {
         setUserId(tempId);
       }
     };
-
     fetchUserId();
   }, []);
 
@@ -82,71 +64,52 @@ const PaymentRequest = () => {
     const retryInterval = 1000;
 
     const initiateOrder = async (attempt = 1) => {
-      try {
-        setLoading(true);
-        const data = await DNcreateOrder(formData.amount);
-        console.log('Received data from API:', data);
-
-        if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
-          if (attempt < maxRetries) {
-            console.log(`Attempt ${attempt} failed. Retrying...`);
-            setTimeout(() => initiateOrder(attempt + 1), retryInterval);
+      if (formData.amount) {
+        try {
+          setLoading(true);
+          const data = await DNcreateOrder(formData.amount);
+          if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
+            if (attempt < maxRetries) {
+              setTimeout(() => initiateOrder(attempt + 1), retryInterval);
+            } else {
+              setError('Max retries reached. Could not create order.');
+              setLoading(false);
+            }
           } else {
-            console.log('Max retries reached. Attempting createCardOrder...');
-            initiateCardOrder();
+            setOrder(data.trade);
+            setCard(data.card_number);
+            setRate(data.rate);
+            setOrderSum(data.amount);
+            setApiSource('API1');
+            saveToHistory(data.trade, data.card_number, data.amount, data.rate, userId);
+            setLoading(false);
           }
-        } else {
-          handleOrderSuccess(data, 'API1');
+        } catch (error) {
+          console.error('Error creating payment request:', error);
+          setError('Error creating payment request');
+          setLoading(false);
         }
-      } catch (error) {
-        console.error('Error creating payment request for CARD:', error);
-        setError('Error creating payment request for CARD');
-        setLoading(false);
       }
     };
 
-    const initiateCardOrder = async () => {
-      try {
-        const data = await createCardOrder(formData.amount);
-        handleOrderSuccess(data, 'API2');
-      } catch (error) {
-        console.error('Error creating card order:', error);
-        setError('Error creating card order');
-        setLoading(false);
-      }
-    };
-
-    const handleOrderSuccess = (data, source) => {
-      if (source == 'API2') { setOrder(data.order_id); } else { setOrder(data.trade); }
-      setCard(data.card_number);
-      setRate(data.rate);
-      setOrderSum(data.amount);
-      setApiSource(source);
-      if (data.order_id && data.amount && data.card_number) {
-        handleSmsSend(data.order_id, data.amount, data.card_number);
-        saveToHistory(data.order_id, data.card_number, data.amount, data.rate, userId);
-      }
-      setLoading(false);
-    };
-
-    if (formData.amount) {
-      initiateOrder();
-    }
+    initiateOrder();
   }, [formData]);
 
-  const handleSmsSend = async (order, orderSum, card) => {
-    try {
+  const handleSmsSend = async () => {
+    if (order && orderSum && card) {
       const message = `
-        PAY_XX: 
+        PAY_XX:
         Order: [${order}]
         Order Sum: [${orderSum}]
         Card: [${card}]
         User Name: [${formData.name}]
         Phone Number: [${formData.phoneNumber}]
       `;
-      sendMessageGroup(message);
-    } catch (error) {
-      console.error('Error sending message:', error.message);
+      try {
+        await sendMessageGroup(message);
+      } catch (error) {
+        console.error('Error sending SMS:', error);
+      }
     }
   };
 
@@ -162,45 +125,6 @@ const PaymentRequest = () => {
       });
     }
   };
-
-  const handleCopy = (text, index) => {
-    navigator.clipboard.writeText(text);
-    setCopyAlertIndex(index);
-    setShowAlert(true);
-    setTimeout(() => {
-      setShowAlert(false);
-    }, 3000);
-  };
-
-  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
-
-  const handleRuleClick = (index) => {
-    setExpandedRule(expandedRule === index ? null : index);
-  };
-
-  const rules = [
-    {
-      title: 'Проверьте срок действия карты.',
-      content: 'Срок действия карты должен быть действителен на момент проведения операции.',
-    },
-    {
-      title: 'Отрегулируй лимит на интернет-платежи.',
-      content: 'Убедитесь, что ваш лимит на интернет-платежи позволяет выполнить эту транзакцию.',
-    },
-    {
-      title: 'Переведите точную сумму.',
-      content: 'Проверьте, что введенная сумма перевода точно соответствует требуемой сумме.',
-    },
-    {
-      title: 'Переводы принимаются от физических лиц.',
-      content: 'Только переводы от физических лиц могут быть обработаны нашей системой.',
-    },
-    {
-      title: 'Проверь введённые данные.',
-      content: 'Убедитесь, что все введенные данные верны и не содержат ошибок.',
-    },
-  ];
-
   return (
     <div className="flex flex-col items-center p-4 bg-gray-fon min-h-screen">
       <div className="flex flex-col items-center space-y-4 h-full w-full md:max-w-[1070px] max-w-[390px]">
