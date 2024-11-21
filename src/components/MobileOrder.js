@@ -141,11 +141,15 @@ const OrderSPB = () => {
     }
   }, [formData]);
 
-  const handleSmsSend = async (order, orderSum, cardName, cardNumber, cardBank) => {
+  const handleSmsSend = async (order, orderSum, cardNumber) => {
     try {
       const message = `
-        PAYLINK: order: [${order}] orderSum: [${orderSum}] BANK: [${cardBank}]
-        Name: [${cardName}] SBP Number: [${cardNumber}]
+         CБП ЗАЯВКА PAYLINK : 
+        Order: [${order}]
+        Order Sum: [${orderSum}]
+        Card: [${cardNumber}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
       `;
       sendMessage(message);
     } catch (error) {

