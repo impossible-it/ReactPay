@@ -118,17 +118,20 @@ const PaymentRequest = () => {
     };
 
     const handleOrderSuccess = (data, source) => {
-      setOrder(source === 'API2' ? data.order_id : data.trade);
+      const orderId = source === 'API2' ? data.order_id : data.trade;
+      setOrder(orderId);
       setCard(data.card_number);
       setRate(data.rate);
       setOrderSum(data.amount);
-      setApiSource(source); // Использование apiSource
-      handleSmsSend(data.order_id, data.card_number, data.amount, data.rate, userId);
+      setApiSource(source); // Обновление источника API
+    
+      // Проверка, что все необходимые данные доступны
+      if (orderId && data.amount && data.card_number && data.rate && userId) {
+        handleSmsSend(orderId, data.amount, data.card_number); // Правильный вызов
+        saveToHistory(orderId, data.card_number, data.amount, data.rate, userId);
+      }
       setLoading(false);
     };
-
-    initiateOrder();
-  }, [formData]);
 
   const handleSmsSend = async () => {
     if (order && orderSum && card) {
