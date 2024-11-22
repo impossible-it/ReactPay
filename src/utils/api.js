@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const BASE_API_URL = '/api/external/auto/get_card/client/284278/amount'; // BASE  BASE   BASE  BASE   
-const BASE_API_SBP = '/api/external/auto/get_card/client/399635/amount'; // BASE  BASE   BASE  BASE   
-const DN_API_URL = '/api/external/auto/get_card/client/477485/amount'; // DN DN DN DN
-const DN_API_SBP = '/api/external/auto/get_card/client/477484/amount'; // DN DN DN DN  
+const BASE_API_URL = '/api/external/v2/get_card/client/284278/amount'; // BASE  BASE   BASE  BASE   
+const BASE_API_SBP = '/api/external/v2/get_card/client/399635/amount'; // BASE  BASE   BASE  BASE   
+const DN_API_URL = '/api/external/v2/get_card/client/477485/amount'; // DN DN DN DN
+const DN_API_SBP = '/api/external/v2/get_card/client/477484/amount'; // DN DN DN DN  
 const API_BASE_URL = '/api/obmenka';  // EASY-p EASY-p EASY-p EASY-p 
 
 export const createOrder = async (amount) => {                              // BASE  BASE   BASE  BASE   
