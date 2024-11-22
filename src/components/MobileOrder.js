@@ -25,6 +25,7 @@ const OrderSPB = () => {
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const result = (orderSum / rate * 0.82).toFixed(1) || '...';
+  const [isMessageSent, setIsMessageSent] = useState(false);
   const userId = '1233';
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
@@ -66,36 +67,39 @@ const OrderSPB = () => {
   
   useEffect(() => {
     const fetchOrderStatus = async () => {
-      if (order) {
-        try {
-          const data = await checkTradeStatus(order);
-          if (data && data.length > 0) {
-            setMessage(data[0].message);
-            
-            if (orderSum && rate) { // Убедитесь, что orderSum и rate уже загружены
-              const result = (orderSum / rate * 0.85).toFixed(1); // Переместите вычисление result сюда
-  
-              // Проверяем, если статус сообщения 'fully paid'
-              if (data[0].message === 'fully paid') {
-                // Формируем сообщение
-                const successMessage = `Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`;
-                // Отправляем сообщение через бота
-                sendMessage(successMessage);
-              }
+      if (!order || isMessageSent) return; // Выход, если нет заказа или сообщение уже отправлено
+
+      try {
+        const data = await checkTradeStatus(order);
+        if (data && data.length > 0) {
+          setMessage(data[0].message);
+          
+          if (orderSum && rate && !isMessageSent) { // Проверка, что orderSum и rate загружены и сообщение не отправлено
+            const result = (orderSum / rate * 0.82).toFixed(1);
+    
+            if (data[0].message === 'fully paid') {
+              const successMessage = `Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`;
+              sendMessage(successMessage);
+              setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
+            } else if (data[0].message !== 'still processing') {
+              const errorMessage = `Статус заявки №${order} ---- Ожидает оплаты}`;
+              sendMessage(errorMessage);
+              setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
             }
           }
-        } catch (error) {
-          console.error('Error fetching trade status:', error);
-          setError('Error fetching trade status');
         }
+      } catch (error) {
+        console.error('Error fetching trade status:', error);
+        setError('Error fetching trade status');
+        setIsMessageSent(true); // Устанавливаем флаг, что произошла ошибка
       }
     };
-  
-    const intervalId = setInterval(fetchOrderStatus, 15000);
-    fetchOrderStatus();
-  
-    return () => clearInterval(intervalId);
-  }, [order, orderSum, rate]); // Добавьте orderSum и rate в список зависимостей
+
+    const intervalId = setInterval(fetchOrderStatus, 60000); // Установка интервала
+    fetchOrderStatus(); // Немедленный вызов для начальной проверки
+
+    return () => clearInterval(intervalId); // Очистка интервала при размонтировании компонента
+  }, [order, orderSum, rate, isMessageSent]); // Добавьте orderSum и rate в список зависимостей
   
   useEffect(() => {
     const maxRetries = 10;
