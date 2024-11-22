@@ -39,7 +39,7 @@ const Form = () => {
   };
 
   const validateAmount = (amount) => {
-    return amount >= 99 && amount <= 100000;
+    return amount >= 3000 && amount <= 100000;
   };
 
   const validateClientNumber = (clientNumber) => {
@@ -63,7 +63,7 @@ const Form = () => {
         delete newErrors.phoneNumber;
       }
     } else if (name === 'amount' && !validateAmount(updatedValue)) {
-      newErrors.amount = 'Tutar 99 ve 100000 TL arasında olmalı';
+      newErrors.amount = 'Tutar 3000 ve 100000 TL arasında olmalı';
     } else if (name === 'clientNumber' && !validateClientNumber(updatedValue)) {
       newErrors.clientNumber = 'Promo kodu 3 ila 6 rakam içermeli';
     } else {
