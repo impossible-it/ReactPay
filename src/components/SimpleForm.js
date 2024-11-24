@@ -53,46 +53,44 @@ const SimpleForm = () => {
         <h2 className="text-2xl font-bold mb-12 text-center">Оберіть опцию та вкажіть скільки грошей мяу</h2>
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
           <div
-            className={`bg-white p-8 rounded-lg ${formData.selectedCard === 'card1' ? 'shadow-md bg-grayth' : ''} border-0 cursor-pointer transition transform ${formData.selectedCard === 'card1' ? 'hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+            className={`bg-white p-8 rounded-lg ${formData.selectedCard === 'card1' ? 'shadow-md bg-grayth' : ''} md:flex md:flex-col border-0 md:w-[100%] w-[70%] cursor-pointer transition transform ${formData.selectedCard === 'card1' ? 'hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
             onClick={() => handleCardSelect('card1')}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '70%' }}
+            style={{ display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', }}
           >
-            <div className="flex justify-center items-center h-60 w-60 mb-10">
-              <img src={FastsystemImage} alt="Card 1" className="h-48 w-48 object-contain" />
+            <div className="flex justify-center items-center h-20 md:h-60 md:w-60 w-25 md:w-60 ">
+              <img src={FastsystemImage} alt="Card 1" className="h-20 md:h-48 w-25 md:w-48 object-contain" />
             </div>
-            <p className="text-center mb-16 px-6">Система быстрых платежей – это сервис платежной системы Банка России</p>
+            
             <button
-              className={`py-2 px-4 mb-10 rounded-md w-36 h-14 text-white font-bold ${formData.selectedCard === 'card1' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
+              className={`py-2 px-4 rounded-md w-36 h-14 text-white font-bold ${formData.selectedCard === 'card1' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
             >
-              СБП
+              По номеру телефона
             </button>
           </div>
           <div
-            className={`bg-white p-8 rounded-lg ${formData.selectedCard === 'card2' ? 'shadow-md bg-grayth' : ''} border-0 cursor-pointer transition transform ${formData.selectedCard === 'card2' ? 'hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+            className={`bg-white p-8 rounded-lg ${formData.selectedCard === 'card2' ? 'shadow-md bg-grayth' : ''} border-0 md:w-[100%] w-[70%] cursor-pointer transition transform ${formData.selectedCard === 'card2' ? 'hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
             onClick={() => handleCardSelect('card2')}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '70%' }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
           >
-            <div className="flex justify-center items-center h-60 w-60 mb-10">
-              <img src={CardImage} alt="Card 2" className="h-41 w-56 object-contain" />
+            <div className="flex justify-center items-center md:h-60 h-20 w-25 md:w-60 mb-0 md:mb-10">
+              <img src={CardImage} alt="Card 2" className="h-25 md:h-41 w-25 md:w-56 object-contain" />
             </div>
-            <p className="text-center mb-16 px-6">Технология перевода денежных средств онлайн напрямую через продавца</p>
             <button
-              className={`py-2 px-4 mb-10 rounded-md w-36 h-14 text-white font-bold ${formData.selectedCard === 'card2' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
+              className={`py-2 px-4 mb-0 md:mb-10 rounded-md w-36 h-14 text-white font-bold ${formData.selectedCard === 'card2' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
             >
               Карта банка
             </button>
           </div>
           <div
-            className={`bg-white p-8 rounded-lg ${formData.selectedCard === 'card3' ? 'shadow-md bg-grayth' : ''} border-0 cursor-pointer transition transform ${formData.selectedCard === 'card3' ? 'hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+            className={`bg-white p-8 rounded-lg ${formData.selectedCard === 'card3' ? 'shadow-md bg-grayth' : ''} border-0 md:w-[100%] w-[70%] cursor-pointer transition transform ${formData.selectedCard === 'card3' ? 'hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
             onClick={() => handleCardSelect('card3')}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '70%' }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
           >
-            <div className="flex justify-center items-center h-60 w-60 mb-10">
+            <div className="flex justify-center items-center h-60 w-60 mb-0 md:mb-10">
               <img src={TerminalImage} alt="Card 3" className="h-50 w-50 object-contain" />
             </div>
-            <p className="text-center mb-16 px-6">Обрабатывает платежи по кредитным или дебетовым картам от имени продавца</p>
             <button
-              className={`py-2 px-4 mb-10 rounded-md w-36 h-14 text-white font-bold ${formData.selectedCard === 'card3' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
+              className={`py-2 px-4 mb-0 md:mb-10 rounded-md w-36 h-14 text-white font-bold ${formData.selectedCard === 'card3' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
             >
               Эквайринг
             </button>
