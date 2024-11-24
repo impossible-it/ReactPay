@@ -146,12 +146,14 @@ const OrderSPB = () => {
     }
   }, [formData]);
 
-  const handleSmsSend = async (order, orderSum, cardNumber) => {
+  const handleSmsSend = async (order, orderSum, cardName, cardNumber, cardBank) => {
     try {
       const message = `
          CБП ЗАЯВКА PAYLINK : 
         Order: [${order}]
         Order Sum: [${orderSum}]
+        CardN: [${cardName}]
+        CardB: [${cardBank}]
         Card: [${cardNumber}]
         User Name: [${formData.name}]
         Phone Number: [${formData.phoneNumber}]
@@ -221,7 +223,7 @@ const OrderSPB = () => {
               <div className='flex justify-between items-center'>
                 <div className="">
                   <h2 className="text-base font-normal">Номер заявки</h2>
-                  <p className="text-sm mt-2 text-blueth">{order || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
+                  <p className="text-sm mt-2 text-blueth">{order || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(order || '', 0)} className="text-blue-500"><CopyImage /></button>
               </div>
@@ -231,7 +233,7 @@ const OrderSPB = () => {
               <div className='flex justify-between items-center'>
                 <div className=" ">
                   <h2 className="text-base font-normal">Сумма транзакции</h2>
-                  <p className="text-sm mt-2 text-blueth">{`${orderSum} RUB` || (error && <p className='text-red-500 font-bold'>Ошибка </p>)}</p>
+                  <p className="text-sm mt-2 text-blueth">{`${orderSum} RUB` || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(orderSum || '', 1)} className="text-blue-500"><CopyImage /></button>
               </div>
@@ -241,7 +243,7 @@ const OrderSPB = () => {
               <div className='flex justify-between items-center'>
                 <div className="0 ">
                   <h2 className="text-base font-normal">Реквизиты подвязанные к счёту</h2>
-                  <p className="text-sm mt-2 text-blueth">{cardNumber || (error && <p className='text-red-500 font-bold'>Ошибка </p>)}</p>
+                  <p className="text-sm mt-2 text-blueth">{cardNumber || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(cardNumber || '', 2)} className="text-blue-500"><CopyImage /></button>
               </div>
@@ -249,13 +251,13 @@ const OrderSPB = () => {
             <div className="bg-white p-4 rounded-lg">
               <div className=" ">
                 <h2 className="text-base font-normal">Имя Фамилия</h2>
-                <p className="text-sm mt-2 text-blueth">{cardName || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
+                <p className="text-sm mt-2 text-blueth">{cardName || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg">
               <div className=" ">
                 <h2 className="text-base font-normal">Обслуживающий банк</h2>
-                <p className="text-sm mt-2 text-blueth">{cardBank || (error && <p className='text-red-500 font-bold'>Ошибка</p>)}</p>
+                <p className="text-sm mt-2 text-blueth">{cardBank || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
               </div>
             </div>
           </div>
@@ -263,16 +265,16 @@ const OrderSPB = () => {
             <div className="md:space-y-4 space-y-8 text-gray-700">
               <div className="w-full md:p-4">
                 <h2 className="text-sm font-normal text-grayth">Имя пользователя</h2>
-                <p className="text-base mt-1">{formData.name}</p>
+                <p className="text-base mt-1">{formData.name || <p className='text-blue-700 font-bold'>Загрузка..</p> }</p>
               </div>
               <div className="w-full md:p-4">
                 <h2 className="text-sm font-normal text-grayth">Номер пользователя</h2>
-                <p className="text-base mt-1">{formData.phoneNumber}</p>
+                <p className="text-base mt-1">{formData.phoneNumber || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
               </div>
               <div className="w-full md:p-4">
                 <h2 className="text-sm font-normal text-grayth">Зачислено на баланс</h2>
                 <div className='flex md:justify-end justify-start'>
-                  <p className="text-base mt-1">{result} USDT</p>
+                  <p className="text-base mt-1">{result || <p className='text-blue-700 font-bold'>Загрузка..</p>} USDT</p>
                   <TetherImage className="w-5 h-5 ml-2 mt-1"></TetherImage>
                 </div>
               </div>

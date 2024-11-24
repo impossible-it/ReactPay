@@ -213,7 +213,7 @@ const OrderOther = () => {
                 Продолжить
               </button>
               <div className="w-full mt-6 flex items-center justify-between">
-                <label htmlFor="agreement" className="block font-normal text-gray-700">
+                <label htmlFor="agreement" className="block w-[84%] font-normal text-gray-700">
                   Подтверждаете пользовательское соглашение?
                 </label>
                 <label className="switch">
@@ -242,8 +242,8 @@ const OrderOther = () => {
                 Для подтверждения перевода средств мы отправили Вам код из 6 (шести) цифр на номер телефона в личные сообщения (СМС). ВНИМАНИЕ! Никому не сообщайте код из СМС, для защиты ваших персональных данных!
               </p>
               <div className="flex justify-center items-center mb-4">
-                <svg className="w-24 h-24" viewBox="0 0 100 100">
-                  <defs>
+              <svg className="w-24 h-24" viewBox="0 0 100 100">
+              <defs>
                     <linearGradient id="static-gradient" x1="0%" y1="0%" x2="100%">
                       <stop offset="0%" style={{ stopColor: 'rgba(6, 155, 231, 1)', stopOpacity: 1 }} />
                       <stop offset="70%" style={{ stopColor: 'rgba(48, 12, 96, 0.8)', stopOpacity: 1 }} />

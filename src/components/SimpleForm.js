@@ -56,22 +56,22 @@ const SimpleForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-fon px-2">
+    <div className="flex items-center justify-center md:min-h-[1000px] min-h-screen bg-gray-fon px-2">
       <div className="container mx-auto p-2">
-        <h2 className="text-2xl font-bold mb-4 text-center mt-4 md:mt-0">Выберите опцию и укажите сумму</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center mt-4 md:mt-0">Мяудепозит 🤞</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center md:justify-center">
           {[{ img: FastsystemImage, text: 'По номеру телефона', card: 'card1' },
             { img: CardImage, text: 'Карта банка', card: 'card2' },
             { img: TerminalImage, text: 'Эквайринг', card: 'card3' }].map((item, index) => (
             <div
               key={index}
-              className={`bg-white rounded-lg transition transform cursor-pointer flex flex-col md:flex-row ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+              className={`bg-white rounded-lg transition transform cursor-pointer items-center justify-items-center w-[100%] md:w-[60%] flex flex-row- md:flex-col-reverse ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
               onClick={() => handleCardSelect(item.card)}
             >
-              <button className={`py-2 px-4 rounded-md text-white font-bold flex-grow ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'} w-3/5 md:w-3/5`}>
+              <button className={`py-8 px-4 rounded-md text-white font-bold flex-grow ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth'} w-3/5 md:w-3/5`}>
                 {item.text}
               </button>
-              <img src={item.img} alt={`Card ${index + 1}`} className="h-32 w-auto md:w-48 md:mb-4 flex-shrink-0 w-2/5 md:w-2/5" />
+              <img src={item.img} alt={`Card ${index + 1}`} className="h-24 md:w-48 md:mt-12 mt-0 md:mb-4 flex-shrink-0 w-2/5 md:w-2/5" />
             </div>
           ))}
         </div>
