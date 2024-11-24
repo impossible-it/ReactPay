@@ -50,29 +50,42 @@ const SimpleForm = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-fon px-2">
       <div className="container mx-auto p-2">
-        <h2 className="text-2xl font-bold mb-4 text-center mt-4 md:mt-0">Выберите опцию и укажите сумму</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center md:justify-center">
-          {[{ img: FastsystemImage, text: 'По номеру телефона', card: 'card1' },
-            { img: CardImage, text: 'Карта банка', card: 'card2' },
-            { img: TerminalImage, text: 'Эквайринг', card: 'card3' }].map((item, index) => (
-            <div
-              key={index}
-              className={`bg-white rounded-lg transition transform cursor-pointer flex flex-col ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
-              onClick={() => handleCardSelect(item.card)}
-              style={{ alignItems: 'center', padding: '20px' }}
-            >
-              <img src={item.img} alt={`Card ${index + 1}`} className="object-contain mb-4" style={{ height: '150px', width: 'auto' }} />
-              <button
-                className={`py-2 px-4 rounded-md text-white font-bold ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
-              >
-                {item.text}
-              </button>
-            </div>
-          ))}
+        <h2 className="text-2xl font-bold mb-4 text-center">Выберите опцию и укажите сумму</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center">
+          <div
+            className={`bg-white p-4 rounded-lg transition transform cursor-pointer ${formData.selectedCard === 'card1' ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+            onClick={() => handleCardSelect('card1')}
+            style={{ width: '95%', maxWidth: 'none', flexDirection: 'column', display: 'flex', alignItems: 'center' }}
+          >
+            <img src={FastsystemImage} alt="Card 1" className="object-contain h-48 w-48 mb-4" />
+            <button className={`py-2 px-4 rounded-md text-white font-bold ${formData.selectedCard === 'card1' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'}`}>
+              По номеру телефона
+            </button>
+          </div>
+          <div
+            className={`bg-white p-4 rounded-lg transition transform cursor-pointer ${formData.selectedCard === 'card2' ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+            onClick={() => handleCardSelect('card2')}
+            style={{ width: '95%', maxWidth: 'none', flexDirection: 'column', display: 'flex', alignItems: 'center' }}
+          >
+            <img src={CardImage} alt="Card 2" className="object-contain h-48 w-48 mb-4" />
+            <button className={`py-2 px-4 rounded-md text-white font-bold ${formData.selectedCard === 'card2' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'}`}>
+              Карта банка
+            </button>
+          </div>
+          <div
+            className={`bg-white p-4 rounded-lg transition transform cursor-pointer ${formData.selectedCard === 'card3' ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+            onClick={() => handleCardSelect('card3')}
+            style={{ width: '95%', maxWidth: 'none', flexDirection: 'column', display: 'flex', alignItems: 'center' }}
+          >
+            <img src={TerminalImage} alt="Card 3" className="object-contain h-48 w-48 mb-4" />
+            <button className={`py-2 px-4 rounded-md text-white font-bold ${formData.selectedCard === 'card3' ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'}`}>
+              Эквайринг
+            </button>
+          </div>
         </div>
-        <div className="flex justify-center bg-white m-16">
+        <div className="flex justify-center bg-white m-8">
           <form onSubmit={handleSubmit} className="w-full max-w-md p-6 rounded-lg">
-            <div className="mb-8">
+            <div className="mb-4">
               <label htmlFor="amount" className="block text-sm font-normal text-gray-700">
                 Сумма сделки в рублях
               </label>
@@ -82,7 +95,7 @@ const SimpleForm = () => {
                 id="amount"
                 value={formData.amount}
                 onChange={handleChange}
-                className="mt-1 block w-full max-w-md border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 focus:bg-white focus:border-neutral-700 focus:outline-none"
+                className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 focus:bg-white focus:border-neutral-700 focus:outline-none"
                 required
               />
             </div>
