@@ -89,7 +89,7 @@ const SimpleForm = () => {
                 value={formData.amount}
                 onChange={handleChange}
                 className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 focus:bg-white focus:border-neutral-700 focus:outline-none"
-                required
+                requiredW
               />
               <div className="flex justify-around mt-4">
                 {presetAmounts.map(amount => (
