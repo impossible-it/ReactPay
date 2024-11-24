@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowRight } from 'react-icons/fi';
 import CardImage from './img/card.png';
 import FastsystemImage from './img/spb.png';
 import TerminalImage from './img/terminaleng.png';
@@ -78,8 +77,8 @@ const SimpleForm = () => {
           ))}
         </div>
         <div className="flex justify-center bg-white m-0 md:m-8">
-          <form onSubmit={handleSubmit} className="w-full max-w-md p-6 rounded-lg flex flex-col">
-            <div className="mb-4 relative">
+          <form onSubmit={handleSubmit} className="w-full max-w-md p-6 rounded-lg">
+            <div className="mb-4">
               <label htmlFor="amount" className="block text-sm font-normal text-gray-700">
                 Сумма сделки в рублях
               </label>
@@ -92,9 +91,6 @@ const SimpleForm = () => {
                 className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 focus:bg-white focus:border-neutral-700 focus:outline-none"
                 required
               />
-              <button type="submit" className="absolute inset-y-0 right-0 px-3 flex items-center text-xl text-gray-500 hover:text-gray-700">
-                <FiArrowRight />
-              </button>
               <div className="flex justify-around mt-4">
                 {presetAmounts.map(amount => (
                   <button type="button" key={amount} onClick={() => setPresetAmount(amount)}
