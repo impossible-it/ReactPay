@@ -49,18 +49,19 @@ const SimpleForm = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-fon px-2">
-      <div className="container mx-auto p-4">
-        <h2 className="text-2xl font-bold mb-12 text-center">Выберите опцию и укажите сумму</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
+      <div className="container mx-auto p-2">
+        <h2 className="text-2xl font-bold mb-4 text-center mt-4 md:mt-0">Выберите опцию и укажите сумму</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 justify-items-center md:justify-center">
           {[{ img: FastsystemImage, text: 'По номеру телефона', card: 'card1' },
             { img: CardImage, text: 'Карта банка', card: 'card2' },
             { img: TerminalImage, text: 'Эквайринг', card: 'card3' }].map((item, index) => (
             <div
               key={index}
-              className={`bg-white p-8 rounded-lg transition transform cursor-pointer flex md:flex-row flex-col items-center ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+              className={`bg-white rounded-lg transition transform cursor-pointer flex flex-col ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
               onClick={() => handleCardSelect(item.card)}
+              style={{ alignItems: 'center', padding: '20px' }}
             >
-              <img src={item.img} alt={`Card ${index + 1}`} className="object-contain h-48 w-auto md:w-48 mb-4 flex-shrink-0" />
+              <img src={item.img} alt={`Card ${index + 1}`} className="object-contain mb-4" style={{ height: '150px', width: 'auto' }} />
               <button
                 className={`py-2 px-4 rounded-md text-white font-bold ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950 hover:text-white'}`}
               >
@@ -88,7 +89,7 @@ const SimpleForm = () => {
             <button
               type="submit"
               className="bg-grayth h-[50px] mt-4 font-bold text-white py-2 px-4 rounded-lg hover:bg-purple-950 w-full"
-              disabled={!formData.selectedCard}
+              disabled={!formData.amount}
             >
               Далее
             </button>
