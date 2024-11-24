@@ -67,12 +67,11 @@ const SimpleForm = () => {
               key={index}
               className={`bg-white rounded-lg transition transform cursor-pointer flex flex-col md:flex-row ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
               onClick={() => handleCardSelect(item.card)}
-              style={{ width: '100%', maxWidth: 'none', flexDirection: 'row', display: 'flex', alignItems: 'center' }}
             >
-              <button className={`py-2 px-4 rounded-md text-white font-bold flex-grow ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'}`} style={{ width: '60%' }}>
+              <button className={`py-2 px-4 rounded-md text-white font-bold flex-grow ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'} w-3/5 md:w-3/5`}>
                 {item.text}
               </button>
-              <img src={item.img} alt={`Card ${index + 1}`} className="object-contain h-32 w-auto md:w-48 md:mb-4 flex-shrink-0" style={{ width: '40%' }} />
+              <img src={item.img} alt={`Card ${index + 1}`} className="h-32 w-auto md:w-48 md:mb-4 flex-shrink-0 w-2/5 md:w-2/5" />
             </div>
           ))}
         </div>
@@ -89,7 +88,7 @@ const SimpleForm = () => {
                 value={formData.amount}
                 onChange={handleChange}
                 className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 focus:bg-white focus:border-neutral-700 focus:outline-none"
-                requiredW
+                required
               />
               <div className="flex justify-around mt-4">
                 {presetAmounts.map(amount => (
