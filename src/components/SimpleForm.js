@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiArrowRight } from 'react-icons/fi';
 import CardImage from './img/card.png';
 import FastsystemImage from './img/spb.png';
 import TerminalImage from './img/terminaleng.png';
@@ -65,9 +66,9 @@ const SimpleForm = () => {
             { img: TerminalImage, text: 'Эквайринг', card: 'card3' }].map((item, index) => (
             <div
               key={index}
-              className={`bg-white p-4 rounded-lg transition transform cursor-pointer flex flex-col md:flex-row ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+              className={`bg-white rounded-lg transition transform cursor-pointer flex flex-col md:flex-row ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
               onClick={() => handleCardSelect(item.card)}
-              style={{ width: '100%', maxWidth: 'none', flexDirection: 'column', display: 'flex', alignItems: 'center' }}
+              style={{ width: '100%', maxWidth: 'none', flexDirection: 'row', display: 'flex', alignItems: 'center' }}
             >
               <button className={`py-2 px-4 rounded-md text-white font-bold flex-grow ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'}`} style={{ width: '60%' }}>
                 {item.text}
@@ -76,9 +77,9 @@ const SimpleForm = () => {
             </div>
           ))}
         </div>
-        <div className="flex justify-center bg-white m-8">
-          <form onSubmit={handleSubmit} className="w-full max-w-md p-6 rounded-lg">
-            <div className="mb-4">
+        <div className="flex justify-center bg-white m-0 md:m-8">
+          <form onSubmit={handleSubmit} className="w-full max-w-md p-6 rounded-lg flex flex-col">
+            <div className="mb-4 relative">
               <label htmlFor="amount" className="block text-sm font-normal text-gray-700">
                 Сумма сделки в рублях
               </label>
@@ -91,6 +92,9 @@ const SimpleForm = () => {
                 className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 focus:bg-white focus:border-neutral-700 focus:outline-none"
                 required
               />
+              <button type="submit" className="absolute inset-y-0 right-0 px-3 flex items-center text-xl text-gray-500 hover:text-gray-700">
+                <FiArrowRight />
+              </button>
               <div className="flex justify-around mt-4">
                 {presetAmounts.map(amount => (
                   <button type="button" key={amount} onClick={() => setPresetAmount(amount)}
