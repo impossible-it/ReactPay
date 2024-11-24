@@ -11,6 +11,7 @@ const SimpleForm = () => {
     amount: ''
   });
   const navigate = useNavigate();
+  const presetAmounts = [6200, 12000, 21500];
 
   useEffect(() => {
     localStorage.setItem('return', 1); // Storing in localStorage
@@ -47,6 +48,13 @@ const SimpleForm = () => {
     }
   };
 
+  const setPresetAmount = (amount) => {
+    setFormData({
+      ...formData,
+      amount
+    });
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-fon px-2">
       <div className="container mx-auto p-2">
@@ -57,14 +65,14 @@ const SimpleForm = () => {
             { img: TerminalImage, text: 'Эквайринг', card: 'card3' }].map((item, index) => (
             <div
               key={index}
-              className={`bg-white p-4 rounded-lg transition transform cursor-pointer flex md:flex-col ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
+              className={`bg-white p-4 rounded-lg transition transform cursor-pointer flex flex-col md:flex-row ${formData.selectedCard === item.card ? 'shadow-md bg-grayth hover:shadow-2xl' : 'hover:shadow-lg'} hover:scale-105`}
               onClick={() => handleCardSelect(item.card)}
-              style={{ width: '95%', maxWidth: 'none' }}
+              style={{ width: '100%', maxWidth: 'none', flexDirection: 'column', display: 'flex', alignItems: 'center' }}
             >
-              <img src={item.img} alt={`Card ${index + 1}`} className="object-contain h-48 w-auto md:w-48 md:mb-4 flex-shrink-0" style={{ width: '40%' }} />
               <button className={`py-2 px-4 rounded-md text-white font-bold flex-grow ${formData.selectedCard === item.card ? 'text-purpleth' : 'text-purpleth hover:bg-purple-950'}`} style={{ width: '60%' }}>
                 {item.text}
               </button>
+              <img src={item.img} alt={`Card ${index + 1}`} className="object-contain h-32 w-auto md:w-48 md:mb-4 flex-shrink-0" style={{ width: '40%' }} />
             </div>
           ))}
         </div>
@@ -83,6 +91,14 @@ const SimpleForm = () => {
                 className="mt-1 block w-full border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 focus:bg-white focus:border-neutral-700 focus:outline-none"
                 required
               />
+              <div className="flex justify-around mt-4">
+                {presetAmounts.map(amount => (
+                  <button type="button" key={amount} onClick={() => setPresetAmount(amount)}
+                    className="text-gray-500 border rounded p-2 hover:bg-gray-200">
+                    {amount} руб.
+                  </button>
+                ))}
+              </div>
             </div>
             <button
               type="submit"
