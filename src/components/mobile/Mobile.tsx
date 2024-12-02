@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
-import phoneImage from '../img/phone.png'; // Убедитесь, что путь к изображению телефона верен
+import phoneImage from '../img/phone.png'; // Убедитесь, что путь к изображению верен
 import './mobile_style.css';
 import '../styles.css';
 
-import { checkOperator } from '../mobile/MobileBase.tsx';
+import { checkOperator } from './MobileBase.tsx';
 
 interface FormInput {
   mobilenum: string;
@@ -22,6 +22,8 @@ const MobileInfo: React.FC = () => {
     const parsedData = mobilenum ? JSON.parse(mobilenum) : {};
     const phoneNumber: string = parsedData.mobilenum || '';
 
+    console.log('Phone number:', phoneNumber);
+
     if (phoneNumber) {
       setClientMobile(phoneNumber);
       setMobileResult(checkOperator(phoneNumber));
@@ -35,17 +37,19 @@ const MobileInfo: React.FC = () => {
   };
 
   const submit: SubmitHandler<FormInput> = data => {
+    console.log('Form submitted:', data);
     localStorage.setItem('mobilenum', JSON.stringify(data));
     submitMobileCheck();
   };
 
   const error: SubmitErrorHandler<FormInput> = data => {
-    console.log('err', data);
+    console.error('Form error:', data);
   };
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormInput>();
 
   const handleClickCat = () => {
+    console.log('Cat clicked');
     setShowCat(false);
     setShowPhoneImage(true);
     setShowInput(true);
@@ -82,7 +86,9 @@ const MobileInfo: React.FC = () => {
             </div>
           )}
 
-          {showPhoneImage && <img src={phoneImage} alt="Телефон" className="w-24 h-24 mb-4" />}
+          {showPhoneImage && (
+            <img src={phoneImage} alt="Телефон" className="w-24 h-24 mb-4" />
+          )}
 
           {showInput && (
             <form
