@@ -1,58 +1,48 @@
 import React, { useState } from 'react';
-import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
-import phoneImage from '../img/phone.png'; // Убедитесь, что путь к изображению верен
+import { useForm, SubmitHandler } from 'react-hook-form';
 import './mobile_style.css';
 import '../styles.css';
+import catWait from '../img/catwait.png'; // Импорт изображения
+import catReload from '../img/catreload.png'; // Импорт изображения
+import catInput from '../img/catinput.png'; // Импорт изображения
 
-import { checkOperator } from './MobileBase.tsx';
+import catPhone from '../img/phone.png'; // Импорт изображения телефона
+import { checkOperator } from '../mobile/MobileBase.tsx'; // Импорт метода для проверки оператора
 
 interface FormInput {
   mobilenum: string;
 }
 
 const MobileInfo: React.FC = () => {
-  const [mobileResult, setMobileResult] = useState<string>('');
-  const [clientMobile, setClientMobile] = useState<string>('');
-  const [showCat, setShowCat] = useState<boolean>(true);
-  const [showInput, setShowInput] = useState<boolean>(false);
-  const [showPhoneImage, setShowPhoneImage] = useState<boolean>(false);
+  const [showCat, setShowCat] = useState(true);
+  const [showInput, setShowInput] = useState(false);
+  const [showInputCat, setShowInputCat] = useState(false);
 
-  const submitMobileCheck = () => {
-    const mobilenum = localStorage.getItem('mobilenum');
-    const parsedData = mobilenum ? JSON.parse(mobilenum) : {};
-    const phoneNumber: string = parsedData.mobilenum || '';
-
-    console.log('Phone number:', phoneNumber);
-
-    if (phoneNumber) {
-      setClientMobile(phoneNumber);
-      setMobileResult(checkOperator(phoneNumber));
-      setShowInput(false);
-      setShowPhoneImage(false);
-      setShowCat(true);
-    } else {
-      setClientMobile(phoneNumber);
-      setMobileResult('Номер не действителен');
-    }
-  };
-
-  const submit: SubmitHandler<FormInput> = data => {
-    console.log('Form submitted:', data);
-    localStorage.setItem('mobilenum', JSON.stringify(data));
-    submitMobileCheck();
-  };
-
-  const error: SubmitErrorHandler<FormInput> = data => {
-    console.error('Form error:', data);
-  };
+  const [showPhone, setShowPhone] = useState(false);
+  const [operator, setOperator] = useState<string>(''); // Состояние для хранения оператора
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormInput>();
 
   const handleClickCat = () => {
-    console.log('Cat clicked');
     setShowCat(false);
-    setShowPhoneImage(true);
     setShowInput(true);
+  };
+
+  const handleReturnToCat = () => {
+    setShowPhone(false);
+    setShowInput(true);
+    setShowInputCat(true);
+
+    setShowCat(false);
+  };
+
+  const submit: SubmitHandler<FormInput> = data => {
+    console.log('Form submitted:', data);
+    const rawNumber = data.mobilenum.replace('+7', ''); // Удаляем "+7" если есть
+    const detectedOperator = checkOperator(rawNumber); // Передаём очищенный номер
+    setOperator(detectedOperator); // Сохраняем оператора в состояние
+    setShowInput(false);
+    setShowPhone(true);
   };
 
   return (
@@ -60,74 +50,92 @@ const MobileInfo: React.FC = () => {
       <div className="container mx-auto p-4">
         <div className="relative flex flex-col items-center">
           {showCat && (
-            <div onClick={handleClickCat} className="cat_container cursor-pointer">
-              <div className="cat">
-                <div className="paw"></div>
-                <div className="paw"></div>
-                <div className="shake">
-                  <div className="tail"></div>
-                  <div className="main">
-                    <div className="head"></div>
-                    <div className="body">
-                      <div className="leg"></div>
-                    </div>
-                    <div className="face">
-                      <div className="mustache_cont">
-                        <div className="mustache"></div>
-                        <div className="mustache"></div>
-                      </div>
-                      <div className="nose"></div>
-                      <div className="eye"></div>
-                      <div className="eye"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div
+              onClick={handleClickCat}
+              className="cat_container cursor-pointer"
+              role="button"
+              aria-label="Click to show input"
+            >  <p className='font-bold text-center'>Кот в ожидании.. Нажми на кота для старта</p>
+              <img src={catWait} alt="Cat waiting" className="cat_image" />|
+             
+            
             </div>
-          )}
-
-          {showPhoneImage && (
-            <img src={phoneImage} alt="Телефон" className="w-24 h-24 mb-4" />
+            
           )}
 
           {showInput && (
-            <form
-              className="w-full max-w-md mx-auto p-4 rounded-lg bg-white shadow-lg"
-              onSubmit={handleSubmit(submit, error)}
-            >
-              <div className="mb-4">
-                <label htmlFor="phone" className="block text-sm font-normal text-gray-700 mb-1">
-                  Номер телефона
-                </label>
-                <input
-                  id="phone"
-                  className="block w-full h-10 border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none"
-                  type="text"
-                  {...register('mobilenum', {
-                    required: 'Номер телефона обязателен',
-                    validate: value =>
-                      (/^\d+$/.test(value) && value.startsWith('9') && value.length === 10) ||
-                      'Напишите свой номер телефона начиная с цифры 9 (без +7)',
-                  })}
-                  aria-invalid={errors.mobilenum ? 'true' : 'false'}
-                />
-                {errors.mobilenum && (
-                  <p className="text-red-500 text-sm mt-2">{errors.mobilenum.message}</p>
-                )}
-              </div>
-              <button
-                type="submit"
-                className="w-full py-2 px-4 bg-grayth text-white font-bold rounded-lg hover:bg-purple-950"
+            <div className="get-in-touch">
+               {showInputCat && ( 
+                <div className="phone_image_container justify-center items-center text-center">
+                <img src={catInput} alt="Cat on phone" className=" phone_image mb-4" />
+                </div>
+               ) }
+              <form
+                className="w-full max-w-md mx-auto p-4 rounded-lg bg-white shadow-lg"
+                onSubmit={handleSubmit(submit)}
               >
-                Отправить
-              </button>
-            </form>
+                <div className="mb-4">
+                  <label htmlFor="phone" className="block text-sm font-normal text-gray-700 mb-1">
+                    Номер телефона для проверки
+                  </label>
+                  <input
+                    id="phone"
+                    className="block w-full h-10 border bg-gray-form border-gray-200 rounded-md shadow-sm p-2 hover:shadow-md focus:bg-white focus:border-neutral-700 focus:outline-none"
+                    type="text"
+                    {...register('mobilenum', {
+                      required: 'Номер телефона обязателен',
+                      validate: value => {
+                        const rawNumber = value.replace(/\s|-/g, ''); // Удаляем пробелы и дефисы
+                    
+                        // Регулярное выражение для проверки номеров
+                        const phoneRegex = /^\+?[1-9]\d{1,14}$/; // E.164 формат
+                        if (!phoneRegex.test(rawNumber)) {
+                          return 'Введите корректный номер телефона';
+                        }
+                    
+                        // Проверка для российских номеров
+                        if (rawNumber.startsWith('+7') || rawNumber.startsWith('9')) {
+                          const localNumber = rawNumber.replace('+7', '').replace('9', '');
+                          if (localNumber.length !== 9) {
+                            return 'Для российских номеров требуется 10 цифр, включая 9';
+                          }
+                        }
+                    
+                        return true;
+                      },
+                    })}
+                    aria-invalid={errors.mobilenum ? 'true' : 'false'}
+                  />
+                  {errors.mobilenum && (
+                    <p className="text-red-500 text-sm mt-2">{errors.mobilenum.message}</p>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2 px-4 bg-grayth text-white font-bold rounded-lg hover:bg-purple-950"
+                >
+                  Кот проверь
+                </button>
+              </form>
+            </div>
           )}
+            
 
-          {mobileResult && (
-            <div className="text-center mt-4">
-              <p className="text-lg font-bold text-blueth">+7{clientMobile}</p>
-              <h1 className="text-2xl font-bold text-blueth">{mobileResult}</h1>
+          {showPhone && (
+            <div className="phone_image_container justify-center items-center text-center">
+              <h2 className="text-lg font-bold text-greyth mb-4">Котик проверил! Результат ниже:</h2>
+              <div className='flex justify-center flex-col items-center'>
+              <img src={catPhone} alt="Cat on phone" className=" phone_image mb-4" />
+              </div>
+
+              <h2 className="text-lg font-bold text-blueth mb-4">{operator}</h2> {/* Отображаем оператора */}
+              <div className='flex justify-center flex-col items-center'>
+                
+              <img onClick={handleReturnToCat} src={catReload} alt="Cat waiting" className="cat_image w-20 h-15"  ></img>
+                Перезагрузить
+              </div>
+
+              
             </div>
           )}
         </div>

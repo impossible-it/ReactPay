@@ -6,7 +6,11 @@ type Operator = {
     startNum: string;
     operator: string;
 };
-
+type Country = {
+    code: string; // Код страны
+    length: number; // Общая длина номера
+    countryName: string; // Название страны
+};
 const operators: Operator[] = [
         { startNum: "900000", operator: "Tele2" },
         { startNum: "900001", operator: "Tele2" },
@@ -6556,21 +6560,105 @@ const operators: Operator[] = [
 { startNum: "9648", operator: "Перенос/Частный" },
 { startNum: "9649", operator: "Перенос/Частный" },
 ];
-
+const countryCodes: Country[] = [
+    { code: "+44", length: 11, countryName: "Великобритания" }, // United Kingdom
+    { code: "+49", length: 13, countryName: "Германия" }, // Germany
+    { code: "+420", length: 9, countryName: "Чехия" }, // Czech Republic
+    { code: "+39", length: 11, countryName: "Италия" }, // Italy
+    { code: "+33", length: 9, countryName: "Франция" }, // France
+    { code: "+34", length: 9, countryName: "Испания" }, // Spain
+    { code: "+371", length: 8, countryName: "Латвия" }, // Latvia
+    { code: "+370", length: 8, countryName: "Литва" }, // Lithuania
+    { code: "+353", length: 9, countryName: "Ирландия" }, // Ireland
+    { code: "+31", length: 9, countryName: "Нидерланды" }, // Netherlands
+    { code: "+32", length: 9, countryName: "Бельгия" }, // Belgium
+    { code: "+351", length: 9, countryName: "Португалия" }, // Portugal
+    { code: "+358", length: 9, countryName: "Финляндия" }, // Finland
+    { code: "+372", length: 7, countryName: "Эстония" }, // Estonia
+    { code: "+46", length: 9, countryName: "Швеция" }, // Sweden
+    { code: "+47", length: 8, countryName: "Норвегия" }, // Norway
+    { code: "+43", length: 10, countryName: "Австрия" }, // Austria
+    { code: "+421", length: 9, countryName: "Словакия" }, // Slovakia
+    { code: "+41", length: 9, countryName: "Швейцария" }, // Switzerland
+    { code: "+45", length: 8, countryName: "Дания" }, // Denmark
+    { code: "+36", length: 9, countryName: "Венгрия" }, // Hungary
+    { code: "+354", length: 7, countryName: "Исландия" }, // Iceland
+    { code: "+385", length: 9, countryName: "Хорватия" }, // Croatia
+    { code: "+1", length: 10, countryName: "США" }, // United States
+    { code: "+81", length: 10, countryName: "Япония" }, // Japan
+    { code: "+82", length: 10, countryName: "Южная Корея" }, // South Korea
+    { code: "+86", length: 11, countryName: "Китай" }, // China
+    { code: "+91", length: 10, countryName: "Индия" }, // India
+    { code: "+55", length: 11, countryName: "Бразилия" }, // Brazil
+    { code: "+52", length: 10, countryName: "Мексика" }, // Mexico
+    { code: "+62", length: 11, countryName: "Индонезия" }, // Indonesia
+    { code: "+234", length: 10, countryName: "Нигерия" }, // Nigeria
+    { code: "+27", length: 9, countryName: "Южная Африка" }, // South Africa
+    { code: "+63", length: 10, countryName: "Филиппины" }, // Philippines
+    { code: "+90", length: 10, countryName: "Турция" }, // Turkey
+    { code: "+61", length: 9, countryName: "Австралия" }, // Australia
+    { code: "+64", length: 9, countryName: "Новая Зеландия" }, // New Zealand
+    { code: "+66", length: 9, countryName: "Таиланд" }, // Thailand
+    { code: "+60", length: 9, countryName: "Малайзия" }, // Malaysia
+    { code: "+65", length: 8, countryName: "Сингапур" }, // Singapore
+    { code: "+98", length: 10, countryName: "Иран" }, // Iran
+    { code: "+94", length: 9, countryName: "Шри-Ланка" }, // Sri Lanka
+];
 export function checkOperator(phoneNumber: string): string {
     if (!phoneNumber) {
         return "Оператор не найден";
     }
 
-    // Check for prefix from 7 digits to 4 digits
-    for (let i = 7; i >= 4; i--) {
-        const prefix = phoneNumber.substring(0, i);
-        const foundOperator = operators.find(op => op.startNum === prefix);
-        if (foundOperator) {
-            return foundOperator.operator;
+    // Удаляем любые пробелы или дефисы
+    phoneNumber = phoneNumber.replace(/\s|-/g, "");
+
+    // Проверяем, если номер не начинается с "+" и длина больше 1, добавляем "+"
+    if (!phoneNumber.startsWith("+") && phoneNumber.length > 1) {
+        for (const country of countryCodes) {
+            if (phoneNumber.startsWith(country.code.replace("+", ""))) {
+                phoneNumber = `+${phoneNumber}`;
+                break;
+            }
         }
     }
 
-    // If no operator is found
-    return "Оператор не найден";
+    // Проверка для российских номеров
+    if (phoneNumber.startsWith("+7")) {
+        const cleanNumber = phoneNumber.replace("+7", "");
+        if (cleanNumber.length === 10 && cleanNumber.startsWith("9")) {
+            for (let i = 7; i >= 4; i--) {
+                const prefix = cleanNumber.substring(0, i);
+                const foundOperator = operators.find(op => op.startNum === prefix);
+                if (foundOperator) {
+                    return foundOperator.operator;
+                }
+            }
+            return "Оператор не найден";
+        }
+    } else if (phoneNumber.startsWith("9") && phoneNumber.length === 10) {
+        // Проверяем номера без +7, которые начинаются на 9
+        for (let i = 7; i >= 4; i--) {
+            const prefix = phoneNumber.substring(0, i);
+            const foundOperator = operators.find(op => op.startNum === prefix);
+            if (foundOperator) {
+                return foundOperator.operator;
+            }
+        }
+        return "Оператор не найден";
+    }
+
+    // Проверка номеров для других стран
+    for (const country of countryCodes) {
+        if (phoneNumber.startsWith(country.code)) {
+            const numberWithoutCode = phoneNumber.replace(country.code, "");
+            if (numberWithoutCode.length === country.length - country.code.length + 1) {
+                return `Код страны: ${country.countryName}`;
+            } else {
+                return `Некорректный номер для страны ${country.countryName}`;
+            }
+        }
+    }
+
+    // Если не соответствует ни одному правилу
+    return "Страна не найдена или некорректный номер";
 }
