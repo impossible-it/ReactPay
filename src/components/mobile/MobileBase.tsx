@@ -6561,8 +6561,7 @@ const operators: Operator[] = [
 { startNum: "9649", operator: "Перенос/Частный" },
 ];
 export const countryCodes: Country[] = [
-    { code: "+44", length: 11, countryName: "Великобритания" }, // United Kingdom
-
+    { code: "+44", length: [10, 11], countryName: "Великобритания" },
     { code: "+49", length: 13, countryName: "Германия" }, // Germany
     { code: "+420", length: 9, countryName: "Чехия" }, // Czech Republic
     { code: "+39", length: 11, countryName: "Италия" }, // Italy
@@ -6641,22 +6640,36 @@ export function checkOperator(phoneNumber: string): string {
     for (const country of countryCodes) {
       if (phoneNumber.startsWith(country.code)) {
         const countryCodeLength = country.code.length; // Длина кода страны, включая "+"
-  
+        
         // Ожидаемая длина номера (полная длина минус длина кода страны)
         const validLength = country.length;
   
         // Проверяем длину номера, учитывая код страны
         const numberLengthWithoutCode = phoneNumber.length - countryCodeLength;
   
-        // Если длина номера без кода совпадает с ожидаемой длиной
-        if (numberLengthWithoutCode === validLength) {
+        // Если длина номера без кода совпадает с одной из допустимых длин
+        if (Array.isArray(validLength)) {
+          // Если допустимых длин несколько (например, для Великобритании)
+          if (validLength.includes(numberLengthWithoutCode)) {
             console.log(phoneNumber.length);
             console.log(validLength);
-          return `Код страны: ${country.countryName}`;
+            return `Код страны: ${country.countryName}`;
+          } else {
+            console.log(phoneNumber.length);
+            console.log(validLength);
+            return `Некорректный номер для страны ${country.countryName}`;
+          }
         } else {
+          // Для стран с одной допустимой длиной
+          if (numberLengthWithoutCode === validLength) {
             console.log(phoneNumber.length);
             console.log(validLength);
-          return `Некорректный номер для страны ${country.countryName}`;
+            return `Код страны: ${country.countryName}`;
+          } else {
+            console.log(phoneNumber.length);
+            console.log(validLength);
+            return `Некорректный номер для страны ${country.countryName}`;
+          }
         }
       }
     }
