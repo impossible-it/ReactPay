@@ -6643,7 +6643,7 @@ export function checkOperator(phoneNumber: string): string {
         console.log("Номер без кода страны:", numberWithoutCode); // Лог номера без кода страны
   
         const validLength = country.length - country.code.length; // Правильная длина номера без кода
-        console.log("Ожидаемая длина номера без кода:", validLength); // Лог ожидаемой длины
+        console.log("Ожидаемая длина номера без кода:", validLength+1); // Лог ожидаемой длины
   
         // Проверяем, если длина номера после удаления кода совпадает с ожидаемой
         if (numberWithoutCode.length === validLength) {
