@@ -6641,13 +6641,18 @@ export function checkOperator(phoneNumber: string): string {
     // Проверка номеров для других стран
     for (const country of countryCodes) {
       if (phoneNumber.startsWith(country.code)) {
+        const countryCodeLength = country.code.length; // Длина кода страны, включая "+"
+  
+        // Ожидаемая длина номера (полная длина минус длина кода страны)
         const validLength = country.length;
   
-        // Проверяем, если длина номера совпадает с ожидаемой
-        if (phoneNumber.length === validLength) {
-          console.log(phoneNumber.length);
-          console.log(validLength);
-
+        // Проверяем длину номера, учитывая код страны
+        const numberLengthWithoutCode = phoneNumber.length - countryCodeLength;
+  
+        // Если длина номера без кода совпадает с ожидаемой длиной
+        if (numberLengthWithoutCode === validLength) {
+            console.log(phoneNumber.length);
+            console.log(validLength);
           return `Код страны: ${country.countryName}`;
         } else {
             console.log(phoneNumber.length);
