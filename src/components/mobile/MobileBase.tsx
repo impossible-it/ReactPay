@@ -6642,8 +6642,15 @@ export function checkOperator(phoneNumber: string): string {
         const numberWithoutCode = phoneNumber.replace(country.code, "");
         console.log("Номер без кода страны:", numberWithoutCode); // Лог номера без кода страны
   
-        const validLength = country.length - country.code.length; // Правильная длина номера без кода
-        console.log("Ожидаемая длина номера без кода:", validLength+1); // Лог ожидаемой длины
+        let validLength = country.length;
+  
+        // Если номер начинается с "+" (добавляем 1 для символа "+" в длине)
+        if (phoneNumber.startsWith("+")) {
+          validLength += 1;
+          console.log("Ожидаемая длина номера с символом +:", validLength); // Лог ожидаемой длины с "+"
+        } else {
+          console.log("Ожидаемая длина номера без символа +:", validLength); // Лог ожидаемой длины без "+"
+        }
   
         // Проверяем, если длина номера после удаления кода совпадает с ожидаемой
         if (numberWithoutCode.length === validLength) {
