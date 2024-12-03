@@ -32,7 +32,6 @@ const MobileInfo: React.FC = () => {
     setShowPhone(false);
     setShowInput(true);
     setShowInputCat(true);
-
     setShowCat(false);
   };
 
@@ -55,12 +54,10 @@ const MobileInfo: React.FC = () => {
               className="cat_container cursor-pointer"
               role="button"
               aria-label="Click to show input"
-            >  <p className='font-bold text-center'>Кот в ожидании.. Нажми на кота для старта</p>
-              <img src={catWait} alt="Cat waiting" className="cat_image" />|
-             
-            
+            >
+              <p className='font-bold text-center'>Кот в ожидании.. Нажми на кота для старта</p>
+              <img src={catWait} alt="Cat waiting" className="cat_image" />
             </div>
-            
           )}
 
           {showInput && (
@@ -69,7 +66,7 @@ const MobileInfo: React.FC = () => {
                 <div className="phone_image_container justify-center items-center text-center">
                 <img src={catInput} alt="Cat on phone" className=" phone_image mb-4" />
                 </div>
-               ) }
+               )}
               <form
                 className="w-full max-w-md mx-auto p-4 rounded-lg bg-white shadow-lg"
                 onSubmit={handleSubmit(submit)}
@@ -86,13 +83,13 @@ const MobileInfo: React.FC = () => {
                       required: 'Номер телефона обязателен',
                       validate: value => {
                         const rawNumber = value.replace(/\s|-/g, ''); // Удаляем пробелы и дефисы
-                    
-                        // Регулярное выражение для проверки номеров
                         const phoneRegex = /^\+?[1-9]\d{1,14}$/; // E.164 формат
+
+                        // Проверка для международных номеров
                         if (!phoneRegex.test(rawNumber)) {
                           return 'Введите корректный номер телефона';
                         }
-                    
+
                         // Проверка для российских номеров
                         if (rawNumber.startsWith('+7') || rawNumber.startsWith('9')) {
                           const localNumber = rawNumber.replace('+7', '').replace('9', '');
@@ -100,7 +97,16 @@ const MobileInfo: React.FC = () => {
                             return 'Для российских номеров требуется 10 цифр, включая 9';
                           }
                         }
-                    
+
+                        // Проверка для номеров других стран
+                        const country = countryCodes.find(c => rawNumber.startsWith(c.code));
+                        if (country) {
+                          const numberWithoutCode = rawNumber.replace(country.code, '');
+                          if (numberWithoutCode.length !== country.length - country.code.length + 1) {
+                            return `Некорректная длина номера для страны ${country.countryName}`;
+                          }
+                        }
+
                         return true;
                       },
                     })}
@@ -119,23 +125,19 @@ const MobileInfo: React.FC = () => {
               </form>
             </div>
           )}
-            
 
           {showPhone && (
             <div className="phone_image_container justify-center items-center text-center">
               <h2 className="text-lg font-bold text-greyth mb-4">Котик проверил! Результат ниже:</h2>
               <div className='flex justify-center flex-col items-center'>
-              <img src={catPhone} alt="Cat on phone" className=" phone_image mb-4" />
+                <img src={catPhone} alt="Cat on phone" className=" phone_image mb-4" />
               </div>
 
               <h2 className="text-lg font-bold text-blueth mb-4">{operator}</h2> {/* Отображаем оператора */}
               <div className='flex justify-center flex-col items-center'>
-                
-              <img onClick={handleReturnToCat} src={catReload} alt="Cat waiting" className="cat_image w-20 h-15"  ></img>
+                <img onClick={handleReturnToCat} src={catReload} alt="Cat waiting" className="cat_image w-20 h-15"  />
                 Перезагрузить
               </div>
-
-              
             </div>
           )}
         </div>

@@ -6603,6 +6603,16 @@ const countryCodes: Country[] = [
     { code: "+65", length: 8, countryName: "Сингапур" }, // Singapore
     { code: "+98", length: 10, countryName: "Иран" }, // Iran
     { code: "+94", length: 9, countryName: "Шри-Ланка" }, // Sri Lanka
+    { code: "+386", length: 9, countryName: "Словения" }, // Slovenia
+    { code: "+691", length: 10, countryName: "Федеративные Штаты Микронезии" }, // Federated States of Micronesia
+    { code: "+382", length: 8, countryName: "Черногория" }, // Montenegro
+    { code: "+48", length: 9, countryName: "Польша" }, // Poland
+    { code: "+7", length: 10, countryName: "Казахстан" }, // Kazakhstan
+    { code: "+370", length: 8, countryName: "Литва" }, // Lithuania
+    { code: "+380", length: 9, countryName: "Украина" }, // Ukraine
+    { code: "+506", length: 8, countryName: "Коста-Рика" }, // Costa Rica
+    { code: "+52", length: 10, countryName: "Мексика" }, // Mexico
+    { code: "+855", length: 9, countryName: "Камбоджа" }, // Cambodia
 ];
 export function checkOperator(phoneNumber: string): string {
     if (!phoneNumber) {
