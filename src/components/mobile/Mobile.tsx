@@ -7,7 +7,7 @@ import catReload from '../img/catreload.png'; // Импорт изображен
 import catInput from '../img/catinput.png'; // Импорт изображения
 
 import catPhone from '../img/phone.png'; // Импорт изображения телефона
-import { checkOperator } from '../mobile/MobileBase.tsx'; // Импорт метода для проверки оператора
+import { checkOperator, countryCodes } from '../mobile/MobileBase.tsx'; // Импорт метода для проверки оператора
 
 interface FormInput {
   mobilenum: string;

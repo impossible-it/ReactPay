@@ -6560,7 +6560,7 @@ const operators: Operator[] = [
 { startNum: "9648", operator: "Перенос/Частный" },
 { startNum: "9649", operator: "Перенос/Частный" },
 ];
-const countryCodes: Country[] = [
+export const countryCodes: Country[] = [
     { code: "+44", length: 11, countryName: "Великобритания" }, // United Kingdom
     { code: "+49", length: 13, countryName: "Германия" }, // Germany
     { code: "+420", length: 9, countryName: "Чехия" }, // Czech Republic
