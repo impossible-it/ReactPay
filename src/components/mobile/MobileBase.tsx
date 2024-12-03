@@ -6641,21 +6641,10 @@ export function checkOperator(phoneNumber: string): string {
     // Проверка номеров для других стран
     for (const country of countryCodes) {
       if (phoneNumber.startsWith(country.code)) {
-        const numberWithoutCode = phoneNumber.replace(country.code, "");
-        console.log("Номер без кода страны:", numberWithoutCode); // Лог номера без кода страны
+        const validLength = country.length;
   
-        let validLength = country.length;
-  
-        // Если номер начинается с "+" (добавляем 1 для символа "+" в длине)
-        if (phoneNumber.startsWith("+")) {
-          validLength += 1; // Считаем символ "+" в длине
-          console.log("Ожидаемая длина номера с символом +:", validLength); // Лог ожидаемой длины с "+"
-        } else {
-          console.log("Ожидаемая длина номера без символа +:", validLength); // Лог ожидаемой длины без "+"
-        }
-  
-        // Проверяем, если длина номера после удаления кода совпадает с ожидаемой
-        if (numberWithoutCode.length === validLength) {
+        // Проверяем, если длина номера совпадает с ожидаемой
+        if (phoneNumber.length === validLength) {
           console.log(`Номер правильный для страны ${country.countryName}`);
           return `Код страны: ${country.countryName}`;
         } else {

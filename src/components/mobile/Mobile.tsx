@@ -93,16 +93,15 @@ const MobileInfo: React.FC = () => {
                         // Проверка для российских номеров
                         if (rawNumber.startsWith('+7') || rawNumber.startsWith('9')) {
                           const localNumber = rawNumber.replace('+7', '').replace('9', '');
-                          if (localNumber.length !== 9) {
-                            return 'Для российских номеров требуется 10 цифр, включая 9';
-                          }
+                          // Убираем строгую проверку на 10 цифр
                         }
 
                         // Проверка для номеров других стран
                         const country = countryCodes.find(c => rawNumber.startsWith(c.code));
                         if (country) {
                           const numberWithoutCode = rawNumber.replace(country.code, '');
-                          if (numberWithoutCode.length !== country.length - country.code.length + 1) {
+                          if (numberWithoutCode.length < 5 || numberWithoutCode.length > 15) { 
+                            // Длина номера в международном формате может варьироваться
                             return `Некорректная длина номера для страны ${country.countryName}`;
                           }
                         }
