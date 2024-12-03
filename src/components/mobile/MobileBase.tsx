@@ -6562,7 +6562,6 @@ const operators: Operator[] = [
 ];
 export const countryCodes: Country[] = [
     { code: "+44", length: 11, countryName: "Великобритания" }, // United Kingdom
-    { code: "+44", length: 12, countryName: "Великобритания" }, // United Kingdom
 
     { code: "+49", length: 13, countryName: "Германия" }, // Germany
     { code: "+420", length: 9, countryName: "Чехия" }, // Czech Republic
