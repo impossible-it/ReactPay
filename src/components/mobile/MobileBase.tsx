@@ -6636,6 +6636,23 @@ export function checkOperator(phoneNumber: string): string {
       }
     }
   
+    // Проверка российских номеров
+    if (phoneNumber.startsWith("+7") || phoneNumber.startsWith("8")) {
+      // Удаляем код страны (первое "8" или "+7")
+      const rawNumber = phoneNumber.startsWith("+7") ? phoneNumber.slice(2) : phoneNumber.slice(1);
+  
+      // Находим оператора, проверяя начало номера
+      for (const operator of operators) {
+        if (rawNumber.startsWith(operator.startNum)) {
+          console.log(`Номер соответствует оператору ${operator.operator}`);
+          return `Оператор: ${operator.operator}`;
+        }
+      }
+  
+      // Если оператор не найден
+      return "Оператор не найден";
+    }
+  
     // Проверка номеров для других стран
     for (const country of countryCodes) {
       if (phoneNumber.startsWith(country.code)) {

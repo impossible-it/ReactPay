@@ -56,7 +56,7 @@ const MobileInfo: React.FC = () => {
               aria-label="Click to show input"
             >
               <p className='font-bold text-center'>Кот в ожидании.. Нажми на кота для старта</p>
-              <img src={catWait} alt="Cat waiting" className="cat_image" />
+              <img src={catWait} alt="Cat waiting" className="rounded-xl cat_image" />
             </div>
           )}
 
@@ -64,7 +64,7 @@ const MobileInfo: React.FC = () => {
             <div className="get-in-touch">
                {showInputCat && ( 
                 <div className="phone_image_container justify-center items-center text-center">
-                <img src={catInput} alt="Cat on phone" className=" phone_image mb-4" />
+                <img src={catInput} alt="Cat on phone" className="rounded-xl phone_image mb-4" />
                 </div>
                )}
               <form
@@ -88,12 +88,6 @@ const MobileInfo: React.FC = () => {
                         // Проверка для международных номеров
                         if (!phoneRegex.test(rawNumber)) {
                           return 'Введите корректный номер телефона';
-                        }
-
-                        // Проверка для российских номеров
-                        if (rawNumber.startsWith('+7') || rawNumber.startsWith('9')) {
-                          const localNumber = rawNumber.replace('+7', '').replace('9', '');
-                          // Убираем строгую проверку на 10 цифр
                         }
 
                         // Проверка для номеров других стран
@@ -129,12 +123,12 @@ const MobileInfo: React.FC = () => {
             <div className="phone_image_container justify-center items-center text-center">
               <h2 className="text-lg font-bold text-greyth mb-4">Котик проверил! Результат ниже:</h2>
               <div className='flex justify-center flex-col items-center'>
-                <img src={catPhone} alt="Cat on phone" className=" phone_image mb-4" />
+                <img src={catPhone} alt="Cat on phone" className="rounded-xl phone_image mb-4" />
               </div>
 
               <h2 className="text-lg font-bold text-blueth mb-4">{operator}</h2> {/* Отображаем оператора */}
               <div className='flex justify-center flex-col items-center'>
-                <img onClick={handleReturnToCat} src={catReload} alt="Cat waiting" className="cat_image w-20 h-15"  />
+                <img onClick={handleReturnToCat} src={catReload} alt="Cat waiting" className="cat_image  rounded-full w-20 h-15"  />
                 Перезагрузить
               </div>
             </div>
