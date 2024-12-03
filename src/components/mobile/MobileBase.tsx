@@ -6562,6 +6562,8 @@ const operators: Operator[] = [
 ];
 export const countryCodes: Country[] = [
     { code: "+44", length: 11, countryName: "Великобритания" }, // United Kingdom
+    { code: "+44", length: 12, countryName: "Великобритания" }, // United Kingdom
+
     { code: "+49", length: 13, countryName: "Германия" }, // Germany
     { code: "+420", length: 9, countryName: "Чехия" }, // Czech Republic
     { code: "+39", length: 11, countryName: "Италия" }, // Italy
@@ -6625,7 +6627,7 @@ export function checkOperator(phoneNumber: string): string {
     phoneNumber = phoneNumber.replace(/\s|-/g, "");
     console.log("Очищенный номер:", phoneNumber); // Лог очищенного номера
   
-    // Проверяем, если номер не начинается с "+" и длина больше 1, добавляем "+"
+    // Если номер не начинается с "+", добавляем "+" перед номером
     if (!phoneNumber.startsWith("+") && phoneNumber.length > 1) {
       for (const country of countryCodes) {
         if (phoneNumber.startsWith(country.code.replace("+", ""))) {
@@ -6636,7 +6638,7 @@ export function checkOperator(phoneNumber: string): string {
       }
     }
   
-    // Проверка для номеров других стран
+    // Проверка номеров для других стран
     for (const country of countryCodes) {
       if (phoneNumber.startsWith(country.code)) {
         const numberWithoutCode = phoneNumber.replace(country.code, "");
@@ -6646,7 +6648,7 @@ export function checkOperator(phoneNumber: string): string {
   
         // Если номер начинается с "+" (добавляем 1 для символа "+" в длине)
         if (phoneNumber.startsWith("+")) {
-          validLength += 1;
+          validLength += 1; // Считаем символ "+" в длине
           console.log("Ожидаемая длина номера с символом +:", validLength); // Лог ожидаемой длины с "+"
         } else {
           console.log("Ожидаемая длина номера без символа +:", validLength); // Лог ожидаемой длины без "+"
@@ -6666,4 +6668,3 @@ export function checkOperator(phoneNumber: string): string {
     // Если не соответствует ни одному правилу
     return "Страна не найдена или некорректный номер";
   }
- 
