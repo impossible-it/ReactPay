@@ -6608,6 +6608,8 @@ export const countryCodes: Country[] = [
     { code: "+382", length: 8, countryName: "Черногория" }, // Montenegro
     { code: "+48", length: 9, countryName: "Польша" }, // Poland
     { code: "+7", length: 10, countryName: "Казахстан" }, // Kazakhstan
+    { code: "+79", length: 11, countryName: "Россия" }, // Kazakhstan
+
     { code: "+370", length: 8, countryName: "Литва" }, // Lithuania
     { code: "+380", length: 9, countryName: "Украина" }, // Ukraine
     { code: "+506", length: 8, countryName: "Коста-Рика" }, // Costa Rica
@@ -6616,34 +6618,38 @@ export const countryCodes: Country[] = [
 ];
 export function checkOperator(phoneNumber: string): string {
     if (!phoneNumber) {
-        return "Оператор не найден";
+      return "Оператор не найден";
     }
-
+  
     // Удаляем пробелы и дефисы
     phoneNumber = phoneNumber.replace(/\s|-/g, "");
-
+  
     // Проверяем, если номер не начинается с "+" и длина больше 1, добавляем "+"
     if (!phoneNumber.startsWith("+") && phoneNumber.length > 1) {
-        for (const country of countryCodes) {
-            if (phoneNumber.startsWith(country.code.replace("+", ""))) {
-                phoneNumber = `+${phoneNumber}`;
-                break;
-            }
+      for (const country of countryCodes) {
+        if (phoneNumber.startsWith(country.code.replace("+", ""))) {
+          phoneNumber = `+${phoneNumber}`;
+          break;
         }
+      }
     }
-
+  
     // Проверка для номеров других стран
     for (const country of countryCodes) {
-        if (phoneNumber.startsWith(country.code)) {
-            const numberWithoutCode = phoneNumber.replace(country.code, "");
-            if (numberWithoutCode.length === country.length - country.code.length) {
-                return `Код страны: ${country.countryName}`;
-            } else {
-                return `Некорректный номер для страны ${country.countryName}`;
-            }
+      if (phoneNumber.startsWith(country.code)) {
+        const numberWithoutCode = phoneNumber.replace(country.code, "");
+        const validLength = country.length - country.code.length; // Правильная длина номера без кода
+  
+        // Проверяем, если длина номера после удаления кода совпадает с ожидаемой
+        if (numberWithoutCode.length === validLength) {
+          return `Код страны: ${country.countryName}`;
+        } else {
+          return `Некорректный номер для страны ${country.countryName}`;
         }
+      }
     }
-
+  
     // Если не соответствует ни одному правилу
     return "Страна не найдена или некорректный номер";
-}
+  }
+  
