@@ -6619,7 +6619,7 @@ export function checkOperator(phoneNumber: string): string {
         return "Оператор не найден";
     }
 
-    // Удаляем любые пробелы или дефисы
+    // Удаляем пробелы и дефисы
     phoneNumber = phoneNumber.replace(/\s|-/g, "");
 
     // Проверяем, если номер не начинается с "+" и длина больше 1, добавляем "+"
@@ -6632,32 +6632,7 @@ export function checkOperator(phoneNumber: string): string {
         }
     }
 
-    // Проверка для российских номеров
-    if (phoneNumber.startsWith("+7")) {
-        const cleanNumber = phoneNumber.replace("+7", "");
-        if (cleanNumber.length === 10 && cleanNumber.startsWith("9")) {
-            for (let i = 7; i >= 4; i--) {
-                const prefix = cleanNumber.substring(0, i);
-                const foundOperator = operators.find(op => op.startNum === prefix);
-                if (foundOperator) {
-                    return foundOperator.operator;
-                }
-            }
-            return "Оператор не найден";
-        }
-    } else if (phoneNumber.startsWith("9") && phoneNumber.length === 10) {
-        // Проверяем номера без +7, которые начинаются на 9
-        for (let i = 7; i >= 4; i--) {
-            const prefix = phoneNumber.substring(0, i);
-            const foundOperator = operators.find(op => op.startNum === prefix);
-            if (foundOperator) {
-                return foundOperator.operator;
-            }
-        }
-        return "Оператор не найден";
-    }
-
-    // Проверка номеров для других стран
+    // Проверка для номеров других стран
     for (const country of countryCodes) {
         if (phoneNumber.startsWith(country.code)) {
             const numberWithoutCode = phoneNumber.replace(country.code, "");
@@ -6672,4 +6647,3 @@ export function checkOperator(phoneNumber: string): string {
     // Если не соответствует ни одному правилу
     return "Страна не найдена или некорректный номер";
 }
-
