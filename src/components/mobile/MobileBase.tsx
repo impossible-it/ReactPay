@@ -6623,12 +6623,14 @@ export function checkOperator(phoneNumber: string): string {
   
     // Удаляем пробелы и дефисы
     phoneNumber = phoneNumber.replace(/\s|-/g, "");
+    console.log("Очищенный номер:", phoneNumber); // Лог очищенного номера
   
     // Проверяем, если номер не начинается с "+" и длина больше 1, добавляем "+"
     if (!phoneNumber.startsWith("+") && phoneNumber.length > 1) {
       for (const country of countryCodes) {
         if (phoneNumber.startsWith(country.code.replace("+", ""))) {
           phoneNumber = `+${phoneNumber}`;
+          console.log("Добавлен символ + к номеру:", phoneNumber); // Лог после добавления "+"
           break;
         }
       }
@@ -6638,12 +6640,17 @@ export function checkOperator(phoneNumber: string): string {
     for (const country of countryCodes) {
       if (phoneNumber.startsWith(country.code)) {
         const numberWithoutCode = phoneNumber.replace(country.code, "");
+        console.log("Номер без кода страны:", numberWithoutCode); // Лог номера без кода страны
+  
         const validLength = country.length - country.code.length; // Правильная длина номера без кода
+        console.log("Ожидаемая длина номера без кода:", validLength); // Лог ожидаемой длины
   
         // Проверяем, если длина номера после удаления кода совпадает с ожидаемой
         if (numberWithoutCode.length === validLength) {
+          console.log(`Номер правильный для страны ${country.countryName}`);
           return `Код страны: ${country.countryName}`;
         } else {
+          console.log(`Некорректный номер для страны ${country.countryName}`);
           return `Некорректный номер для страны ${country.countryName}`;
         }
       }
@@ -6652,4 +6659,4 @@ export function checkOperator(phoneNumber: string): string {
     // Если не соответствует ни одному правилу
     return "Страна не найдена или некорректный номер";
   }
-  
+ 
