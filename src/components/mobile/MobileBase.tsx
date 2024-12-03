@@ -6661,7 +6661,7 @@ export function checkOperator(phoneNumber: string): string {
     for (const country of countryCodes) {
         if (phoneNumber.startsWith(country.code)) {
             const numberWithoutCode = phoneNumber.replace(country.code, "");
-            if (numberWithoutCode.length === country.length - country.code.length + 1) {
+            if (numberWithoutCode.length === country.length - country.code.length) {
                 return `Код страны: ${country.countryName}`;
             } else {
                 return `Некорректный номер для страны ${country.countryName}`;
@@ -6672,3 +6672,4 @@ export function checkOperator(phoneNumber: string): string {
     // Если не соответствует ни одному правилу
     return "Страна не найдена или некорректный номер";
 }
+
