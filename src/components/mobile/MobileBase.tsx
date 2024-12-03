@@ -6645,10 +6645,13 @@ export function checkOperator(phoneNumber: string): string {
   
         // Проверяем, если длина номера совпадает с ожидаемой
         if (phoneNumber.length === validLength) {
-          console.log(`Номер правильный для страны ${country.countryName}`);
+          console.log(phoneNumber.length);
+          console.log(validLength);
+
           return `Код страны: ${country.countryName}`;
         } else {
-          console.log(`Некорректный номер для страны ${country.countryName}`);
+            console.log(phoneNumber.length);
+            console.log(validLength);
           return `Некорректный номер для страны ${country.countryName}`;
         }
       }
