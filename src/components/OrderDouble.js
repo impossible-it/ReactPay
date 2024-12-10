@@ -108,8 +108,8 @@ const PaymentRequest = () => {
 
     const initiateCardOrder = async () => {
       try {
-        // const data = await createCardOrder(formData.amount);
-        handleOrderSuccess(data, 'API2');
+         const data = 1 // await createCardOrder(formData.amount);
+        // handleOrderSuccess(data, 'API2');
       } catch (error) {
         console.error('Error creating card order:', error);
         setError('Error creating card order');
