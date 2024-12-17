@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import logo from './img/act.png';
+import logo from './img/cardfag.png';
 import successIcon from './img/succes.png';
 import successBIcon from './img/succesbig.png';
+import { useLocation } from 'react-router-dom';
 
 import telegram from './img/telegram.png';
 import print from './img/print.png';
@@ -10,12 +11,17 @@ import download from './img/download.png';
 import './styles.css';
 
 const Status = () => {
+  const location = useLocation();
+  const [orderNumber, setOrderNumber] = useState('');
+  const { firstName, lastName, amount } = location.state || {}; // Получаем переданные данные
   const [formData, setFormData] = useState({
     name: '',
     phoneNumber: '',
     amount: '',
   });
 
+
+  console.log('Received state:', location.state);
 
   const generateRandomId = () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -26,6 +32,19 @@ const Status = () => {
     }
     return result;
   };
+  const generateOrderNumber = () => {
+    const characters = '123456789';
+    let result = '';
+    for (let i = 0; i < 10; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+  };
+
+  // Генерация и сохранение номера при монтировании компонента
+  useEffect(() => {
+    setOrderNumber(generateOrderNumber());
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,8 +73,8 @@ const Status = () => {
               <img src={successBIcon} alt="Success" className="w-12 h-12" />
             </div>
           </div>
-          <div className="flex justify-center mb-6 ml-24">
-            <img src={logo} alt="Paylink Logo" className="w-[200px] h-[80px]" />
+          <div className="flex justify-center mb-6 ml-4">
+            <img src={logo} alt="Paylink Logo" className="w-[150px] h-[100px]" />
           </div>
           <h2 className="text-center text-lg font-medium mb-8">Transaction Details</h2>
           <div className="space-y-6">
@@ -64,7 +83,7 @@ const Status = () => {
                 <p className="text-sm text-grayth mr-4">Order Number</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{ 975324 || 'Error'}</p>
+                <p className="text-sm font-bold ml-4">{ orderNumber || 'Error'}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -72,7 +91,7 @@ const Status = () => {
                 <p className="text-sm text-grayth mr-4">Transaction Amount</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{`${formData.amount}  EUR`|| 'Error'}</p>
+              <p className="text-sm font-bold ml-4">{`${amount} EUR`}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
@@ -80,15 +99,15 @@ const Status = () => {
                 <p className="text-sm text-grayth mr-4">Sender's Full Name</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{formData.name || 'Error'}</p>
+              <p className="text-sm font-bold ml-4">{`${firstName } ${lastName || ''}`}</p>
               </div>
             </div>
             <div className="flex justify-between items-center">
               <div className="w-1/2 text-right">
-                <p className="text-sm text-grayth mr-4">Sender's Phone Number</p>
+                <p className="text-sm text-grayth mr-4">Sender's Bank information</p>
               </div>
               <div className="w-1/2 text-left">
-                <p className="text-sm font-bold ml-4">{formData.phoneNumber || 'Error'}</p>
+                <p className="text-sm font-bold ml-4">Hidden </p>
               </div>
             </div>
             <div className="flex justify-between items-center">

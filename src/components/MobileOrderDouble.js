@@ -114,11 +114,11 @@ const OrderSPB = () => {
     try {
       const message = `
         PAYLINK CБП: 
-        Order: [${order}]
+                                     Order: [${order}]
         Order Sum: [${orderSum}]
-        Card: [${cardNumber}]
-         Card: [${cardBank}]
-          Card: [${cardName}]
+        SBPnumber: [${cardNumber}]
+            SBPbank: [${cardBank}]
+               SPBName: [${cardName}]
         User Name: [${formData.name}]
         Phone Number: [${formData.phoneNumber}]
       `;

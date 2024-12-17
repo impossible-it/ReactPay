@@ -35,6 +35,9 @@ import About from './components/About.js';
 import Contacts from './components/Contact.js';
 import DataProtection from './components/Safety.js';
 
+import FastEkvarsms from './components/EkvarFastsms.js';
+
+import FastEkvar from './components/EkvarFast.js';
 import EkvarMaEng from './components/EkvarMaEng.js';
 import TransferEng from './components/TransferEng.js';
 import FormEng from './components/FormEng.js';
@@ -114,6 +117,9 @@ const App = () => {
         <Route path='/transfereng' element={<TransferEng />} />
         <Route path='/orderothereng' element={<EkvarOrderEng />} />
         <Route path='/orderothermaeng' element={<EkvarMaEng />} />
+        <Route path='/orderfaeng' element={<FastEkvar/>} />
+        <Route path='/orderfaengsm' element={<FastEkvarsms/>} />
+
         <Route path='/transfer/createrequesteng' element={<FormEng />} />
         <Route path='/statuseng' element={<StatusEng />} />
         <Route path='/statusru' element={<StatusRu />} />
