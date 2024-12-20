@@ -20,6 +20,7 @@ app.use('/api/payment', require('./routes/payment'));
 app.use('/api/form', require('./routes/form'));
 app.use('/api/history', require('./routes/history'));
 app.use('/api/cardData', require('./routes/cardData')); 
+app.use('/api/cardDataEng', require('./routes/cardDataEng')); 
 
 const PORT = process.env.PORT || 3000;
 

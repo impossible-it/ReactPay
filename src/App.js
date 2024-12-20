@@ -44,6 +44,13 @@ import FormEng from './components/FormEng.js';
 import EkvarOrderEng from './components/EkvarEng.js';
 import StatusEng from './components/StatusEng.js';
 
+import DataEng from './components/DataEng.js';
+import TransferEngfa from './components/TransferEngfa.js';
+import FormEngfa from './components/FormEngfa.js';
+import OrderEngfa from './components/MobileOrderEngfa.js'; 
+import StatusEngfa from './components/StatusEngfa.js';
+
+
 import DataTur from './components/DataTur.js';
 import OrderTur from './components/MobileOrderTur.js'; 
 import TransferTur from './components/TransferTur.js';
@@ -123,6 +130,12 @@ const App = () => {
         <Route path='/transfer/createrequesteng' element={<FormEng />} />
         <Route path='/statuseng' element={<StatusEng />} />
         <Route path='/statusru' element={<StatusRu />} />
+          {/* Англ2 версия */}
+          <Route path='/dataengfa' element={<DataEng />} />
+        <Route path='/transferengfa' element={<TransferEngfa />} />
+        <Route path='/orderengfa' element={<OrderTur />} />
+        <Route path='/transferengfa/createrequestfa' element={<FormEngfa />} />
+        <Route path='/statustur' element={<StatusTur />} />
         {/* Турецкая версия */}
         <Route path='/datatur' element={<DataTur />} />
         <Route path='/transfertur' element={<TransferTur />} />

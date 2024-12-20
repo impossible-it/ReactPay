@@ -6561,60 +6561,57 @@ const operators: Operator[] = [
 { startNum: "9649", operator: "Перенос/Частный" },
 ];
 export const countryCodes: Country[] = [
-    { code: "+44", length: [10, 11], countryName: "Великобритания" },
-    { code: "+49", length: 13, countryName: "Германия" }, // Germany
-    { code: "+420", length: 9, countryName: "Чехия" }, // Czech Republic
-    { code: "+39", length: 11, countryName: "Италия" }, // Italy
-    { code: "+33", length: 9, countryName: "Франция" }, // France
-    { code: "+34", length: 9, countryName: "Испания" }, // Spain
-    { code: "+371", length: 8, countryName: "Латвия" }, // Latvia
-    { code: "+370", length: 8, countryName: "Литва" }, // Lithuania
-    { code: "+353", length: 9, countryName: "Ирландия" }, // Ireland
-    { code: "+31", length: 9, countryName: "Нидерланды" }, // Netherlands
-    { code: "+32", length: 9, countryName: "Бельгия" }, // Belgium
-    { code: "+351", length: 9, countryName: "Португалия" }, // Portugal
-    { code: "+358", length: 9, countryName: "Финляндия" }, // Finland
-    { code: "+372", length: 7, countryName: "Эстония" }, // Estonia
-    { code: "+46", length: 9, countryName: "Швеция" }, // Sweden
-    { code: "+47", length: 8, countryName: "Норвегия" }, // Norway
-    { code: "+43", length: 10, countryName: "Австрия" }, // Austria
-    { code: "+421", length: 9, countryName: "Словакия" }, // Slovakia
-    { code: "+41", length: 9, countryName: "Швейцария" }, // Switzerland
-    { code: "+45", length: 8, countryName: "Дания" }, // Denmark
-    { code: "+36", length: 9, countryName: "Венгрия" }, // Hungary
-    { code: "+354", length: 7, countryName: "Исландия" }, // Iceland
-    { code: "+385", length: 9, countryName: "Хорватия" }, // Croatia
-    { code: "+1", length: 10, countryName: "США" }, // United States
-    { code: "+81", length: 10, countryName: "Япония" }, // Japan
-    { code: "+82", length: 10, countryName: "Южная Корея" }, // South Korea
-    { code: "+86", length: 11, countryName: "Китай" }, // China
-    { code: "+91", length: 10, countryName: "Индия" }, // India
-    { code: "+55", length: 11, countryName: "Бразилия" }, // Brazil
-    { code: "+52", length: 10, countryName: "Мексика" }, // Mexico
-    { code: "+62", length: 11, countryName: "Индонезия" }, // Indonesia
-    { code: "+234", length: 10, countryName: "Нигерия" }, // Nigeria
-    { code: "+27", length: 9, countryName: "Южная Африка" }, // South Africa
-    { code: "+63", length: 10, countryName: "Филиппины" }, // Philippines
-    { code: "+90", length: 10, countryName: "Турция" }, // Turkey
-    { code: "+61", length: 9, countryName: "Австралия" }, // Australia
-    { code: "+64", length: 9, countryName: "Новая Зеландия" }, // New Zealand
-    { code: "+66", length: 9, countryName: "Таиланд" }, // Thailand
-    { code: "+60", length: 9, countryName: "Малайзия" }, // Malaysia
-    { code: "+65", length: 8, countryName: "Сингапур" }, // Singapore
-    { code: "+98", length: 10, countryName: "Иран" }, // Iran
-    { code: "+94", length: 9, countryName: "Шри-Ланка" }, // Sri Lanka
-    { code: "+386", length: 9, countryName: "Словения" }, // Slovenia
-    { code: "+691", length: 10, countryName: "Федеративные Штаты Микронезии" }, // Federated States of Micronesia
-    { code: "+382", length: 8, countryName: "Черногория" }, // Montenegro
-    { code: "+48", length: 9, countryName: "Польша" }, // Poland
-    { code: "+7", length: 10, countryName: "Казахстан" }, // Kazakhstan
-    { code: "+79", length: 11, countryName: "Россия" }, // Kazakhstan
-
-    { code: "+370", length: 8, countryName: "Литва" }, // Lithuania
-    { code: "+380", length: 9, countryName: "Украина" }, // Ukraine
-    { code: "+506", length: 8, countryName: "Коста-Рика" }, // Costa Rica
-    { code: "+52", length: 10, countryName: "Мексика" }, // Mexico
-    { code: "+855", length: 9, countryName: "Камбоджа" }, // Cambodia
+  { code: "+44", length: [10, 11], countryName: "Великобритания" },
+  { code: "+49", length: 10, countryName: "Германия" }, // Length adjusted
+  { code: "+420", length: 9, countryName: "Чехия" },
+  { code: "+39", length: 10, countryName: "Италия" }, // Adjusted
+  { code: "+33", length: 9, countryName: "Франция" },
+  { code: "+34", length: 9, countryName: "Испания" },
+  { code: "+371", length: 8, countryName: "Латвия" },
+  { code: "+370", length: 8, countryName: "Литва" },
+  { code: "+353", length: 9, countryName: "Ирландия" },
+  { code: "+31", length: 9, countryName: "Нидерланды" },
+  { code: "+32", length: 9, countryName: "Бельгия" },
+  { code: "+351", length: 9, countryName: "Португалия" },
+  { code: "+358", length: 9, countryName: "Финляндия" },
+  { code: "+372", length: 7, countryName: "Эстония" },
+  { code: "+46", length: 9, countryName: "Швеция" },
+  { code: "+47", length: 8, countryName: "Норвегия" },
+  { code: "+43", length: 10, countryName: "Австрия" },
+  { code: "+421", length: 9, countryName: "Словакия" },
+  { code: "+41", length: 9, countryName: "Швейцария" },
+  { code: "+45", length: 8, countryName: "Дания" },
+  { code: "+36", length: 9, countryName: "Венгрия" },
+  { code: "+354", length: 7, countryName: "Исландия" },
+  { code: "+385", length: 9, countryName: "Хорватия" },
+  { code: "+1", length: 10, countryName: "США" },
+  { code: "+81", length: 10, countryName: "Япония" },
+  { code: "+82", length: 10, countryName: "Южная Корея" },
+  { code: "+86", length: 11, countryName: "Китай" },
+  { code: "+91", length: 10, countryName: "Индия" },
+  { code: "+55", length: 11, countryName: "Бразилия" },
+  { code: "+52", length: 10, countryName: "Мексика" },
+  { code: "+62", length: 11, countryName: "Индонезия" },
+  { code: "+234", length: 10, countryName: "Нигерия" },
+  { code: "+27", length: 9, countryName: "Южная Африка" },
+  { code: "+63", length: 10, countryName: "Филиппины" },
+  { code: "+90", length: 10, countryName: "Турция" },
+  { code: "+61", length: 9, countryName: "Австралия" },
+  { code: "+64", length: 9, countryName: "Новая Зеландия" },
+  { code: "+66", length: 9, countryName: "Таиланд" },
+  { code: "+60", length: 9, countryName: "Малайзия" },
+  { code: "+65", length: 8, countryName: "Сингапур" },
+  { code: "+98", length: 10, countryName: "Иран" },
+  { code: "+94", length: 9, countryName: "Шри-Ланка" },
+  { code: "+386", length: 9, countryName: "Словения" },
+  { code: "+691", length: 10, countryName: "Федеративные Штаты Микронезии" },
+  { code: "+382", length: 8, countryName: "Черногория" },
+  { code: "+48", length: 9, countryName: "Польша" },
+  { code: "+7", length: 10, countryName: "Казахстан" },
+  { code: "+79", length: 11, countryName: "Россия" },
+  { code: "+380", length: 9, countryName: "Украина" },
+  { code: "+506", length: 8, countryName: "Коста-Рика" },
+  { code: "+855", length: 9, countryName: "Камбоджа" },
 ];
 export function checkOperator(phoneNumber: string): string {
     if (!phoneNumber) {
