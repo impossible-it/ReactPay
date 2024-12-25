@@ -31,16 +31,26 @@ const OrderSPB = () => {
   const userId = localStorage.getItem('userId') || 'TEMP_USER';
   const result = orderSum && rate ? (orderSum / rate * 0.82).toFixed(1) : '...';
 
-  // ✅ Сохранение данных в localStorage
+  // ✅ Сохранение данных в localStorage с проверкой
   const saveToLocalStorage = () => {
-    localStorage.setItem('order', order || '');
-    localStorage.setItem('rate', rate || '');
-    localStorage.setItem('orderSum', orderSum || '');
-    localStorage.setItem('cardNumber', cardNumber || '');
-    localStorage.setItem('cardName', cardName || '');
-    localStorage.setItem('cardBank', cardBank || '');
-    localStorage.setItem('formData', JSON.stringify(formData || {}));
-    localStorage.setItem('userId', userId || '');
+    try {
+      if (order && rate && orderSum && cardNumber && cardName && cardBank) {
+        localStorage.setItem('order', order);
+        localStorage.setItem('rate', rate);
+        localStorage.setItem('orderSum', orderSum);
+        localStorage.setItem('cardNumber', cardNumber);
+        localStorage.setItem('cardName', cardName);
+        localStorage.setItem('cardBank', cardBank);
+        localStorage.setItem('formData', JSON.stringify(formData || {}));
+        localStorage.setItem('userId', userId);
+
+        console.log('✅ Данные сохранены в localStorage');
+      } else {
+        console.warn('⚠️ Данные не заполнены полностью, сохранение в localStorage отменено');
+      }
+    } catch (error) {
+      console.error('❌ Ошибка при сохранении в localStorage:', error);
+    }
   };
 
   // ✅ Сохранение истории
@@ -49,14 +59,14 @@ const OrderSPB = () => {
       try {
         await axios.post('/api/db/history', {
           trade: order,
-          cardNumber: cardNumber,
+          cardNumber,
           amount: orderSum,
-          rate: rate,
-          userId: userId,
+          rate,
+          userId,
         });
-        console.log('History saved');
+        console.log('✅ History saved');
       } catch (error) {
-        console.error('Error saving to history:', error);
+        console.error('❌ Error saving to history:', error);
       }
     }
   };
@@ -70,7 +80,7 @@ const OrderSPB = () => {
           setFormData(response.data);
         }
       } catch (error) {
-        console.error('Error fetching form data:', error);
+        console.error('❌ Error fetching form data:', error);
         setError('Ошибка при загрузке данных формы');
       }
     };
@@ -84,7 +94,7 @@ const OrderSPB = () => {
   useEffect(() => {
     const initiateOrder = async () => {
       if (order && rate && orderSum && cardNumber && cardName && cardBank) {
-        console.log('Данные уже есть в localStorage. Пропускаем API.');
+        console.log('⚠️ Данные уже есть в localStorage. Пропускаем API.');
         return;
       }
 
@@ -102,7 +112,7 @@ const OrderSPB = () => {
         saveToLocalStorage();
         setLoading(false);
       } catch (error) {
-        console.error('Error creating payment request:', error);
+        console.error('❌ Error creating payment request:', error);
         setError('Ошибка при создании заявки');
         setLoading(false);
       }
@@ -129,7 +139,7 @@ const OrderSPB = () => {
           }
         }
       } catch (error) {
-        console.error('Error fetching trade status:', error);
+        console.error('❌ Error fetching trade status:', error);
         setError('Ошибка при проверке статуса заявки');
         setIsMessageSent(true);
       }
@@ -140,6 +150,7 @@ const OrderSPB = () => {
 
     return () => clearInterval(intervalId);
   }, [order, orderSum, rate, isMessageSent]);
+
 
   // ✅ Обработчик копирования
   const handleCopy = (text, index) => {
