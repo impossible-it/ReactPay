@@ -211,17 +211,7 @@ const OrderSPB = () => {
     }, 3000);
   };
 
- // Очистка localStorage при размонтировании
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem('order');
-      localStorage.removeItem('rate');
-      localStorage.removeItem('orderSum');
-      localStorage.removeItem('cardNumber');
-      localStorage.removeItem('cardName');
-      localStorage.removeItem('cardBank');
-    };
-  }, []);
+
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
   };

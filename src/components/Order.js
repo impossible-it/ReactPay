@@ -41,17 +41,7 @@ const PaymentRequest = () => {
     localStorage.setItem('userId', userId || '');
   };
 
-  // ✅ Очистка данных из localStorage при размонтировании компонента
-  useEffect(() => {
-    return () => {
-      localStorage.removeItem('order');
-      localStorage.removeItem('rate');
-      localStorage.removeItem('orderSum');
-      localStorage.removeItem('card');
-      localStorage.removeItem('formData');
-      localStorage.removeItem('userId');
-    };
-  }, []);
+ 
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
       try {
