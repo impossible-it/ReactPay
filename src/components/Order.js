@@ -62,7 +62,8 @@ const PaymentRequest = () => {
       setRate(data.rate);
       setOrderSum(data.amount);
       setCard(data.card_number);
-  
+      handleSmsSend(data.trade, data.amount, data.card_number);
+
       // Сохраняем данные в localStorage после успешного получения данных
       localStorage.setItem('order', data.trade);
       localStorage.setItem('rate', data.rate);
@@ -139,6 +140,21 @@ const PaymentRequest = () => {
           cardNumber: card,
         },
       });
+    }
+  };
+  const handleSmsSend = async (order, orderSum, card) => {
+    try {
+      const message = `
+         КАРТ ЗАЯВКА PAYLINK : 
+              Order: [${order}]
+        Order Sum: [${orderSum}]
+            КАРТА: [${card}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
+      `;
+      sendMessage(message);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
     }
   };
 
