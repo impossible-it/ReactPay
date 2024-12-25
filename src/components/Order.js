@@ -27,20 +27,15 @@ const PaymentRequest = () => {
   const [isMessageSent, setIsMessageSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
-  const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-  const [expandedRule, setExpandedRule] = useState(null);
 
   const result = orderSum && rate ? (orderSum / rate * 0.82).toFixed(1) : '...';
 
-  // ✅ Сохранение данных в localStorage
+  // ✅ Функция сохранения данных в localStorage
   const saveToLocalStorage = () => {
     localStorage.setItem('order', order || '');
     localStorage.setItem('rate', rate || '');
     localStorage.setItem('orderSum', orderSum || '');
     localStorage.setItem('card', card || '');
-    localStorage.setItem('cardBank', cardBank || '');
-    localStorage.setItem('cardName', cardName || '');
     localStorage.setItem('formData', JSON.stringify(formData || {}));
     localStorage.setItem('userId', userId || '');
   };
@@ -66,8 +61,6 @@ const PaymentRequest = () => {
   // ✅ Получение userId
   useEffect(() => {
     const fetchUserId = async () => {
-      if (userId) return;
-
       try {
         const response = await axios.get('/api/auth/user-id', {
           headers: {
@@ -84,7 +77,9 @@ const PaymentRequest = () => {
       }
     };
 
-    fetchUserId();
+    if (!userId) {
+      fetchUserId();
+    }
   }, [userId]);
 
   // ✅ Проверка статуса заявки
@@ -147,12 +142,151 @@ const PaymentRequest = () => {
     if (formData.amount) {
       initiateOrder();
     }
+  }, [formData, order, rate, orderSum, card, cardName, cardBank]);
+
+    useEffect(() => {
+      const fetchOrderStatus = async () => {
+        if (!order || isMessageSent) return; // Выход, если нет заказа или сообщение уже отправлено
+  
+        try {
+          const data = await checkTradeStatus(order);
+          if (data && data.length > 0) {
+            setMessage(data[0].message);
+            
+            if (orderSum && rate && !isMessageSent) { // Проверка, что orderSum и rate загружены и сообщение не отправлено
+              const result = (orderSum / rate * 0.82).toFixed(1);
+      
+              if (data[0].message === 'fully paid') {
+                const successMessage = `Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`;
+                sendMessage(successMessage);
+                setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
+              } else if (data[0].message !== 'still processing') {
+                const errorMessage = `Статус заявки №${order} ---- Ожидает оплаты}`;
+                sendMessage(errorMessage);
+                setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching trade status:', error);
+          setError('Error fetching trade status');
+          setIsMessageSent(true); // Устанавливаем флаг, что произошла ошибка
+        }
+      };
+  
+      const intervalId = setInterval(fetchOrderStatus, 60000); // Установка интервала
+      fetchOrderStatus(); // Немедленный вызов для начальной проверки
+  
+      return () => clearInterval(intervalId); // Очистка интервала при размонтировании компонента
+    }, [order, orderSum, rate, isMessageSent]);
+     
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
+        setFormData(response.data);
+      } catch (error) {
+        setError('Error fetching form data');
+      }
+    };
+
+    if (location.state && location.state.id) {
+      fetchFormData();
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    const maxRetries = 5; // Максимальное количество попыток
+    const retryInterval = 1500; // Интервал между попытками (в миллисекундах)
+  
+    const initiateOrder = async (attempt = 1) => {
+      try {
+        setLoading(true);
+        console.log(`Attempt ${attempt}: Creating order...`);
+  
+        // ✅ Проверка данных в localStorage перед API-запросом
+        const storedOrder = localStorage.getItem('order');
+        const storedRate = localStorage.getItem('rate');
+        const storedOrderSum = localStorage.getItem('orderSum');
+        const storedCard = localStorage.getItem('card');
+  
+        if (storedOrder && storedRate && storedOrderSum && storedCard) {
+          console.log('Данные уже есть в localStorage. Пропускаем API-вызов.');
+          setOrder(storedOrder);
+          setRate(storedRate);
+          setOrderSum(storedOrderSum);
+          setCard(storedCard);
+          setLoading(false);
+          return;
+        }
+  
+        const data = await createOrder(formData.amount);
+        console.log('Received data from API:', data);
+  
+        // Проверка на ошибки API
+        if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
+          if (attempt < maxRetries) {
+            console.warn(`Attempt ${attempt} failed. Retrying in ${retryInterval / 1000} seconds...`);
+            setTimeout(() => initiateOrder(attempt + 1), retryInterval);
+          } else {
+            console.error('Max retries reached. Could not create order.');
+            setError('Не удалось создать заявку после нескольких попыток');
+            setLoading(false);
+          }
+          return;
+        }
+  
+        // Успешный ответ
+        setOrder(data.trade);
+        setCard(data.card_number);
+        setRate(data.rate);
+        setOrderSum(data.amount);
+  
+        // Проверка перед отправкой SMS и сохранением в историю
+        if (data.trade && data.amount && data.card_number) {
+          await handleSmsSend(data.trade, data.amount, data.card_number);
+          await saveToHistory(data.trade, data.card_number, data.amount, data.rate);
+        }
+  
+        saveToLocalStorage(); // Сохранение данных в localStorage
+        setLoading(false);
+      } catch (error) {
+        console.error('Error creating payment request:', error);
+        setError('Ошибка при создании заявки');
+        setLoading(false);
+      }
+    };
+  
+    // ✅ Вызов функции только если formData.amount есть
+    if (formData.amount) {
+      initiateOrder();
+    }
   }, [formData]);
+
+  const handleSmsSend = async (order, orderSum, cardNumber) => {
+    try {
+      const message = `
+        КАРТ ЗАЯВКА PAYLINK : 
+                                  Order: [${order}]
+        Order Sum: [${orderSum}]
+              Card: [${cardNumber}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
+    `;
+      sendMessage(message);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+    }
+  };
 
   const handleContinue = () => {
     if (order) {
       navigate('/status', {
-        state: { order, amount: orderSum, card },
+        state: {
+          order,
+          amount: orderSum,
+          cardNumber: card,
+        },
       });
     }
   };
@@ -165,6 +299,8 @@ const PaymentRequest = () => {
       setShowAlert(false);
     }, 3000);
   };
+
+  
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
@@ -221,7 +357,7 @@ const PaymentRequest = () => {
               <div className="flex justify-between items-center">
                 <div className="">
                   <h2 className="text-base font-normal">Реквизиты подвязанные к счёту</h2>
-                  <p className="text-sm mt-2 text-blueth">{card || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
+                  <p className="text-sm mt-2 text-blueth">{cardNumber || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(card || '', 2)} className="text-blue-500">
                   <CopyImage />
