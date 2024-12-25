@@ -12,159 +12,134 @@ const PaymentRequest = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
- // Состояния
- const [message, setMessage] = useState(null);
- const [order, setOrder] = useState(localStorage.getItem('order') || null);
- const [rate, setRate] = useState(localStorage.getItem('rate') || null);
- const [orderSum, setOrderSum] = useState(localStorage.getItem('orderSum') || null);
- const [card, setCard] = useState(localStorage.getItem('card') || null);
- const [formData, setFormData] = useState(
-   location.state || JSON.parse(localStorage.getItem('formData')) || {}
- );
- const [showAlert, setShowAlert] = useState(false);
- const [loading, setLoading] = useState(false);
- const [error, setError] = useState(null);
- const [expandedRule, setExpandedRule] = useState(null);
- const [copyAlertIndex, setCopyAlertIndex] = useState(null);
- const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
- const [isMessageSent, setIsMessageSent] = useState(false);
+  // ✅ Состояния
+  const [message, setMessage] = useState(null);
+  const [order, setOrder] = useState(localStorage.getItem('order') || null);
+  const [rate, setRate] = useState(localStorage.getItem('rate') || null);
+  const [orderSum, setOrderSum] = useState(localStorage.getItem('orderSum') || null);
+  const [card, setCard] = useState(localStorage.getItem('card') || null);
+  const [cardBank, setCardBank] = useState(localStorage.getItem('cardBank') || null);
+  const [cardName, setCardName] = useState(localStorage.getItem('cardName') || null);
+  const [formData, setFormData] = useState(
+    location.state || JSON.parse(localStorage.getItem('formData')) || {}
+  );
+  const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
+  const [isMessageSent, setIsMessageSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
+  const [copyAlertIndex, setCopyAlertIndex] = useState(null);
+  const [expandedRule, setExpandedRule] = useState(null);
 
- const result = (orderSum / rate * 0.82).toFixed(1) || '...';
+  const result = orderSum && rate ? (orderSum / rate * 0.82).toFixed(1) : '...';
 
- // ✅ Сохранение данных в localStorage при изменении состояний
- useEffect(() => {
-   localStorage.setItem('order', order || '');
-   localStorage.setItem('rate', rate || '');
-   localStorage.setItem('orderSum', orderSum || '');
-   localStorage.setItem('card', card || '');
-   localStorage.setItem('formData', JSON.stringify(formData || {}));
-   localStorage.setItem('userId', userId || '');
- }, [order, rate, orderSum, card, formData, userId]);
+  // ✅ Сохранение данных в localStorage
+  const saveToLocalStorage = () => {
+    localStorage.setItem('order', order || '');
+    localStorage.setItem('rate', rate || '');
+    localStorage.setItem('orderSum', orderSum || '');
+    localStorage.setItem('card', card || '');
+    localStorage.setItem('cardBank', cardBank || '');
+    localStorage.setItem('cardName', cardName || '');
+    localStorage.setItem('formData', JSON.stringify(formData || {}));
+    localStorage.setItem('userId', userId || '');
+  };
 
- 
-  const saveToHistory = async (order, cardNumber, orderSum, rate) => {
-    if (order && cardNumber && orderSum && rate) {
+  // ✅ Сохранение истории
+  const saveToHistory = async () => {
+    if (order && card && orderSum && rate && userId) {
       try {
-        const response = await axios.post('/api/db/history', {
+        await axios.post('/api/db/history', {
           trade: order,
-          cardNumber: cardNumber,
+          cardNumber: card,
           amount: orderSum,
-          rate: rate,
-          userId: userId,
+          rate,
+          userId,
         });
-        console.log('History saved:', response.data);
+        console.log('History saved');
       } catch (error) {
         console.error('Error saving to history:', error);
       }
     }
   };
 
-    useEffect(() => {
-        const fetchUserId = async () => {
-            try {
-                const response = await axios.get('/api/auth/user-id', {
-                    headers: {
-                        'x-auth-token': localStorage.getItem('token'),
-                    },
-                });
-                setUserId(response.data.userId);
-            } catch (error) {
-                console.error('Error fetching user ID:', error);
-                // Если нет авторизации, создаем временный ID
-                const tempId = `TEMP_${Math.random().toString(36).substring(2, 15)}`;
-                localStorage.setItem('tempId', tempId);
-                setUserId(tempId);
-            }
-        };
-
-        fetchUserId();
-    }, []);
-
-    useEffect(() => {
-      const fetchOrderStatus = async () => {
-        if (!order || isMessageSent) return; // Выход, если нет заказа или сообщение уже отправлено
-  
-        try {
-          const data = await checkTradeStatus(order);
-          if (data && data.length > 0) {
-            setMessage(data[0].message);
-            
-            if (orderSum && rate && !isMessageSent) { // Проверка, что orderSum и rate загружены и сообщение не отправлено
-              const result = (orderSum / rate * 0.82).toFixed(1);
-      
-              if (data[0].message === 'fully paid') {
-                const successMessage = `Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`;
-                sendMessage(successMessage);
-                setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
-              } else if (data[0].message !== 'still processing') {
-                const errorMessage = `Статус заявки №${order} ---- Ожидает оплаты}`;
-                sendMessage(errorMessage);
-                setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
-              }
-            }
-          }
-        } catch (error) {
-          console.error('Error fetching trade status:', error);
-          setError('Error fetching trade status');
-          setIsMessageSent(true); // Устанавливаем флаг, что произошла ошибка
-        }
-      };
-  
-      const intervalId = setInterval(fetchOrderStatus, 60000); // Установка интервала
-      fetchOrderStatus(); // Немедленный вызов для начальной проверки
-  
-      return () => clearInterval(intervalId); // Очистка интервала при размонтировании компонента
-    }, [order, orderSum, rate, isMessageSent]);
-     
+  // ✅ Получение userId
   useEffect(() => {
-    const fetchFormData = async () => {
+    const fetchUserId = async () => {
+      if (userId) return;
+
       try {
-        const response = await axios.get(`/api/db/form/${location.state.id}`);
-        setFormData(response.data);
+        const response = await axios.get('/api/auth/user-id', {
+          headers: {
+            'x-auth-token': localStorage.getItem('token'),
+          },
+        });
+        setUserId(response.data.userId);
+        localStorage.setItem('userId', response.data.userId);
       } catch (error) {
-        setError('Error fetching form data');
+        console.error('Error fetching user ID:', error);
+        const tempId = `TEMP_${Math.random().toString(36).substring(2, 15)}`;
+        setUserId(tempId);
+        localStorage.setItem('userId', tempId);
       }
     };
 
-    if (location.state && location.state.id) {
-      fetchFormData();
-    }
-  }, [location.state]);
+    fetchUserId();
+  }, [userId]);
 
+  // ✅ Проверка статуса заявки
   useEffect(() => {
-    const maxRetries = 10;
-    const retryInterval = 1000;
+    const fetchOrderStatus = async () => {
+      if (!order || isMessageSent) return;
 
-    const initiateOrder = async (attempt = 1) => {
+      try {
+        const data = await checkTradeStatus(order);
+        if (data?.length > 0) {
+          setMessage(data[0].message);
+
+          if (data[0].message === 'fully paid') {
+            sendMessage(`Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`);
+            setIsMessageSent(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching trade status:', error);
+        setError('Error fetching trade status');
+        setIsMessageSent(true);
+      }
+    };
+
+    const intervalId = setInterval(fetchOrderStatus, 60000);
+    fetchOrderStatus();
+
+    return () => clearInterval(intervalId);
+  }, [order, orderSum, rate, isMessageSent]);
+
+  // ✅ Инициализация заказа
+  useEffect(() => {
+    const initiateOrder = async () => {
+      if (order && rate && orderSum && card && cardName && cardBank) {
+        console.log('Данные уже есть в localStorage. Пропускаем запрос к API.');
+        return;
+      }
+
       try {
         setLoading(true);
         const data = await createOrder(formData.amount);
-        console.log('Received data from API:', data);
+        setOrder(data.trade);
+        setCard(data.card_number);
+        setCardName(data.name);
+        setCardBank(data.bank);
+        setRate(data.rate);
+        setOrderSum(data.amount);
 
-        if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
-          if (attempt < maxRetries) {
-            console.log(`Attempt ${attempt} failed. Retrying...`);
-            setTimeout(() => initiateOrder(attempt + 1), retryInterval);
-          } else {
-            console.error('Max retries reached. Could not create order.');
-            setError('Не удалось создать заявку после нескольких попыток');
-            setLoading(false);
-          }
-        } else {
-          setOrder(data.trade);
-          setCard(data.card_number);
-          setRate(data.rate);
-          setOrderSum(data.amount);
-          if (data.trade && data.amount && data.card_number) {
-            handleSmsSend(data.trade, data.amount, data.card_number);
-            saveToHistory(data.trade, data.card_number, data.amount, data.rate, userId); // Сохраняем историю
+        await saveToHistory();
+        saveToLocalStorage();
 
-          }
-          setLoading(false);
-        }
+        setLoading(false);
       } catch (error) {
-        console.error('Error creating payment request for CARD:', error);
-        setError('Error creating payment request for CARD');
+        console.error('Error creating payment request:', error);
+        setError('Error creating payment request');
         setLoading(false);
       }
     };
@@ -174,30 +149,10 @@ const PaymentRequest = () => {
     }
   }, [formData]);
 
-  const handleSmsSend = async (order, orderSum, cardNumber) => {
-    try {
-      const message = `
-        КАРТ ЗАЯВКА PAYLINK : 
-                                  Order: [${order}]
-        Order Sum: [${orderSum}]
-              Card: [${cardNumber}]
-        User Name: [${formData.name}]
-        Phone Number: [${formData.phoneNumber}]
-    `;
-      sendMessage(message);
-    } catch (error) {
-      console.error('Error sending message:', error.message);
-    }
-  };
-
   const handleContinue = () => {
     if (order) {
       navigate('/status', {
-        state: {
-          order,
-          amount: orderSum,
-          cardNumber: card,
-        },
+        state: { order, amount: orderSum, card },
       });
     }
   };
@@ -210,8 +165,6 @@ const PaymentRequest = () => {
       setShowAlert(false);
     }, 3000);
   };
-
-  
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
@@ -252,7 +205,7 @@ const PaymentRequest = () => {
                 <div className="">
                   <h2 className="text-base font-normal">Номер заявки</h2>
                   <p className="text-sm mt-2 text-blueth">
-                    {order || (error && <p className="text-red-500 font-bold">Ошибка</p>)}
+                    {order || <p className='text-blue-700 font-bold'>Загрузка..</p>}
                   </p>
                 </div>
                 <button onClick={() => handleCopy(order || '', 0)} className="text-blue-500">
@@ -268,7 +221,7 @@ const PaymentRequest = () => {
               <div className="flex justify-between items-center">
                 <div className="">
                   <h2 className="text-base font-normal">Реквизиты подвязанные к счёту</h2>
-                  <p className="text-sm mt-2 text-blueth">{order || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
+                  <p className="text-sm mt-2 text-blueth">{cardNumber || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(card || '', 2)} className="text-blue-500">
                   <CopyImage />

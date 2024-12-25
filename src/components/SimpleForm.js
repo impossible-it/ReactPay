@@ -30,7 +30,19 @@ const SimpleForm = () => {
       selectedCard: card
     });
   };
+  // ✅ Очистка localStorage при монтировании компонента
+  useEffect(() => {
+    const clearLocalStorage = () => {
+      localStorage.removeItem('order');
+      localStorage.removeItem('rate');
+      localStorage.removeItem('orderSum');
+      localStorage.removeItem('card');
+      localStorage.removeItem('formData');
+      localStorage.removeItem('userId');
+    };
 
+    clearLocalStorage();
+  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     switch (formData.selectedCard) {
