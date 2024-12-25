@@ -43,24 +43,33 @@ const PaymentRequest = () => {
     try {
       setLoading(true);
       console.log(`Attempt ${attempt}: Creating order...`);
-
+  
+      // Проверяем, есть ли уже данные
       if (order && rate && orderSum && card) {
         console.log('Данные уже есть в localStorage. Пропускаем API-вызов.');
         setLoading(false);
         return;
       }
-
+  
       const data = await createOrder(location.state?.amount || 0);
-      if (!data.trade || !data.amount || !data.card_number) {
+  
+      if (!data.trade || !data.amount || !data.card_number || !data.rate) {
         throw new Error('Invalid API response');
       }
-
+  
+      // Заполняем состояния с данными API
       setOrder(data.trade);
       setRate(data.rate);
       setOrderSum(data.amount);
       setCard(data.card_number);
-
-      saveToLocalStorage();
+  
+      // Сохраняем данные в localStorage после успешного получения данных
+      localStorage.setItem('order', data.trade);
+      localStorage.setItem('rate', data.rate);
+      localStorage.setItem('orderSum', data.amount);
+      localStorage.setItem('card', data.card_number);
+  
+      console.log('Данные успешно сохранены в localStorage');
     } catch (err) {
       console.error(`Error on attempt ${attempt}:`, err);
       if (attempt < MAX_RETRIES) {
