@@ -10,6 +10,19 @@ const CardSelection = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ Очистка localStorage при монтировании компонента
+  useEffect(() => {
+    const clearLocalStorage = () => {
+      localStorage.removeItem('order');
+      localStorage.removeItem('rate');
+      localStorage.removeItem('orderSum');
+      localStorage.removeItem('card');
+      localStorage.removeItem('formData');
+      localStorage.removeItem('userId');
+    };
+
+    clearLocalStorage();
+  }, []);
   const handleCardSelect = (card) => {
     setSelectedCard(card);
   };

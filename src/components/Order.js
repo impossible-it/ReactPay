@@ -11,21 +11,47 @@ import { createOrder, checkTradeStatus } from '../utils/api';
 const PaymentRequest = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Состояния
   const [message, setMessage] = useState(null);
-  const [order, setOrder] = useState(null);
-  const [rate, setRate] = useState(null);
-  const [orderSum, setOrderSum] = useState(null);
-  const [card, setCard] = useState(null);
-  const [formData, setFormData] = useState(location.state || {});
+  const [order, setOrder] = useState(localStorage.getItem('order') || null);
+  const [rate, setRate] = useState(localStorage.getItem('rate') || null);
+  const [orderSum, setOrderSum] = useState(localStorage.getItem('orderSum') || null);
+  const [card, setCard] = useState(localStorage.getItem('card') || null);
+  const [formData, setFormData] = useState(
+    location.state || JSON.parse(localStorage.getItem('formData')) || {}
+  );
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-  const [userId, setUserId] = useState(null);
-  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
+  const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
   const [isMessageSent, setIsMessageSent] = useState(false);
 
+  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
+
+  // ✅ Сохранение данных в localStorage
+  const saveToLocalStorage = (data) => {
+    localStorage.setItem('order', data.trade || '');
+    localStorage.setItem('rate', data.rate || '');
+    localStorage.setItem('orderSum', data.amount || '');
+    localStorage.setItem('card', data.card_number || '');
+    localStorage.setItem('formData', JSON.stringify(formData || {}));
+    localStorage.setItem('userId', userId || '');
+  };
+
+  // ✅ Очистка данных из localStorage при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('order');
+      localStorage.removeItem('rate');
+      localStorage.removeItem('orderSum');
+      localStorage.removeItem('card');
+      localStorage.removeItem('formData');
+      localStorage.removeItem('userId');
+    };
+  }, []);
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
       try {

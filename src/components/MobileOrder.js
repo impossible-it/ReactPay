@@ -10,23 +10,49 @@ import { createOrderSPB, checkTradeStatus } from '../utils/api';
 
 const OrderSPB = () => {
   const location = useLocation();
-  const [formData, setFormData] = useState(location.state || {});
-  const [order, setOrder] = useState(null);
-  const [rate, setRate] = useState(null);
-  const [orderSum, setOrderSum] = useState(null);
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardName, setCardName] = useState('');
-  const [cardBank, setCardBank] = useState('');
-  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
+
+  // Состояния
+  const [formData, setFormData] = useState(location.state || {});
+  const [order, setOrder] = useState(localStorage.getItem('order') || null);
+  const [rate, setRate] = useState(localStorage.getItem('rate') || null);
+  const [orderSum, setOrderSum] = useState(localStorage.getItem('orderSum') || null);
+  const [cardNumber, setCardNumber] = useState(localStorage.getItem('cardNumber') || '');
+  const [cardName, setCardName] = useState(localStorage.getItem('cardName') || '');
+  const [cardBank, setCardBank] = useState(localStorage.getItem('cardBank') || '');
+  const [message, setMessage] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [expandedRule, setExpandedRule] = useState(null);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
   const [isMessageSent, setIsMessageSent] = useState(false);
+
   const userId = '1233';
+  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
+
+  // Сохранение данных в localStorage
+  const saveToLocalStorage = (data) => {
+    localStorage.setItem('order', data.trade || '');
+    localStorage.setItem('rate', data.rate || '');
+    localStorage.setItem('orderSum', data.amount || '');
+    localStorage.setItem('cardNumber', data.phone_number || '');
+    localStorage.setItem('cardName', data.name || '');
+    localStorage.setItem('cardBank', data.bank || '');
+  };
+  // Восстановление данных из localStorage
+  useEffect(() => {
+    const savedOrder = localStorage.getItem('order');
+    if (savedOrder) {
+      setOrder(savedOrder);
+      setRate(localStorage.getItem('rate'));
+      setOrderSum(localStorage.getItem('orderSum'));
+      setCardNumber(localStorage.getItem('cardNumber'));
+      setCardName(localStorage.getItem('cardName'));
+      setCardBank(localStorage.getItem('cardBank'));
+    }
+  }, []);
+
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
       try {
@@ -185,7 +211,17 @@ const OrderSPB = () => {
     }, 3000);
   };
 
-
+ // Очистка localStorage при размонтировании
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem('order');
+      localStorage.removeItem('rate');
+      localStorage.removeItem('orderSum');
+      localStorage.removeItem('cardNumber');
+      localStorage.removeItem('cardName');
+      localStorage.removeItem('cardBank');
+    };
+  }, []);
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
   };
