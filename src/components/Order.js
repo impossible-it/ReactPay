@@ -12,34 +12,34 @@ const PaymentRequest = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Состояния
-  const [message, setMessage] = useState(null);
-  const [order, setOrder] = useState(localStorage.getItem('order') || null);
-  const [rate, setRate] = useState(localStorage.getItem('rate') || null);
-  const [orderSum, setOrderSum] = useState(localStorage.getItem('orderSum') || null);
-  const [card, setCard] = useState(localStorage.getItem('card') || null);
-  const [formData, setFormData] = useState(
-    location.state || JSON.parse(localStorage.getItem('formData')) || {}
-  );
-  const [showAlert, setShowAlert] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [expandedRule, setExpandedRule] = useState(null);
-  const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-  const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
-  const [isMessageSent, setIsMessageSent] = useState(false);
+ // Состояния
+ const [message, setMessage] = useState(null);
+ const [order, setOrder] = useState(localStorage.getItem('order') || null);
+ const [rate, setRate] = useState(localStorage.getItem('rate') || null);
+ const [orderSum, setOrderSum] = useState(localStorage.getItem('orderSum') || null);
+ const [card, setCard] = useState(localStorage.getItem('card') || null);
+ const [formData, setFormData] = useState(
+   location.state || JSON.parse(localStorage.getItem('formData')) || {}
+ );
+ const [showAlert, setShowAlert] = useState(false);
+ const [loading, setLoading] = useState(false);
+ const [error, setError] = useState(null);
+ const [expandedRule, setExpandedRule] = useState(null);
+ const [copyAlertIndex, setCopyAlertIndex] = useState(null);
+ const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
+ const [isMessageSent, setIsMessageSent] = useState(false);
 
-  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
+ const result = (orderSum / rate * 0.82).toFixed(1) || '...';
 
-  // ✅ Сохранение данных в localStorage
-  const saveToLocalStorage = (data) => {
-    localStorage.setItem('order', data.trade || '');
-    localStorage.setItem('rate', data.rate || '');
-    localStorage.setItem('orderSum', data.amount || '');
-    localStorage.setItem('card', data.card_number || '');
-    localStorage.setItem('formData', JSON.stringify(formData || {}));
-    localStorage.setItem('userId', userId || '');
-  };
+ // ✅ Сохранение данных в localStorage при изменении состояний
+ useEffect(() => {
+   localStorage.setItem('order', order || '');
+   localStorage.setItem('rate', rate || '');
+   localStorage.setItem('orderSum', orderSum || '');
+   localStorage.setItem('card', card || '');
+   localStorage.setItem('formData', JSON.stringify(formData || {}));
+   localStorage.setItem('userId', userId || '');
+ }, [order, rate, orderSum, card, formData, userId]);
 
  
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
@@ -268,7 +268,7 @@ const PaymentRequest = () => {
               <div className="flex justify-between items-center">
                 <div className="">
                   <h2 className="text-base font-normal">Реквизиты подвязанные к счёту</h2>
-                  <p className="text-sm mt-2 text-blueth">{card || (error && <p className="text-red-500 font-bold">Ошибка</p>)}</p>
+                  <p className="text-sm mt-2 text-blueth">{order || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(card || '', 2)} className="text-blue-500">
                   <CopyImage />
@@ -282,7 +282,7 @@ const PaymentRequest = () => {
               <div className="flex justify-between items-center">
                 <div className="">
                   <h2 className="text-base font-normal">Сумма транзакции</h2>
-                  <p className="text-sm mt-2 text-blueth">{orderSum || (error && <p className="text-red-500 font-bold">Ошибка</p>)}</p>
+                  <p className="text-sm mt-2 text-blueth">{orderSum || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(orderSum || '', 1)} className="text-blue-500">
                   <CopyImage />
@@ -292,7 +292,7 @@ const PaymentRequest = () => {
             <div className="bg-white p-4 rounded-lg">
               <div className="">
                 <h2 className="text-base font-normal">Обслуживающий банк</h2>
-                <p className="text-sm mt-2 text-blueth">{ ' ... ' || (error && <p className="text-red-500 font-bold">Ошибка</p>)}</p>
+                <p className="text-sm mt-2 text-blueth">{ ' ... ' || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
               </div>
             </div>
           </div>
@@ -310,7 +310,7 @@ const PaymentRequest = () => {
               <div className="w-full md:p-4">
                 <h2 className="text-sm font-normal text-grayth">Зачислено на баланс</h2>
                 <div className="flex md:justify-end justify-start">
-                  <p className="text-base mt-1">{result} USDT</p>
+                  <p className="text-base mt-1">{result || <p className='text-blue-700 font-bold'>Загрузка..</p>} USDT</p>
                   <TetherImage className="w-5 h-5 ml-2 mt-1.5" />
                 </div>
               </div>
