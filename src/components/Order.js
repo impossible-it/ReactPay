@@ -181,7 +181,7 @@ const PaymentRequest = () => {
               <div className="flex justify-between items-center">
                 <div className="">
                   <h2 className="text-base font-normal">Реквизиты подвязанные к счёту</h2>
-                  <p className="text-sm mt-2 text-blueth">{cardNumber || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
+                  <p className="text-sm mt-2 text-blueth">{card || <p className='text-blue-700 font-bold'>Загрузка..</p>}</p>
                 </div>
                 <button onClick={() => handleCopy(card || '', 2)} className="text-blue-500">
                   <CopyImage />
