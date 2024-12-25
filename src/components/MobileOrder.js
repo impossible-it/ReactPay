@@ -12,7 +12,7 @@ const OrderSPB = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ Состояния
+  // Состояния
   const [formData, setFormData] = useState(location.state || {});
   const [order, setOrder] = useState(localStorage.getItem('order') || null);
   const [rate, setRate] = useState(localStorage.getItem('rate') || null);
@@ -28,92 +28,129 @@ const OrderSPB = () => {
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
   const [isMessageSent, setIsMessageSent] = useState(false);
 
-  const userId = localStorage.getItem('userId') || 'TEMP_USER';
-  const result = orderSum && rate ? (orderSum / rate * 0.82).toFixed(1) : '...';
+  const userId = '1233';
+  const result = (orderSum / rate * 0.82).toFixed(1) || '...';
 
-  // ✅ Сохранение данных в localStorage с проверкой
-  const saveToLocalStorage = () => {
-    try {
-      if (order && rate && orderSum && cardNumber && cardName && cardBank) {
-        localStorage.setItem('order', order);
-        localStorage.setItem('rate', rate);
-        localStorage.setItem('orderSum', orderSum);
-        localStorage.setItem('cardNumber', cardNumber);
-        localStorage.setItem('cardName', cardName);
-        localStorage.setItem('cardBank', cardBank);
-        localStorage.setItem('formData', JSON.stringify(formData || {}));
-        localStorage.setItem('userId', userId);
+ // ✅ Сохранение данных в localStorage при изменении состояний
+ useEffect(() => {
+  localStorage.setItem('order', order || '');
+  localStorage.setItem('rate', rate || '');
+  localStorage.setItem('orderSum', orderSum || '');
+  localStorage.setItem('card', card || '');
+  localStorage.setItem('formData', JSON.stringify(formData || {}));
+  localStorage.setItem('userId', userId || '');
+}, [order, rate, orderSum, card, formData, userId]);
 
-        console.log('✅ Данные сохранены в localStorage');
-      } else {
-        console.warn('⚠️ Данные не заполнены полностью, сохранение в localStorage отменено');
-      }
-    } catch (error) {
-      console.error('❌ Ошибка при сохранении в localStorage:', error);
-    }
-  };
-
-  // ✅ Сохранение истории
-  const saveToHistory = async () => {
+  const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
       try {
-        await axios.post('/api/db/history', {
+        const response = await axios.post('/api/db/history', {
           trade: order,
-          cardNumber,
+          cardNumber: cardNumber,
           amount: orderSum,
-          rate,
-          userId,
+          rate: rate,
+          userId: userId,
         });
-        console.log('✅ History saved');
+        console.log('History saved:', response.data);
       } catch (error) {
-        console.error('❌ Error saving to history:', error);
+        console.error('Error saving to history:', error);
       }
     }
   };
-
-  // ✅ Получение данных формы
   useEffect(() => {
     const fetchFormData = async () => {
+      console.log('Fetching form data for ID:', location.state.id);
       try {
-        if (location.state?.id) {
-          const response = await axios.get(`/api/db/form/${location.state.id}`);
+        const response = await axios.get(`/api/db/form/${location.state.id}`);
+        if (response.data) {
+          console.log('Form data:', response.data);
           setFormData(response.data);
+        } else {
+          console.error('No form data found');
+          setError('No form data found');
         }
       } catch (error) {
-        console.error('❌ Error fetching form data:', error);
-        setError('Ошибка при загрузке данных формы');
+        console.error('Error fetching form data:', error);
+        setError('Error fetching form data');
+      }
+    };
+    if (location.state && location.state.id) {
+      fetchFormData();
+    }
+  }, [location.state]);
+  
+  useEffect(() => {
+    const fetchOrderStatus = async () => {
+      if (!order || isMessageSent) return; // Выход, если нет заказа или сообщение уже отправлено
+
+      try {
+        const data = await checkTradeStatus(order);
+        if (data && data.length > 0) {
+          setMessage(data[0].message);
+          
+          if (orderSum && rate && !isMessageSent) { // Проверка, что orderSum и rate загружены и сообщение не отправлено
+            const result = (orderSum / rate * 0.82).toFixed(1);
+    
+            if (data[0].message === 'fully paid') {
+              const successMessage = `Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`;
+              sendMessage(successMessage);
+              setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
+            } else if (data[0].message !== 'still processing') {
+              const errorMessage = `Статус заявки №${order} ---- Ожидает оплаты}`;
+              sendMessage(errorMessage);
+              setIsMessageSent(true); // Устанавливаем флаг, что сообщение отправлено
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching trade status:', error);
+        setError('Error fetching trade status');
+        setIsMessageSent(true); // Устанавливаем флаг, что произошла ошибка
       }
     };
 
-    if (!formData.amount) {
-      fetchFormData();
-    }
-  }, [location.state, formData.amount]);
+    const intervalId = setInterval(fetchOrderStatus, 60000); // Установка интервала
+    fetchOrderStatus(); // Немедленный вызов для начальной проверки
 
-  // ✅ Инициализация заказа
+    return () => clearInterval(intervalId); // Очистка интервала при размонтировании компонента
+  }, [order, orderSum, rate, isMessageSent]); // Добавьте orderSum и rate в список зависимостей
+  
   useEffect(() => {
-    const initiateOrder = async () => {
-      if (order && rate && orderSum && cardNumber && cardName && cardBank) {
-        console.log('⚠️ Данные уже есть в localStorage. Пропускаем API.');
-        return;
-      }
+    const maxRetries = 10;
+    const retryInterval = 1500;
 
+    const initiateOrder = async (attempt = 1) => {
       try {
         setLoading(true);
         const data = await createOrderSPB(formData.amount);
-        setOrder(data.trade);
-        setRate(data.rate);
-        setOrderSum(data.amount);
-        setCardName(data.name);
-        setCardNumber(data.phone_number);
-        setCardBank(data.bank);
+        console.log('Received data from API:', data);
 
-        await saveToHistory();
-        saveToLocalStorage();
-        setLoading(false);
+        if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
+          if (attempt < maxRetries) {
+            console.log(`Attempt ${attempt} failed. Retrying...`);
+            setTimeout(() => initiateOrder(attempt + 1), retryInterval);
+          } else {
+            console.error('Max retries reached. Could not create order.');
+            setError('Не удалось создать заявку после нескольких попыток');
+            setLoading(false);
+          }
+        } else {
+          setOrder(data.trade);
+          setRate(data.rate);
+          setOrderSum(data.amount);
+          setCardName(data.name);
+          setCardNumber(data.phone_number);
+          setCardBank(data.bank);
+          if (data.trade && data.amount && data.name && data.phone_number && data.bank) {
+            handleSmsSend(data.trade, data.amount, data.name, data.phone_number, data.bank);
+            saveToHistory(data.trade, data.phone_number, data.amount, data.rate); // Сохраняем историю
+
+          }
+          setLoading(false);
+        }
       } catch (error) {
-        console.error('❌ Error creating payment request:', error);
-        setError('Ошибка при создании заявки');
+        console.error('Error creating payment request for SPB:', error);
+        setError('Error creating payment request for SPB');
         setLoading(false);
       }
     };
@@ -123,50 +160,43 @@ const OrderSPB = () => {
     }
   }, [formData]);
 
-  // ✅ Проверка статуса заявки
-  useEffect(() => {
-    const fetchOrderStatus = async () => {
-      if (!order || isMessageSent) return;
+  const handleSmsSend = async (order, orderSum, cardName, cardNumber, cardBank) => {
+    try {
+      const message = `
+         CБП ЗАЯВКА PAYLINK : 
+              Order: [${order}]
+        Order Sum: [${orderSum}]
+        SBPName: [${cardName}]
+             SBPbank: [${cardBank}]
+                 SBP: [${cardNumber}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
+      `;
+      sendMessage(message);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+    }
+  };
 
-      try {
-        const data = await checkTradeStatus(order);
-        if (data?.length > 0) {
-          setMessage(data[0].message);
+  const handleContinue = () => {
+    if (order) {
+      navigate('/status', {
+        state: {
+          order,
+          amount: orderSum,
+          cardNumber: cardNumber,
+        },
+      });
+    }
+  };
 
-          if (data[0].message === 'fully paid') {
-            sendMessage(`Заявка закрыта №${order} на сумму ${orderSum} итого ${result} зачислено! 💰🎉`);
-            setIsMessageSent(true);
-          }
-        }
-      } catch (error) {
-        console.error('❌ Error fetching trade status:', error);
-        setError('Ошибка при проверке статуса заявки');
-        setIsMessageSent(true);
-      }
-    };
-
-    const intervalId = setInterval(fetchOrderStatus, 60000);
-    fetchOrderStatus();
-
-    return () => clearInterval(intervalId);
-  }, [order, orderSum, rate, isMessageSent]);
-
-
-  // ✅ Обработчик копирования
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text);
     setCopyAlertIndex(index);
     setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);
-  };
-
-  // ✅ Переход к статусу
-  const handleContinue = () => {
-    if (order) {
-      navigate('/status', {
-        state: { order, amount: orderSum, cardNumber },
-      });
-    }
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
   };
 
 
