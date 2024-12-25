@@ -36,10 +36,10 @@ const OrderSPB = () => {
   localStorage.setItem('order', order || '');
   localStorage.setItem('rate', rate || '');
   localStorage.setItem('orderSum', orderSum || '');
-  localStorage.setItem('card', card || '');
+  localStorage.setItem('card', cardNumber || '');
   localStorage.setItem('formData', JSON.stringify(formData || {}));
   localStorage.setItem('userId', userId || '');
-}, [order, rate, orderSum, card, formData, userId]);
+}, [order, rate, orderSum, cardNumber, formData, userId]);
 
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
