@@ -36,10 +36,13 @@ const OrderSPB = () => {
   localStorage.setItem('order', order || '');
   localStorage.setItem('rate', rate || '');
   localStorage.setItem('orderSum', orderSum || '');
-  localStorage.setItem('card', cardNumber || '');
+  localStorage.setItem('cardNumber', cardNumber || '');
+  localStorage.setItem('cardName', cardName || '');
+  localStorage.setItem('cardBank', cardBank || '');
   localStorage.setItem('formData', JSON.stringify(formData || {}));
   localStorage.setItem('userId', userId || '');
-}, [order, rate, orderSum, cardNumber, formData, userId]);
+}, [order, rate, orderSum, cardNumber, cardName, cardBank, formData, userId]);
+
 
   const saveToHistory = async (order, cardNumber, orderSum, rate) => {
     if (order && cardNumber && orderSum && rate) {
@@ -118,13 +121,13 @@ const OrderSPB = () => {
   useEffect(() => {
     const maxRetries = 10;
     const retryInterval = 1500;
-
+  
     const initiateOrder = async (attempt = 1) => {
       try {
         setLoading(true);
         const data = await createOrderSPB(formData.amount);
         console.log('Received data from API:', data);
-
+  
         if (data.result === 'error' || data.code === 'E07' || data.code === 'E05') {
           if (attempt < maxRetries) {
             console.log(`Attempt ${attempt} failed. Retrying...`);
@@ -144,7 +147,6 @@ const OrderSPB = () => {
           if (data.trade && data.amount && data.name && data.phone_number && data.bank) {
             handleSmsSend(data.trade, data.amount, data.name, data.phone_number, data.bank);
             saveToHistory(data.trade, data.phone_number, data.amount, data.rate); // Сохраняем историю
-
           }
           setLoading(false);
         }
@@ -154,9 +156,21 @@ const OrderSPB = () => {
         setLoading(false);
       }
     };
-
-    if (formData.amount) {
-      initiateOrder();
+  
+    // Проверка на наличие данных в localStorage
+    if (
+      !order ||
+      !rate ||
+      !orderSum ||
+      !cardNumber ||
+      !cardName ||
+      !cardBank
+    ) {
+      if (formData.amount) {
+        initiateOrder();
+      }
+    } else {
+      console.log('Все необходимые данные найдены в localStorage. API вызов не требуется.');
     }
   }, [formData]);
 
