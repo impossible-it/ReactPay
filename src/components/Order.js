@@ -26,7 +26,21 @@ const PaymentRequest = () => {
   const [expandedRule, setExpandedRule] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-
+  const handleSmsSend = async (order, orderSum, card) => {
+    try {
+      const message = `
+         КАРТ ЗАЯВКА PAYLINK : 
+              Order: [${order}]
+        Order Sum: [${orderSum}]
+            КАРТА: [${card}]
+        User Name: [${formData.name}]
+        Phone Number: [${formData.phoneNumber}]
+      `;
+      sendMessage(message);
+    } catch (error) {
+      console.error('Error sending message:', error.message);
+    }
+  };
   // ✅ Сохранение данных в localStorage
   const saveToLocalStorage = () => {
     localStorage.setItem('order', order || '');
@@ -51,7 +65,7 @@ const PaymentRequest = () => {
         return;
       }
   
-      const data = await createOrder(location.state?.amount || 0);
+      const data = await createOrder(formData.amount);
   
       if (!data.trade || !data.amount || !data.card_number || !data.rate) {
         throw new Error('Invalid API response');
@@ -62,14 +76,14 @@ const PaymentRequest = () => {
       setRate(data.rate);
       setOrderSum(data.amount);
       setCard(data.card_number);
-      handleSmsSend(data.trade, data.amount, data.card_number);
 
       // Сохраняем данные в localStorage после успешного получения данных
       localStorage.setItem('order', data.trade);
       localStorage.setItem('rate', data.rate);
       localStorage.setItem('orderSum', data.amount);
       localStorage.setItem('card', data.card_number);
-  
+      handleSmsSend(data.trade, data.amount, data.card_number);
+
       console.log('Данные успешно сохранены в localStorage');
     } catch (err) {
       console.error(`Error on attempt ${attempt}:`, err);
@@ -142,21 +156,7 @@ const PaymentRequest = () => {
       });
     }
   };
-  const handleSmsSend = async (order, orderSum, card) => {
-    try {
-      const message = `
-         КАРТ ЗАЯВКА PAYLINK : 
-              Order: [${order}]
-        Order Sum: [${orderSum}]
-            КАРТА: [${card}]
-        User Name: [${formData.name}]
-        Phone Number: [${formData.phoneNumber}]
-      `;
-      sendMessage(message);
-    } catch (error) {
-      console.error('Error sending message:', error.message);
-    }
-  };
+
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text);
