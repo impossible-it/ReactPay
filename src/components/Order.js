@@ -73,6 +73,16 @@ const PaymentRequest = () => {
         return;
       }
   
+      // Проверка наличия formData.amount
+      if (!formData.amount) {
+        console.warn('formData.amount отсутствует. Попробуем загрузить данные формы.');
+        await fetchFormData(); // Загружаем данные формы
+      }
+  
+      if (!formData.amount) {
+        throw new Error('formData.amount отсутствует даже после загрузки данных формы');
+      }
+  
       const data = await createOrder(formData.amount);
   
       if (!data.trade || !data.amount || !data.card_number || !data.rate) {
@@ -84,14 +94,15 @@ const PaymentRequest = () => {
       setRate(data.rate);
       setOrderSum(data.amount);
       setCard(data.card_number);
-
+  
       // Сохраняем данные в localStorage после успешного получения данных
       localStorage.setItem('order', data.trade);
       localStorage.setItem('rate', data.rate);
       localStorage.setItem('orderSum', data.amount);
       localStorage.setItem('card', data.card_number);
+  
       handleSmsSend(data.trade, data.amount, data.card_number);
-
+  
       console.log('Данные успешно сохранены в localStorage');
     } catch (err) {
       console.error(`Error on attempt ${attempt}:`, err);
