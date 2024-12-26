@@ -50,8 +50,9 @@ const PaymentRequest = () => {
       const response = await axios.get(`/api/db/form/${location.state?.id}`);
       if (response.data?.amount) {
         setFormData(response.data);
+        console.log('Данные формы успешно загружены:', response.data);
       } else {
-        throw new Error('Некорректный формат данных формы');
+        throw new Error('Некорректный ответ формы: отсутствует amount');
       }
     } catch (error) {
       console.error('Ошибка при получении данных формы:', error);
@@ -64,39 +65,31 @@ const PaymentRequest = () => {
     try {
       setLoading(true);
       console.log(`Попытка ${attempt}: Создание заказа...`);
-
-      if (order && rate && orderSum && card) {
-        console.log('Данные уже есть в localStorage. Пропускаем API-вызов.');
+  
+      // Проверка данных перед вызовом API
+      if (!formData.amount) {
+        console.warn('formData.amount отсутствует. Прерываем вызов createOrder');
         return;
       }
-
-      if (!formData.amount) {
-        console.warn('formData.amount отсутствует. Загружаем данные формы.');
-        await fetchFormData();
-      }
-
-      if (!formData.amount) {
-        throw new Error('formData.amount отсутствует даже после загрузки данных формы');
-      }
-
+  
       const data = await createOrder(formData.amount);
-
+  
       if (!data.trade || !data.amount || !data.card_number || !data.rate) {
         throw new Error('Некорректный ответ API');
       }
-
+  
       setOrder(data.trade);
       setRate(data.rate);
       setOrderSum(data.amount);
       setCard(data.card_number);
-
+  
       localStorage.setItem('order', data.trade);
       localStorage.setItem('rate', data.rate);
       localStorage.setItem('orderSum', data.amount);
       localStorage.setItem('card', data.card_number);
-
+  
       handleSmsSend(data.trade, data.amount, data.card_number);
-
+  
       console.log('Данные успешно сохранены в localStorage');
     } catch (err) {
       console.error(`Ошибка на попытке ${attempt}:`, err);
