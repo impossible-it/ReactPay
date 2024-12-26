@@ -15,7 +15,7 @@ const PaymentRequest = () => {
   const navigate = useNavigate();
 
   // ✅ Состояния
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(location.state || {});
   const [order, setOrder] = useState(localStorage.getItem('order') || null);
   const [rate, setRate] = useState(localStorage.getItem('rate') || null);
   const [orderSum, setOrderSum] = useState(localStorage.getItem('orderSum') || null);

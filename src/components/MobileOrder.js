@@ -120,7 +120,7 @@ const OrderSPB = () => {
   
   useEffect(() => {
     const maxRetries = 10;
-    const retryInterval = 1500;
+    const retryInterval = 1000;
   
     const initiateOrder = async (attempt = 1) => {
       try {
