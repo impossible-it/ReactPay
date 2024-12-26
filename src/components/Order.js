@@ -7,8 +7,8 @@ import { ReactComponent as TetherImage } from '../components/img/tether.svg';
 import RulesImage from '../components/img/rules.png';
 import './styles.css';
 import { createOrder, checkTradeStatus } from '../utils/api';
-const MAX_RETRIES = 5; // Максимальное количество попыток
-const RETRY_INTERVAL = 1500; // Интервал между попытками (в миллисекундах)
+const MAX_RETRIES = 10; // Максимальное количество попыток
+const RETRY_INTERVAL = 1000; // Интервал между попытками (в миллисекундах)
 
 const PaymentRequest = () => {
   const location = useLocation();
@@ -42,6 +42,14 @@ const PaymentRequest = () => {
     }
   };
   // ✅ Сохранение данных в localStorage
+  const fetchFormData = async () => {
+    try {
+      const response = await axios.get(`/api/db/form/${location.state?.id}`);
+      setFormData(response.data);
+    } catch (error) {
+      setError('Error fetching form data');
+    }
+  };
   const saveToLocalStorage = () => {
     localStorage.setItem('order', order || '');
     localStorage.setItem('rate', rate || '');
@@ -120,14 +128,7 @@ const PaymentRequest = () => {
   };
 
   // ✅ Инициализация данных формы
-  const fetchFormData = async () => {
-    try {
-      const response = await axios.get(`/api/db/form/${location.state?.id}`);
-      setFormData(response.data);
-    } catch (error) {
-      setError('Error fetching form data');
-    }
-  };
+
 
   // ✅ Эффекты
   useEffect(() => {
