@@ -130,11 +130,19 @@ const PaymentRequest = () => {
       if (location.state?.id) {
         await fetchFormData();
       }
-      await initiateOrder();
     };
-
+  
     initialize();
   }, [location.state?.id]);
+  
+  useEffect(() => {
+    if (formData.amount) {
+      console.log('Инициализация заказа с amount:', formData.amount);
+      initiateOrder();
+    }
+  }, [formData.amount]);
+  
+  
 
   useEffect(() => {
     const intervalId = setInterval(fetchOrderStatus, 60000);
