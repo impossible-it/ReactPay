@@ -136,11 +136,13 @@ const PaymentRequest = () => {
   }, [location.state?.id]);
   
   useEffect(() => {
-    if (formData.amount) {
-      console.log('Инициализация заказа с amount:', formData.amount);
+    if (!order || !rate || !orderSum || !card) {
+      console.log('Данных в localStorage нет, инициируем создание заказа');
       initiateOrder();
+    } else {
+      console.log('Данные найдены в localStorage. API вызов не требуется.');
     }
-  }, [formData.amount]);
+  }, [formData]);
   
   
 
