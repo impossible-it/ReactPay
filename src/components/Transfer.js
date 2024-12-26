@@ -19,6 +19,11 @@ const CardSelection = () => {
       localStorage.removeItem('card');
       localStorage.removeItem('formData');
       localStorage.removeItem('userId');
+      localStorage.removeItem('cardName');
+      localStorage.removeItem('cardBank');
+      localStorage.removeItem('cardNumber');
+      localStorage.removeItem('timeLeft');
+
     };
 
     clearLocalStorage();
