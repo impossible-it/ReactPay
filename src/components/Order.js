@@ -26,13 +26,15 @@ const PaymentRequest = () => {
   const [expandedRule, setExpandedRule] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
+
+  // ✅ Отправка сообщения
   const handleSmsSend = async (order, orderSum, card) => {
     try {
       const message = `
-         КАРТ ЗАЯВКА PAYLINK : 
-              Order: [${order}]
+        КАРТ ЗАЯВКА PAYLINK: 
+        Order: [${order}]
         Order Sum: [${orderSum}]
-            КАРТА: [${card}]
+        КАРТА: [${card}]
         User Name: [${formData.name}]
         Phone Number: [${formData.phoneNumber}]
       `;
@@ -41,71 +43,63 @@ const PaymentRequest = () => {
       console.error('Error sending message:', error.message);
     }
   };
-  // ✅ Сохранение данных в localStorage
+
+  // ✅ Получение данных формы
   const fetchFormData = async () => {
     try {
       const response = await axios.get(`/api/db/form/${location.state?.id}`);
-      setFormData(response.data);
+      if (response.data?.amount) {
+        setFormData(response.data);
+      } else {
+        throw new Error('Некорректный формат данных формы');
+      }
     } catch (error) {
-      setError('Error fetching form data');
+      console.error('Ошибка при получении данных формы:', error);
+      setError('Ошибка при получении данных формы');
     }
   };
-  const saveToLocalStorage = () => {
-    localStorage.setItem('order', order || '');
-    localStorage.setItem('rate', rate || '');
-    localStorage.setItem('orderSum', orderSum || '');
-    localStorage.setItem('card', card || '');
-  };
 
-  // ✅ Вычисление result
-  const result = orderSum && rate ? (orderSum / rate * 0.82).toFixed(1) : '...';
-
-  // ✅ Инициализация заказа с Retry Logic
+  // ✅ Инициализация заказа
   const initiateOrder = async (attempt = 1) => {
     try {
       setLoading(true);
-      console.log(`Attempt ${attempt}: Creating order...`);
-  
-      // Проверяем, есть ли уже данные
+      console.log(`Попытка ${attempt}: Создание заказа...`);
+
       if (order && rate && orderSum && card) {
         console.log('Данные уже есть в localStorage. Пропускаем API-вызов.');
-        setLoading(false);
         return;
       }
-  
-      // Проверка наличия formData.amount
+
       if (!formData.amount) {
-        console.warn('formData.amount отсутствует. Попробуем загрузить данные формы.');
-        await fetchFormData(); // Загружаем данные формы
+        console.warn('formData.amount отсутствует. Загружаем данные формы.');
+        await fetchFormData();
       }
-  
+
       if (!formData.amount) {
         throw new Error('formData.amount отсутствует даже после загрузки данных формы');
       }
-  
+
       const data = await createOrder(formData.amount);
-  
+
       if (!data.trade || !data.amount || !data.card_number || !data.rate) {
-        throw new Error('Invalid API response');
+        throw new Error('Некорректный ответ API');
       }
-  
-      // Заполняем состояния с данными API
+
       setOrder(data.trade);
       setRate(data.rate);
       setOrderSum(data.amount);
       setCard(data.card_number);
-  
-      // Сохраняем данные в localStorage после успешного получения данных
+
       localStorage.setItem('order', data.trade);
       localStorage.setItem('rate', data.rate);
       localStorage.setItem('orderSum', data.amount);
       localStorage.setItem('card', data.card_number);
-  
+
       handleSmsSend(data.trade, data.amount, data.card_number);
-  
+
       console.log('Данные успешно сохранены в localStorage');
     } catch (err) {
-      console.error(`Error on attempt ${attempt}:`, err);
+      console.error(`Ошибка на попытке ${attempt}:`, err);
       if (attempt < MAX_RETRIES) {
         setTimeout(() => initiateOrder(attempt + 1), RETRY_INTERVAL);
       } else {
@@ -133,42 +127,35 @@ const PaymentRequest = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching trade status:', error);
-      setError('Error fetching trade status');
+      console.error('Ошибка при проверке статуса заявки:', error);
     }
   };
 
-  // ✅ Инициализация данных формы
-
-
   // ✅ Эффекты
   useEffect(() => {
-    if (!order || !rate || !orderSum || !card) initiateOrder();
-  }, [order, rate, orderSum, card]);
+    const initialize = async () => {
+      if (location.state?.id) {
+        await fetchFormData();
+      }
+      await initiateOrder();
+    };
 
-  useEffect(() => {
-    if (location.state?.id) fetchFormData();
-  }, [location.state]);
+    initialize();
+  }, [location.state?.id]);
 
   useEffect(() => {
     const intervalId = setInterval(fetchOrderStatus, 60000);
     fetchOrderStatus();
     return () => clearInterval(intervalId);
-  }, [order, orderSum, rate, isMessageSent]);
+  }, [order, isMessageSent]);
 
-  // ✅ Обработчики
   const handleContinue = () => {
     if (order) {
       navigate('/status', {
-        state: {
-          order,
-          amount: orderSum,
-          cardNumber: card,
-        },
+        state: { order, amount: orderSum, cardNumber: card },
       });
     }
   };
-
 
   const handleCopy = (text, index) => {
     navigator.clipboard.writeText(text);
@@ -176,6 +163,7 @@ const PaymentRequest = () => {
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 3000);
   };
+
 
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
