@@ -26,7 +26,7 @@ const PaymentRequest = () => {
   const [expandedRule, setExpandedRule] = useState(null);
   const [showAlert, setShowAlert] = useState(false);
   const [copyAlertIndex, setCopyAlertIndex] = useState(null);
-
+   
   // ✅ Отправка сообщения
   const handleSmsSend = async (order, orderSum, card) => {
     try {
@@ -161,6 +161,7 @@ const PaymentRequest = () => {
   const handleRuleClick = (index) => {
     setExpandedRule(expandedRule === index ? null : index);
   };
+  const result = (orderSum / rate * 0.85).toFixed(1) || '...';
 
   const rules = [
     { title: 'Проверьте срок действия карты.', content: 'Срок действия карты должен быть действителен.' },
