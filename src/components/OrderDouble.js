@@ -80,7 +80,7 @@ const PaymentRequest = () => {
   }, [location.state]);
 
   useEffect(() => {
-    const maxRetries = 8;
+    const maxRetries = 2;
     const retryInterval = 1000;
 
     const initiateOrder = async (attempt = 1) => {
@@ -108,8 +108,9 @@ const PaymentRequest = () => {
 
     const initiateCardOrder = async () => {
       try {
-         const data = 1 // await createCardOrder(formData.amount);
-        // handleOrderSuccess(data, 'API2');
+         const data = 1;
+         await createCardOrder(formData.amount);
+         handleOrderSuccess(data, 'API2');
       } catch (error) {
         console.error('Error creating card order:', error);
         setError('Error creating card order');

@@ -29,7 +29,7 @@ const CardSelection = () => {
     clearLocalStorage();
   }, []);
   const handleCardSelect = (card) => {
-    setSelectedCard(card);
+    setSelectedCard(card); 
   };
 
   const handleSubmit = () => {
